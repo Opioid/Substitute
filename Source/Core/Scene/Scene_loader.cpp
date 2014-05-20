@@ -1,0 +1,534 @@
+#include "Scene_loader.hpp"
+#include "File/File_stream.hpp"
+#include "Scene.hpp"
+#include "Model.hpp"
+#include "Static_prop.hpp"
+#include "AABB_tree/AABB_tree_loader.hpp"
+#include "Complex/Complex.hpp"
+#include "Resources/Resource_manager.hpp"
+#include "Rendering/Resource_view.hpp"
+#include "Rendering/Texture_provider.hpp"
+#include "Timing/Stopwatch.hpp"
+#include "Parsing/Json.hpp"
+#include "Logging/Logging.hpp"
+
+namespace scene
+{
+
+Scene_loader::Scene_loader(Scene &scene, rendering::Rendering_tool& rendering_tool, Resource_manager& resource_manager) :
+	scene_(scene), rendering_tool_(rendering_tool), resource_manager_(resource_manager)
+{}
+
+bool Scene_loader::load(const std::string& name)
+{
+	timing::Stopwatch stopwatch;
+	stopwatch.start();
+
+    scene_.clear();
+
+	file::Input_stream stream(name);
+
+	if (!stream)
+	{
+		logging::error("Scene_loader::load(): could not open stream for \"" + name + "\".");
+
+		return false;
+	}
+
+	rapidjson::Document root;
+
+	if (!json::parse(root, stream))
+	{
+		logging::error("Scene_loader::load(): \"" + name + "\" could not be loaded: failed to parse the file: " + json::get_error(root, stream));
+
+		return false;
+	}
+
+	auto& file_system = resource_manager_.get_virtual_file_system();
+
+	std::string resolved_path;
+	file_system.get_resolved_complete_path(resolved_path, name);
+	file_system.push_mount(resolved_path);
+
+	for (auto n = root.MemberBegin(); n != root.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if (node_name == "camera")
+		{
+			load_camera(node_value);
+		}
+		else if (node_name == "surrounding")
+		{
+			load_surrounding(node_value);
+		}
+		else if (node_name == "entities")
+		{
+			load_entities(node_value);
+		}
+		else if (node_name == "static_props")
+		{
+			load_static_props(node_value);
+		}
+		else if (node_name == "abt")
+		{
+			load_abt(node_value);
+		}
+		else if (node_name == "irradiance_volumes")
+		{
+			load_irradiance_volumes(node_value);
+		}
+		else if (node_name == "light_probes")
+		{
+			load_light_probes(node_value);
+		}
+	}
+
+	file_system.pop_mount();
+
+	scene_.set_name(name);
+
+	logging::post("Scene \"" + name + "\" loaded (" + string::to_string_short(float(stopwatch.stop())) + " s).");
+
+	return true;
+}
+
+void Scene_loader::load_camera(const rapidjson::Value& camera_value)
+{
+	auto& camera = scene_.get_camera();
+
+	for (auto n = camera_value.MemberBegin(); n != camera_value.MemberEnd(); ++n)
+	{ 
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if ("position" == node_name)
+		{
+			camera.set_local_position(json::get_float3(node_value));
+		}
+		else if ("exposure" == node_name)
+		{
+			camera.set_exposure(float(node_value.GetDouble()));
+		}
+		else if ("linear_white" == node_name)
+		{
+			float linear_white = float(node_value.GetDouble());
+			camera.set_linear_white(float3(linear_white, linear_white, linear_white));
+		}
+	}
+}
+
+void Scene_loader::load_surrounding(const rapidjson::Value& surrounding)
+{
+	for (auto n = surrounding.MemberBegin(); n != surrounding.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if (node_name == "color")
+		{
+			scene_.get_surrounding().set_color(json::get_float3(node_value));
+		}
+		else if (node_name == "texture")
+		{
+			Flags flags;
+			flags.set(rendering::Texture_provider::Options::Texture_Cube, true);
+
+			scene_.get_surrounding().set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString(), flags));
+		}
+	}
+}
+
+void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* /*parent*/)
+{
+	if (!entities.IsArray())
+	{
+		return;
+	}
+
+	for (rapidjson::SizeType i = 0; i < entities.Size(); ++i)
+	{
+		const rapidjson::Value& value = entities[i];
+
+		const rapidjson::Value::Member* class_node = value.FindMember("class");
+
+		if (!class_node)
+		{
+			continue;
+		}
+
+		Entity* entity = nullptr;
+
+		std::string class_name = class_node->value.GetString();
+
+		if ("Light" == class_name)
+		{
+			entity = load_light(value);
+		}
+		else if ("Actor" == class_name)
+		{
+			entity = load_actor(value);
+		}
+		else if ("Complex" == class_name)
+		{
+			entity = load_complex(value);
+		}
+
+		if (entity)
+		{
+			for (auto n = value.MemberBegin(); n != value.MemberEnd(); ++n)
+			{
+				const std::string property_name = n->name.GetString();
+				const rapidjson::Value& property_value = n->value;
+
+				if (property_name == "position")
+				{
+					entity->set_local_position(json::get_float3(property_value));
+				}
+				else if (property_name == "scale")
+				{
+					entity->set_local_scale(json::get_float3(property_value));
+				}
+				else if (property_name== "rotation")
+				{
+					entity->set_local_rotation(json::get_local_rotation(property_value));
+				}				
+			}
+
+			const rapidjson::Value::Member* children = value.FindMember("entities");
+
+			if (children)
+			{
+				load_entities(children->value, entity);
+			}
+		}
+	}
+}
+
+Entity* Scene_loader::load_light(const rapidjson::Value& entity)
+{
+	const rapidjson::Value::Member* type = entity.FindMember("type");
+
+	if (!type)
+	{
+		return nullptr;
+	}
+
+	const std::string type_name = type->value.GetString();
+
+	Light* light = nullptr;
+
+	if ("Directional" == type_name)
+	{
+		light = scene_.create_light(Light::Type::Directional);
+	}
+	else if ("Point" == type_name)
+	{
+		light = scene_.create_light(Light::Type::Point);
+	}
+	else if ("Spot" == type_name)
+	{
+		light = scene_.create_light(Light::Type::Spot);
+	}
+
+	if (light)
+	{
+		for (auto n = entity.MemberBegin(); n != entity.MemberEnd(); ++n)
+		{
+			const std::string node_name = n->name.GetString();
+			const rapidjson::Value& node_value = n->value;
+
+			if (node_name == "color")
+			{
+				light->set_color(json::get_float3(node_value));
+			}
+			if (node_name == "lumen")
+			{
+				light->set_lumen(float(node_value.GetDouble()));
+			}
+			else if (node_name== "shadow")
+			{
+				light->set_casts_shadow(node_value.GetBool());
+			}
+			else if (node_name == "fov")
+			{
+				light->set_fov(math::to_radians(float(node_value.GetDouble())));
+			}
+			else if (node_name == "texture")
+			{
+				light->set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString()));
+			}
+		}
+	}
+
+	return light;
+}
+
+Entity* Scene_loader::load_actor(const rapidjson::Value& entity)
+{
+	Handle<Model> model;
+	std::vector<Handle<Material>> materials; 
+
+	for (auto n = entity.MemberBegin(); n != entity.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if (node_name == "model")
+		{
+			model = resource_manager_.load<Model>(node_value.GetString());
+		}
+		else if (node_name == "materials")
+		{
+			if (!node_value.IsArray())
+			{
+				continue;
+			}
+
+			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
+			{
+				const rapidjson::Value& material_value = node_value[i];
+
+				Handle<Material> material = resource_manager_.load<Material>(material_value.GetString());
+
+				if (material)
+				{
+					materials.push_back(material);
+				}
+			}
+		}
+	}
+
+	if (!model || materials.empty())
+	{
+		return nullptr;
+	}
+
+	Actor* actor = scene_.create_actor();
+
+	actor->create_surfaces(model, static_cast<uint32_t>(materials.size()), materials.data());
+
+	return actor;
+}
+
+Entity* Scene_loader::load_complex(const rapidjson::Value& entity)
+{
+	const rapidjson::Value::Member* type = entity.FindMember("type");
+
+	if (!type)
+	{
+		return nullptr;
+	}
+
+	const std::string type_name = type->value.GetString();
+
+	return scene_.create_complex(type_name, resource_manager_);
+}
+
+void Scene_loader::load_irradiance_volumes(const rapidjson::Value& volumes)
+{
+	if (!volumes.IsArray())
+	{
+		return;
+	}
+
+	for (rapidjson::SizeType i = 0; i < volumes.Size(); ++i)
+	{
+		load_irradiance_volume(volumes[i]);
+	}
+}
+
+void Scene_loader::load_irradiance_volume(const rapidjson::Value& volume)
+{
+	uint3 resolution(2, 2, 2);
+	float3 position(0.f, 0.f, 0.f);
+	float3 scale(0.f, 0.f, 0.f);
+	Quaternion rotation(Quaternion::identity);
+
+	for (auto n = volume.MemberBegin(); n != volume.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if (node_name == "resolution")
+		{
+			resolution = json::get_uint3(node_value);
+		}
+		else if (node_name == "position")
+		{
+			position = json::get_float3(node_value);
+		}
+		else if (node_name == "scale")
+		{
+			scale = json::get_float3(node_value);
+		}
+		else if (node_name == "rotation")
+		{
+			rotation = json::get_local_rotation(node_value);
+		}
+	}
+
+	scene_.create_irradiance_volume(resolution, position, scale, rotation);
+}
+
+void Scene_loader::load_light_probes(const rapidjson::Value& probes)
+{
+	if (!probes.IsArray())
+	{
+		return;
+	}
+
+	for (rapidjson::SizeType i = 0; i < probes.Size(); ++i)
+	{
+		load_light_probe(probes[i]);
+	}
+}
+
+void Scene_loader::load_light_probe(const rapidjson::Value& probe)
+{
+	float3 position(0.f, 0.f, 0.f);
+	float3 scale(1.f, 1.f, 1.f);
+	Quaternion rotation(Quaternion::identity);
+
+	for (auto n = probe.MemberBegin(); n != probe.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if (node_name == "position")
+		{
+			position = json::get_float3(node_value);
+		}
+		else if (node_name == "scale")
+		{
+			scale = json::get_float3(node_value);
+		}
+		else if (node_name == "rotation")
+		{
+			rotation = json::get_local_rotation(node_value);
+		}
+	}
+
+    scene_.create_light_probe(position, scale, rotation);
+}
+
+void Scene_loader::load_static_props(const rapidjson::Value& static_props)
+{
+	if (!static_props.IsArray())
+	{
+		return;
+	}
+
+	for (rapidjson::SizeType i = 0; i < static_props.Size(); ++i)
+	{
+		load_static_prop(static_props[i]);
+	}
+}
+
+void Scene_loader::load_static_prop(const rapidjson::Value& static_prop)
+{
+	Handle<Model> model;
+	std::vector<Handle<Material>> materials; 
+
+	float3 position(float3::identity);
+	float3 scale(1.f, 1.f, 1.f);
+	Quaternion rotation(Quaternion::identity);
+
+	for (auto n = static_prop.MemberBegin(); n != static_prop.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if (node_name == "model")
+		{
+			model = resource_manager_.load<Model>(node_value.GetString());
+		}
+		else if (node_name == "materials")
+		{
+			if (!node_value.IsArray())
+			{
+				continue;
+			}
+
+			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
+			{
+				const rapidjson::Value& material = node_value[i];
+
+				materials.push_back(resource_manager_.load<Material>(material.GetString()));
+			}
+		}
+		else if (node_name == "position")
+		{
+			position = json::get_float3(node_value);
+		}
+		else if (node_name == "scale")
+		{
+			scale = json::get_float3(node_value);
+		}
+		else if (node_name == "rotation")
+		{
+			rotation = json::get_local_rotation(node_value);
+		}
+	}
+
+	if (!model || materials.empty() || !materials[0])
+	{
+		return;
+	}
+
+	Static_prop* prop = scene_.create_static_prop();
+
+	prop->create_surfaces(model, static_cast<uint32_t>(materials.size()), materials.data());
+
+	prop->set_world_transformation(position, scale, float3x3(rotation));
+}
+
+void Scene_loader::load_abt(const rapidjson::Value& abt)
+{
+	std::string abt_name;
+	std::vector<Handle<Material>> materials; 
+
+	for (auto n = abt.MemberBegin(); n != abt.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if ("abt" == node_name)
+		{
+			abt_name = node_value.GetString();
+		}
+		else if ("materials" == node_name)
+		{
+			if (!node_value.IsArray())
+			{
+				continue;
+			}
+
+			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
+			{
+				const rapidjson::Value& material = node_value[i];
+
+				materials.push_back(resource_manager_.load<Material>(material.GetString()));
+			}
+		}
+	}
+
+	if (abt_name.empty() || !materials.size() || !materials[0]) 
+	{
+		return;
+	}
+
+	file::Input_stream stream(abt_name);
+
+	if (!stream)
+	{
+		logging::error("Scene_loader::load_atb(): \"" + abt_name + "\" could not be loaded: file not found.");
+		return;
+	}
+
+	AABB_tree_loader loader(rendering_tool_);
+	loader.load(stream, scene_.get_aabb_tree(), materials);
+}
+
+}

@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/GUI">
+        <file>GUI/Style.qss</file>
+        <file>GUI/Export_icon.png</file>
+        <file>GUI/Settings_icon.png</file>
+        <file>GUI/File_icon.png</file>
+        <file>GUI/Color_icon.png</file>
+        <file>GUI/Fabric_icon.png</file>
+    </qresource>
+</RCC>
