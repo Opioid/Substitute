@@ -1,0 +1,135 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_source",
+			"data":
+			[
+				{ "type": "float2", "name": "g_1_div_half_res" }
+			]
+		}
+	],
+	
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_color_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_font_map",
+			"filtering": "Bilinear"
+		}
+	],
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float4", "name": "position", "semantic": "Position" },
+				{ "type": "float4", "name": "tex_coord", "semantic": "Tex_coord" },
+				{ "type": "float4", "name": "color", "semantic": "Color" }
+			]
+		},
+		{
+			"name": "Vertex_output",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" },
+				{ "type": "float4", "name": "color" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float4", "name": "color" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Color",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Printer.vs.glsl" ],
+					"output": "Vertex_input"
+				},
+				{
+					"type": "geometry",
+					"sources": [ "Effects/Printer.gs.glsl" ],
+					"output": "Vertex_output",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Effects/Printer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Texture",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Printer.vs.glsl" ],
+					"output": "Vertex_input"
+				},
+				{
+					"type": "geometry",
+					"sources": [ "Effects/Printer.gs.glsl" ],
+					"output": "Vertex_output",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"defines": [ "TEXTURE" ],
+					"sources": [ "Effects/Printer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Font",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Printer.vs.glsl" ],
+					"output": "Vertex_input"
+				},
+				{
+					"type": "geometry",
+					"sources": [ "Effects/Printer.gs.glsl" ],
+					"output": "Vertex_output",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"defines": [ "FONT" ],
+					"sources": [ "Effects/Printer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

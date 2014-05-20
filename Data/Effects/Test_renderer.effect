@@ -1,0 +1,71 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_object",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world_view_projection" },
+				{ "type": "float4x4", "name": "g_world_view" }
+			],
+			"circular_size": 1
+		}
+	],
+	
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_color_map",
+			"filtering": "Anisotropic"
+		}
+	],
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" },
+				{ "type": "float2", "name": "tex_coord", "semantic": "Tex_coord" }
+			]
+		},
+		{
+			"name": "Vertex_output0",
+			"data":
+			[
+				{ "type": "float",  "name": "depth_vs" },
+				{ "type": "float2", "name": "tex_coord" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Render",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Test_renderer.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Test_renderer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

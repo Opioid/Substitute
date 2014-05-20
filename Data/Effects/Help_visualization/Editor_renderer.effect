@@ -1,0 +1,124 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_camera",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_view_projection" },
+				{ "type": "float4x4", "name": "g_view" }
+			]
+		},
+		{
+			"name": "Change_per_object",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world" },
+				{ "type": "float3",   "name": "g_color" }
+			]
+		}
+	],
+	
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Vertex_input1",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" },
+				{ "type": "float4", "name": "color",    "semantic": "Color" }
+			]
+		},
+		{
+			"name": "Vertex_input2",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" },
+				{ "type": "float3", "name": "normal",   "semantic": "Normal" }
+			]
+		},
+		{
+			"name": "Vertex_output0",
+			"data":
+			[
+				{ "type": "float4", "name": "color" }
+			]
+		},
+		{
+			"name": "Vertex_output1",
+			"data":
+			[
+				{ "type": "float3", "name": "normal" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Per_shape_color",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Wireframe.vs.glsl" ]
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Wireframe.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Per_vertex_color",
+			"input": "Vertex_input1",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Per_vertex_color.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Per_vertex_color.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Shape",
+			"input": "Vertex_input2",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Editor_renderer_shape.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Editor_renderer_shape.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

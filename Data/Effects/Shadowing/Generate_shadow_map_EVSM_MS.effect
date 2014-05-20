@@ -1,0 +1,92 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_view",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_view_projection" }
+			]
+		},
+		{
+			"name": "Change_per_object",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world" }
+			]
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Vertex_input_alpha_test",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" },
+				{ "type": "float2", "name": "tex_coord", "semantic": "Tex_coord" }
+			]
+		},
+		{
+			"name": "Vertex_output_alpha_test",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_color_map"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Generate_shadow_map",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Generate_shadow_map_EVSM_MS.vs.glsl" ]
+				},
+				{
+					"type": "pixel",
+					"sources": [ "EVSM_helper.glsl",
+								 "Generate_shadow_map_EVSM_MS.ps.glsl" ]
+				}
+			]
+		},
+		{
+			"name": "Generate_shadow_map_alpha_test",
+			"input": "Vertex_input_alpha_test",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "ALPHA_TEST" ],
+					"sources": [ "Generate_shadow_map_EVSM_MS.vs.glsl" ],
+					"output": "Vertex_output_alpha_test"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "ALPHA_TEST" ],
+					"sources": [ "EVSM_helper.glsl",
+								 "Generate_shadow_map_EVSM_MS.ps.glsl" ]
+				}
+			]
+		}
+	]
+}

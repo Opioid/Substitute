@@ -1,0 +1,58 @@
+{	"buffers":
+	[
+		{
+			"name": "Change_per_setting",
+			"data":
+			[
+				{ "type": "float4", "name": "g_linear_white_and_exposure" }
+			]
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Compose_output",
+			"data":
+			[
+				{ "type": "float4", "name": "color" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_hdr_map",
+			"filtering": "Bilinear"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Compose",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Static_hdr.vs.glsl" ]
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Tonemapping.glsl", "Static_hdr_compose.ps.glsl" ],
+					"output": "Compose_output"
+				}
+			]
+		}
+	]
+}

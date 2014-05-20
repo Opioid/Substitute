@@ -1,0 +1,135 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_object",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world_view_projection" },
+				{ "type": "float4x4", "name": "g_world_view" }
+			]
+		},	
+		{
+			"name": "Change_per_material",
+			"data":
+			[
+				{ "type": "float3", "name": "g_color0" },
+				{ "type": "float3", "name": "g_color1" }
+			]
+		},
+		{
+			"name": "Change_per_light",
+			"data":
+			[
+				{ "type": "float3", "name": "g_light_direction_vs" },
+				{ "type": "float3", "name": "g_light_energy" }
+			]
+		}
+
+	],
+	
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_diffuse_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_normal_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_height_map",
+			"filtering": "Bilinear"
+		}
+	],
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" },
+				{ "type": "float2", "name": "tex_coord", "semantic": "Tex_coord" },
+				{ "type": "float4", "name": "normal", "semantic": "Normal" }
+			]
+		},
+		{
+			"name": "Vertex_output0",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" },
+				{ "type": "float3", "name": "normal_vs" }
+			]
+		},
+		{
+			"name": "Vertex_output1",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" },
+				{ "type": "float3", "name": "normal_vs" },
+				{ "type": "float3", "name": "vertex_to_eye_vs" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Diffuse_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"source": "Effects/Forward_renderer.vs.glsl",
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"source": "Effects/Forward_renderer.ps.glsl"
+				}
+			]
+		},
+		{
+			"name": "Diffuse_map_normal_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"source": "Effects/Forward_renderer.vs.glsl",
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "NORMAL_MAP" ],
+					"source": "Effects/Forward_renderer.ps.glsl"
+				}
+			]
+		},
+		{
+			"name": "Diffuse_map_normal_map_parallax",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"source": "Effects/Forward_renderer.vs.glsl",
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "NORMAL_MAP", "PARALLAX" ],
+					"source": "Effects/Forward_renderer.ps.glsl"
+				}
+			]
+		}
+	]
+}

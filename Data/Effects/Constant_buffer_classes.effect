@@ -1,0 +1,16 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_camera",
+			"data":
+			[
+				{ "type": "float4",   "name": "g_view_rays", "array_size": 3 },
+				{ "type": "float4x4", "name": "g_view_projection" },
+				{ "type": "float4x4", "name": "g_view" },
+				{ "type": "float4x4", "name": "g_inverse_view" }
+			],
+			"circular_size": 1
+		}
+	]
+}

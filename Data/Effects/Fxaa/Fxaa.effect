@@ -1,0 +1,69 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_source",
+			"data":
+			[
+				{ "type": "float2", "name": "g_inverse_source_size" }
+			]
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" },
+				{ "type": "float2", "name": "tex_coord", "semantic": "Tex_coord" }
+			]
+		},
+		{
+			"name": "Vertex_output",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_color_map",
+			"filtering": "Bilinear"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Render",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Fxaa.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "FXAA_PC 1", "FXAA_GLSL_130 1", "FXAA_GATHER4_ALPHA 1" ], 
+					"sources": [ "Fxaa3_11.h", "Fxaa.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

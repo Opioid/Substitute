@@ -1,0 +1,116 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_camera",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_view_projection" }
+			]
+		},
+		{
+			"name": "Change_per_light",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_light_data" }
+			]
+		},
+		{
+			"name": "Change_per_object",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world" },
+				{ "type": "float3",   "name": "g_position_vs" }
+			]
+		}
+	],
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" },
+				{ "type": "float4", "name": "normal",   "semantic": "Normal" }
+			]
+		},
+		{
+			"name": "Vertex_output",
+			"data":
+			[
+				{ "type": "float3", "name": "position" },
+				{ "type": "float3", "name": "normal" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map0",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map1",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map2",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map3",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map4",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map5",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Light_probe",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Help_light_probe.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Effects/Lighting/Evaluate_ambient_cube.glsl",
+								 "Help_light_probe.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

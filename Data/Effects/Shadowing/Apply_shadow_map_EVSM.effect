@@ -1,0 +1,114 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Filter_kernel",
+			"data":
+			[
+				{ "type": "float4", "name": "g_filter_kernel", "array_size": 4 }
+			]
+		},
+		{
+			"name": "Change_per_camera"
+		},
+		{
+			"name": "Change_per_cascade",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world" },
+				{ "type": "float4x4", "name": "g_shadow_transform" },
+				{ "type": "float2",   "name": "g_depth_clamp" }
+			]
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Vertex_input1",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Vertex_output",
+			"data":
+			[
+				{ "type": "float3", "name": "view_ray" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float", "name": "shadow" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_depth_map"
+		},
+		{
+			"type": "2D",
+			"name": "g_shadow_map",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Apply_shadow_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Effects/Deferred/Deferred_helper.glsl",
+					  			 "EVSM_helper.glsl",
+								 "Apply_shadow_map_EVSM.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Apply_shadow_map_volume",
+			"input": "Vertex_input1",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Deferred_helper.glsl",
+								 "EVSM_helper.glsl",
+								 "Apply_shadow_map_EVSM.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

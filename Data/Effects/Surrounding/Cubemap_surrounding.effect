@@ -1,0 +1,97 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_camera",
+			"data":
+			[
+				{ "type": "float4", "name": "g_view_rays_ws", "array_size": 3 }
+			]
+		},
+		{
+			"name": "Change_per_color",
+			"data":
+			[
+				{ "type": "float3", "name": "g_clear_color" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "Cube",
+			"name": "g_cubemap",
+			"filtering": "Bilinear"
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" },
+				{ "type": "float2", "name": "tex_coord", "semantic": "Tex_coord" }
+			]
+		},
+		{
+			"name": "Vertex_output0",
+			"data":
+			[
+				{ "type": "float3", "name": "view_ray_ws" }
+			]
+		},
+		{
+			"name": "Vertex_output1",
+			"data":
+			[]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Render",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Cubemap_surrounding.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Cubemap_surrounding.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Clear",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Clear_surrounding.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Clear_surrounding.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

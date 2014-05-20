@@ -1,0 +1,65 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_camera",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_view_projection" }
+			]
+		},
+		{
+			"name": "Change_per_object",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world" }
+			]
+		},
+		{
+			"name": "Change_per_color",
+			"data":
+			[
+				{ "type": "float3", "name": "g_color" }
+			]
+		}
+	],
+	
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Color",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Wireframe.vs.glsl" ]
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Wireframe.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

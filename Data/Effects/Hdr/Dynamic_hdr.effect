@@ -1,0 +1,191 @@
+{	"buffers":
+	[
+		{
+			"name": "Change_per_setting",
+			"data":
+			[
+				{ "type": "float4", "name": "g_linear_white_and_exposure" }
+			]
+		},
+		{
+			"name": "Filter_kernel",
+			"data":
+			[
+				{ "type": "float4", "name": "g_filter_kernel", "array_size": 4 },
+				{ "type": "float2", "name": "g_texel_size" }
+			]
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" },
+				{ "type": "float2", "name": "tex_coord", "semantic": "Tex_coord" }
+			]
+		},
+		{
+			"name": "Vertex_output",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" }
+			]
+		},
+		{
+			"name": "Compose_output",
+			"data":
+			[
+				{ "type": "float4", "name": "color" }
+			]
+		},
+		{
+			"name": "Color_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		},
+		{
+			"name": "Luminance_output",
+			"data":
+			[
+				{ "type": "float", "name": "luminance" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_hdr_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_luminance_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_bloom_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_bloom_map_point",
+			"filtering": "Point"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Compose",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Standard_hdr.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Standard_hdr_tonemap.glsl", "Standard_hdr_compose.ps.glsl" ],
+					"output": "Compose_output"
+				}
+			]
+		},
+		{
+			"name": "Luminance",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Standard_hdr.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Standard_hdr_luminance.ps.glsl" ],
+					"output": "Luminance_output"
+				}
+			]
+		},
+		{
+			"name": "Scale_down",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Standard_hdr.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Standard_hdr_tonemap.glsl", "Standard_hdr_scale_down.ps.glsl" ],
+					"output": "Color_output"
+				}
+			]
+		},
+		{
+			"name": "Bright_pass",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Standard_hdr.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Standard_hdr_tonemap.glsl", "Standard_hdr_bright_pass.ps.glsl" ],
+					"output": "Color_output"
+				}
+			]
+		},
+		{
+			"name": "Blur_horizontal",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Standard_hdr.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "HORIZONTAL" ],
+					"sources": [ "Standard_hdr_blur.ps.glsl" ],
+					"output": "Color_output"
+				}
+			]
+		},
+		{
+			"name": "Blur_vertical",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Standard_hdr.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "VERTICAL" ],
+					"sources": [ "Standard_hdr_blur.ps.glsl" ],
+					"output": "Color_output"
+				}
+			]
+		}
+	]
+}

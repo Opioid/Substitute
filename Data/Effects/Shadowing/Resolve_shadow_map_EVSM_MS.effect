@@ -1,0 +1,78 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_view",
+			"data":
+			[
+				{ "type": "float2", "name": "g_depth_clamp" }
+			]
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float4", "name": "evsm_moments" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D_multisample",
+			"name": "g_ms_source"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Resolve_linear",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Resolve_shadow_map_EVSM_MS.vs.glsl" ]
+				},
+				{
+					"type": "pixel",
+					"defines": [ "LINEAR" ],
+					"sources": [ "EVSM_helper.glsl",
+								 "Resolve_shadow_map_EVSM_MS.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+
+		{
+			"name": "Resolve_not_linear",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Resolve_shadow_map_EVSM_MS.vs.glsl" ]
+				},
+				{
+					"type": "pixel",
+					"sources": [ "EVSM_helper.glsl",
+								 "Resolve_shadow_map_EVSM_MS.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,47 @@
+{
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float4", "name": "color" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_hdr_map"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Render",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Truncated_hdr.vs.glsl" ]
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Truncated_hdr.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

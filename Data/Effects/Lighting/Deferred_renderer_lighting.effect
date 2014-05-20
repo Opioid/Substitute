@@ -1,0 +1,324 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Filter_kernel",
+			"data":
+			[
+				{ "type": "float4", "name": "g_filter_kernel", "array_size": 4 }
+			]
+		},
+		{
+			"name": "Change_per_camera"
+		},
+		{
+			"name": "Change_per_light",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world" },
+				{ "type": "float4x4", "name": "g_light_data" },
+				{ "type": "float4", "name": "g_light_energy_and_range" },
+				{ "type": "float3", "name": "g_light_position_vs" },
+				{ "type": "float3", "name": "g_light_direction_vs" },
+				{ "type": "float2", "name": "g_shadow_linear_depth_projection" }
+			]
+		}
+	],
+
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float2", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Vertex_input1",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Vertex_output0",
+			"data":
+			[
+				{ "type": "float3", "name": "view_ray" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float3", "name": "color" }
+			]
+		}
+	],
+
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_depth_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_normal_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_color_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_surface_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
+			"name": "g_light_2D_map0",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "2D",
+			"name": "g_light_2D_map1",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "Cube",
+			"name": "g_light_probe_map",
+			"filtering": "Trilinear"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map0",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map1",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map2",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map3",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map4",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map5",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Emissive_light",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Deferred_emissive_light.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Irradiance_volume",
+			"input": "Vertex_input1",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Evaluate_ambient_cube.glsl",
+					             "Deferred_irradiance_volume.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Light_probe_specular",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Deferred_light_probe_specular.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Volume_light_probe_specular",
+			"input": "Vertex_input1",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Deferred_light_probe_specular.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Directional_light",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "DIRECTIONAL" ],
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Deferred_analytical_light.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Directional_light_with_shadow",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "DIRECTIONAL", "SHADOW" ],
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Deferred_analytical_light.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Point_light",
+			"input": "Vertex_input1",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "VOLUME", "POINT" ],
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Deferred_analytical_light.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Spot_light",
+			"input": "Vertex_input1",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "VOLUME", "SPOT" ],
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Deferred_analytical_light.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Spot_light_with_shadow",
+			"input": "Vertex_input1",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "VOLUME" ],
+					"sources": [ "Effects/Deferred/Deferred_pass.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "VOLUME", "SPOT", "SHADOW" ],
+					"sources": [ "Effects/Deferred/Normal_encoding.glsl", 
+					             "Effects/Deferred/Deferred_helper.glsl", 
+					             "Effects/Shadowing/EVSM_helper.glsl",
+					             "Effects/Shadowing/Apply_spot_shadow_map_EVSM.glsl",
+					             "Deferred_analytical_light.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

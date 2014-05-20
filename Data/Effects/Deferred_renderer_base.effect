@@ -1,0 +1,296 @@
+{
+	"buffers":
+	[
+		{
+			"name": "Change_per_camera"
+		},
+		{
+			"name": "Change_per_object",
+			"data":
+			[
+				{ "type": "float4x4", "name": "g_world" }
+			],
+			"circular_size": 1
+		},	
+		{
+			"name": "Change_per_material",
+			"data":
+			[
+				{ "type": "float4", "name": "g_color_and_emissive_factor" },
+				{ "type": "float4", "name": "g_metallic_and_roughness_and_height_scale" }
+			],
+			"circular_size": 1
+		}
+	],
+	
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_color_map",
+			"filtering": "Anisotropic"
+		},
+		{
+			"type": "2D",
+			"name": "g_normal_map",
+			"filtering": "Anisotropic"
+		},
+		{
+			"type": "2D",
+			"name": "g_surface0_map",
+			"filtering": "Anisotropic"
+		},
+		{
+			"type": "2D",
+			"name": "g_surface1_map",
+			"filtering": "Trilinear"
+		}
+	],
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float3", "name": "position",  "semantic": "Position" },
+				{ "type": "float2", "name": "tex_coord", "semantic": "Tex_coord" },
+				{ "type": "float4", "name": "normal",    "semantic": "Normal" }
+			]
+		},
+		{
+			"name": "Vertex_output0",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" },
+				{ "type": "float3", "name": "normal_vs" }
+			]
+		},
+		{
+			"name": "Vertex_output1",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" },
+				{ "type": "float3", "name": "normal_vs" },
+				{ "type": "float3", "name": "vertex_to_eye_vs" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float2", "name": "normal" },
+				{ "type": "float4", "name": "color" },
+				{ "type": "float3", "name": "surface" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Color",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_normal_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "NORMAL_MAP" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_alpha_test",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output0"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "ALPHA_TEST" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_surface_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "SURFACE_MAP" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_normal_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "NORMAL_MAP" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_alpha_test_normal_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "NORMAL_MAP",  "ALPHA_TEST" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_normal_map_parallax",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "NORMAL_MAP", "PARALLAX" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_normal_map_surface_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "NORMAL_MAP", "SURFACE_MAP" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_normal_map_surface_map_emissive_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "NORMAL_MAP", "SURFACE_MAP", "EMISSIVE_MAP" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_normal_map_parallax_surface_map",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"defines": [ "TANGENT_SPACE" ],
+					"sources": [ "Deferred_renderer_base.vs.glsl" ],
+					"output": "Vertex_output1"
+				},
+				{
+					"type": "pixel",
+					"defines": [ "COLOR_MAP", "NORMAL_MAP", "PARALLAX", "SURFACE_MAP" ],
+					"sources": [ "Deferred/Normal_encoding.glsl", "Deferred_renderer_base.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}
