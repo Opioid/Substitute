@@ -150,7 +150,7 @@ inline tVector3<T> &operator*=(tVector3<T>& v, const tMatrix4x4<T>& m)
 }
 
 template<typename T>
-inline tVector4<T> operator*(const tVector4<T> &v, const tMatrix4x4<T>& m)
+inline tVector4<T> operator*(const tVector4<T>& v, const tMatrix4x4<T>& m)
 {
 	return tVector4<T>(v.x * m.m00 + v.y * m.m10 + v.z * m.m20 + v.w * m.m30,
 					   v.x * m.m01 + v.y * m.m11 + v.z * m.m21 + v.w * m.m31,
@@ -159,7 +159,7 @@ inline tVector4<T> operator*(const tVector4<T> &v, const tMatrix4x4<T>& m)
 }
 
 template<typename T>
-inline void get_basis(tMatrix3x3<T> &basis, const tMatrix4x4<T>& m)
+inline void get_basis(tMatrix3x3<T>& basis, const tMatrix4x4<T>& m)
 {
 	basis.m00 = m.m00; basis.m01 = m.m01; basis.m02 = m.m02;
 	basis.m10 = m.m10; basis.m11 = m.m11; basis.m12 = m.m12;
