@@ -48,7 +48,7 @@ struct tMatrix4x4
 		m30 = m[12]; m31 = m[13]; m32 = m[14]; m33 = m[15];
 	}
 
-	explicit tMatrix4x4(const tMatrix3x3<T> &m) :
+	explicit tMatrix4x4(const tMatrix3x3<T>& m) :
 		m00(m.m00), m01(m.m01), m02(m.m02), m03(T(0)),
 		m10(m.m10), m11(m.m11), m12(m.m12), m13(T(0)),
 		m20(m.m20), m21(m.m21), m22(m.m22), m23(T(0)),
@@ -122,7 +122,7 @@ const tMatrix4x4<T> tMatrix4x4<T>::identity = tMatrix4x4<T>(T(1), T(0), T(0), T(
 															T(0), T(0), T(0), T(1));
 
 template<typename T>
-inline tMatrix4x4<T> operator*(T s, const tMatrix4x4<T> &m)
+inline tMatrix4x4<T> operator*(T s, const tMatrix4x4<T>& m)
 {
 	return tMatrix4x4<T>(s * m.m00, s * m.m01, s * m.m02, s * m.m03,
 						 s * m.m10, s * m.m11, s * m.m12, s * m.m13,
@@ -131,7 +131,7 @@ inline tMatrix4x4<T> operator*(T s, const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline tVector3<T> operator*(const tVector3<T> &v, const tMatrix4x4<T> &m)
+inline tVector3<T> operator*(const tVector3<T>& v, const tMatrix4x4<T>& m)
 {
 	return tVector3<T>(v.x * m.m00 + v.y * m.m10 + v.z * m.m20 + m.m30,
 					   v.x * m.m01 + v.y * m.m11 + v.z * m.m21 + m.m31,
@@ -140,7 +140,7 @@ inline tVector3<T> operator*(const tVector3<T> &v, const tMatrix4x4<T> &m)
 
 
 template<typename T>
-inline tVector3<T> &operator*=(tVector3<T> &v, const tMatrix4x4<T> &m)
+inline tVector3<T> &operator*=(tVector3<T>& v, const tMatrix4x4<T>& m)
 {
 	tVector3<T> tmp(v.x * m.m00 + v.y * m.m10 + v.z * m.m20 + m.m30,
 					v.x * m.m01 + v.y * m.m11 + v.z * m.m21 + m.m31,
@@ -150,7 +150,7 @@ inline tVector3<T> &operator*=(tVector3<T> &v, const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline tVector4<T> operator*(const tVector4<T> &v, const tMatrix4x4<T> &m)
+inline tVector4<T> operator*(const tVector4<T> &v, const tMatrix4x4<T>& m)
 {
 	return tVector4<T>(v.x * m.m00 + v.y * m.m10 + v.z * m.m20 + v.w * m.m30,
 					   v.x * m.m01 + v.y * m.m11 + v.z * m.m21 + v.w * m.m31,
@@ -159,7 +159,7 @@ inline tVector4<T> operator*(const tVector4<T> &v, const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline void get_basis(tMatrix3x3<T> &basis, const tMatrix4x4<T> &m)
+inline void get_basis(tMatrix3x3<T> &basis, const tMatrix4x4<T>& m)
 {
 	basis.m00 = m.m00; basis.m01 = m.m01; basis.m02 = m.m02;
 	basis.m10 = m.m10; basis.m11 = m.m11; basis.m12 = m.m12;
@@ -167,7 +167,7 @@ inline void get_basis(tMatrix3x3<T> &basis, const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline tMatrix3x3<T> get_unscaled_basis(const tMatrix4x4<T> &m)
+inline tMatrix3x3<T> get_unscaled_basis(const tMatrix4x4<T>& m)
 {
 	return tMatrix3x3<T>(normalize(m.rows[0].xyz), 
 						 normalize(m.rows[1].xyz), 
@@ -175,7 +175,7 @@ inline tMatrix3x3<T> get_unscaled_basis(const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline void set_basis(tMatrix4x4<T> &m, const tMatrix3x3<T> &basis)
+inline void set_basis(tMatrix4x4<T>& m, const tMatrix3x3<T> &basis)
 {
 	m.m00 = basis.m00; m.m01 = basis.m01; m.m02 = basis.m02; 
 	m.m10 = basis.m10; m.m11 = basis.m11; m.m12 = basis.m12; 
@@ -183,25 +183,25 @@ inline void set_basis(tMatrix4x4<T> &m, const tMatrix3x3<T> &basis)
 }
 
 template<typename T>
-inline void get_origin(tVector3<T> &origin, const tMatrix4x4<T> &m)
+inline void get_origin(tVector3<T> &origin, const tMatrix4x4<T>& m)
 {
 	origin.x = m.m30; origin.y = m.m31; origin.z = m.m32;
 }
 
 template<typename T>
-inline void set_origin(tMatrix4x4<T> &m, const tVector3<T> &origin)
+inline void set_origin(tMatrix4x4<T>& m, const tVector3<T> &origin)
 {
 	m.m30 = origin.x; m.m31 = origin.y; m.m32 = origin.z; 
 }
 
 template<typename T>
-inline tVector3<T> get_scale(const tMatrix4x4<T> &m)
+inline tVector3<T> get_scale(const tMatrix4x4<T>& m)
 {
 	return tVector3<T>(length(m.rows[0].xyz), length(m.rows[1].xyz), length(m.rows[2].xyz));
 }
 
 template<typename T>
-inline void set_scale(tMatrix4x4<T> &m, T x, T y, T z)
+inline void set_scale(tMatrix4x4<T>& m, T x, T y, T z)
 {
 	m.m00 = x;    m.m01 = T(0); m.m02 = T(0); m.m03 = T(0);
 	m.m10 = T(0); m.m11 = y;    m.m12 = T(0); m.m13 = T(0);
@@ -210,7 +210,7 @@ inline void set_scale(tMatrix4x4<T> &m, T x, T y, T z)
 }
 
 template<typename T>
-inline void set_scale(tMatrix4x4<T> &m, const tVector3<T> &v)
+inline void set_scale(tMatrix4x4<T>& m, const tVector3<T>& v)
 {
 	m.m00 = v.x;  m.m01 = T(0); m.m02 = T(0); m.m03 = T(0);
 	m.m10 = T(0); m.m11 = v.y;  m.m12 = T(0); m.m13 = T(0);
@@ -219,7 +219,7 @@ inline void set_scale(tMatrix4x4<T> &m, const tVector3<T> &v)
 }
 
 template<typename T>
-inline void scale(tMatrix4x4<T> &m, const tVector3<T> &v)
+inline void scale(tMatrix4x4<T>& m, const tVector3<T>& v)
 {
 	m.m00 *= v.x; m.m01 *= v.x; m.m02 *= v.x; 
 	m.m10 *= v.y; m.m11 *= v.y; m.m12 *= v.y;
@@ -227,7 +227,7 @@ inline void scale(tMatrix4x4<T> &m, const tVector3<T> &v)
 }
 
 template<typename T>
-inline void set_translation(tMatrix4x4<T> &m, T x, T y, T z)
+inline void set_translation(tMatrix4x4<T>& m, T x, T y, T z)
 {
 	m.m00 = T(1); m.m01 = T(0); m.m02 = T(0); m.m03 = T(0);
 	m.m10 = T(0); m.m11 = T(1); m.m12 = T(0); m.m13 = T(0);
@@ -236,7 +236,7 @@ inline void set_translation(tMatrix4x4<T> &m, T x, T y, T z)
 }
 
 template<typename T>
-inline void set_translation(tMatrix4x4<T> &m, const tVector3<T> &v)
+inline void set_translation(tMatrix4x4<T>& m, const tVector3<T>& v)
 {
 	m.m00 = T(1); m.m01 = T(0); m.m02 = T(0); m.m03 = T(0);
 	m.m10 = T(0); m.m11 = T(1); m.m12 = T(0); m.m13 = T(0);
@@ -245,7 +245,7 @@ inline void set_translation(tMatrix4x4<T> &m, const tVector3<T> &v)
 }
 
 template<typename T>
-inline void set_rotation_x(tMatrix4x4<T> &m, T a)
+inline void set_rotation_x(tMatrix4x4<T>& m, T a)
 {
 	T c = cos(a);
 	T s = sin(a);
@@ -257,7 +257,7 @@ inline void set_rotation_x(tMatrix4x4<T> &m, T a)
 }
 
 template<typename T>
-inline void set_rotation_y(tMatrix4x4<T> &m, T a)
+inline void set_rotation_y(tMatrix4x4<T>& m, T a)
 {
 	T c = cos(a);
 	T s = sin(a);
@@ -269,7 +269,7 @@ inline void set_rotation_y(tMatrix4x4<T> &m, T a)
 }
 
 template<typename T>
-inline void set_rotation_z(tMatrix4x4<T> &m, T a)
+inline void set_rotation_z(tMatrix4x4<T>& m, T a)
 {
 	T c = cos(a);
 	T s = sin(a);
@@ -281,7 +281,7 @@ inline void set_rotation_z(tMatrix4x4<T> &m, T a)
 }
 
 template<typename T>
-inline void set_rotation(tMatrix4x4<T> &m, const tVector3<T> &v, T a)
+inline void set_rotation(tMatrix4x4<T>& m, const tVector3<T>& v, T a)
 {
 	T c = cos(a);
 	T s = sin(a);
@@ -315,10 +315,10 @@ inline void set_rotation(tMatrix4x4<T> &m, const tVector3<T> &v, T a)
 }
 
 template<typename T>
-inline void set_reflection(tMatrix4x4<T> &m, const Plane& p);
+inline void set_reflection(tMatrix4x4<T>& m, const Plane& p);
 
 template<typename T>
-inline tMatrix4x4<T> transpose(const tMatrix4x4<T> &m)
+inline tMatrix4x4<T> transpose(const tMatrix4x4<T>& m)
 {
 	return tMatrix4x4<T>(m.m00, m.m10, m.m20, m.m30, 
 						 m.m01, m.m11, m.m21, m.m31,
@@ -327,7 +327,7 @@ inline tMatrix4x4<T> transpose(const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline T det(const tMatrix4x4<T> &m)
+inline T det(const tMatrix4x4<T>& m)
 {
 	return m.m00 * m.m11 * m.m22 * m.m33 + m.m00 * m.m12 * m.m23 * m.m31 + m.m00 * m.m13 * m.m21 * m.m32
 		 + m.m01 * m.m10 * m.m23 * m.m32 + m.m01 * m.m12 * m.m20 * m.m33 + m.m01 * m.m13 * m.m22 * m.m30
@@ -341,7 +341,7 @@ inline T det(const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline tMatrix4x4<T> invert(const tMatrix4x4<T> &m)
+inline tMatrix4x4<T> invert(const tMatrix4x4<T>& m)
 {
 	return tMatrix4x4<T>(m.m11*m.m22*m.m33 + m.m12*m.m23*m.m31 + m.m13*m.m21*m.m32 - m.m11*m.m23*m.m32 - m.m12*m.m21*m.m33 - m.m13*m.m22*m.m31,
 						 m.m01*m.m23*m.m32 + m.m02*m.m21*m.m33 + m.m03*m.m22*m.m31 - m.m01*m.m22*m.m33 - m.m02*m.m23*m.m31 - m.m03*m.m21*m.m32,
@@ -365,7 +365,7 @@ inline tMatrix4x4<T> invert(const tMatrix4x4<T> &m)
 }
 
 template<typename T>
-inline void set_look_at(tMatrix4x4<T> &m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
+inline void set_look_at(tMatrix4x4<T>& m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
 {
 	/*
 	zaxis = normal(At - Eye)
@@ -388,7 +388,7 @@ inline void set_look_at(tMatrix4x4<T> &m, const tVector3<T> &eye, const tVector3
 }
 
 template<typename T>
-inline void set_look_at_negative_x(tMatrix4x4<T> &m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
+inline void set_look_at_negative_x(tMatrix4x4<T>& m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
 {
 	tVector3<T> z = normalize(at - eye);
 	tVector3<T> x = normalize(cross(up, z));
@@ -401,7 +401,7 @@ inline void set_look_at_negative_x(tMatrix4x4<T> &m, const tVector3<T> &eye, con
 }
 
 template<typename T>
-inline void set_look_at_negative_y(tMatrix4x4<T> &m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
+inline void set_look_at_negative_y(tMatrix4x4<T>& m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
 {
 	tVector3<T> z = normalize(at - eye);
 	tVector3<T> x = normalize(cross(up, z));
@@ -414,7 +414,7 @@ inline void set_look_at_negative_y(tMatrix4x4<T> &m, const tVector3<T> &eye, con
 }
 
 template<typename T>
-inline void set_look_at_RH(tMatrix4x4<T> &m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
+inline void set_look_at_RH(tMatrix4x4<T>& m, const tVector3<T> &eye, const tVector3<T> &at, const tVector3<T> &up)
 {
 	/*
 	zaxis = normal(Eye - At)
@@ -540,7 +540,7 @@ inline void set_ortho(tMatrix4x4<T>& m, T width, T height, T z_near, T z_far)
 }
 
 template<typename T>
-inline void set_clip(tMatrix4x4<T> &m, T cx, T cy, T cw, T ch, T zmin, T zmax)
+inline void set_clip(tMatrix4x4<T>& m, T cx, T cy, T cw, T ch, T zmin, T zmax)
 {
 	/*
 	2/cw		0			0				 0
@@ -558,7 +558,7 @@ inline void set_clip(tMatrix4x4<T> &m, T cx, T cy, T cw, T ch, T zmin, T zmax)
 }
 
 template<typename T>
-inline void set_viewport_scale(tMatrix4x4<T> &m, T x, T y, T width, T height)
+inline void set_viewport_scale(tMatrix4x4<T>& m, T x, T y, T width, T height)
 {
 	/*
 	width	0			0	0
@@ -574,7 +574,7 @@ inline void set_viewport_scale(tMatrix4x4<T> &m, T x, T y, T width, T height)
 }
 
 template<typename T>
-inline tVector2<T> project_to_screen(const tVector3<T> &v, const tMatrix4x4<T> &worldViewProj, float halfW, float halfH, float x, float y)
+inline tVector2<T> project_to_screen(const tVector3<T>& v, const tMatrix4x4<T>& worldViewProj, float halfW, float halfH, float x, float y)
 {
 	tVector4<T> t = tVector4<T>(v.x, v.y, v.z, T(1)) * worldViewProj;
 	tVector2<T> o = tVector2<T>(t.x, t.y) / t.w;
@@ -586,7 +586,7 @@ inline tVector2<T> project_to_screen(const tVector3<T> &v, const tMatrix4x4<T> &
 }
 
 template<typename T>
-inline tVector3<T> project_to_screen(const tVector3<T> &v, const tMatrix4x4<T> &worldViewProj, float halfW, float halfH, float x, float y, float zmin, float zmax)
+inline tVector3<T> project_to_screen(const tVector3<T>& v, const tMatrix4x4<T>& worldViewProj, float halfW, float halfH, float x, float y, float zmin, float zmax)
 {
 	tVector4<T> t = tVector4<T>(v.x, v.y, v.z, T(1)) * worldViewProj;
 	tVector3<T> o = tVector3<T>(t.x, t.y, t.z) / t.w;

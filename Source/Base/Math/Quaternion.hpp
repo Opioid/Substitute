@@ -8,16 +8,13 @@ struct tQuaternion
 {
 	T x, y, z, w;
 
-
 	tQuaternion()
 	{}
-
 
 	tQuaternion(T x, T y, T z, T w) : x(x), y(y), z(z), w(w)
 	{}
 
-
-	explicit tQuaternion(const tMatrix3x3<T> &m)
+	explicit tQuaternion(const tMatrix3x3<T>& m)
 	{
 		T trace = m.m00 + m.m11 + m.m22;
 		T temp[4];
@@ -53,8 +50,7 @@ struct tQuaternion
 		w = temp[3];
 	}
 
-
-	tQuaternion operator*(const tQuaternion &q) const
+	tQuaternion operator*(const tQuaternion& q) const
 	{
 		return tQuaternion(w * q.x + x * q.w + y * q.z - z * q.y,
 						   w * q.y + y * q.w + z * q.x - x * q.z,
@@ -63,7 +59,7 @@ struct tQuaternion
 	}
 
 
-	tQuaternion &operator*=(const tQuaternion &q)
+	tQuaternion& operator*=(const tQuaternion& q)
 	{
 		tQuaternion tmp(w * q.x + x * q.w + y * q.z - z * q.y,
 						w * q.y + y * q.w + z * q.x - x * q.z,
@@ -73,14 +69,11 @@ struct tQuaternion
 		return *this = tmp;
 	}
 
-
 	static const tQuaternion identity;
 };
 
-
 template<typename T>
 const tQuaternion<T> tQuaternion<T>::identity(T(0), T(0), T(0), T(1));
-
 
 template<typename T>
 inline T dot(const tQuaternion<T> &a, const tQuaternion<T> &b)
@@ -88,13 +81,11 @@ inline T dot(const tQuaternion<T> &a, const tQuaternion<T> &b)
 	return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
-
 template<typename T>
 inline T length(const tQuaternion<T> &q)
 {
 	return sqrt(dot(q, q));
 }
-
 
 template<typename T>
 inline T angle(const tQuaternion<T> &a, const tQuaternion<T> &b)
@@ -102,7 +93,6 @@ inline T angle(const tQuaternion<T> &a, const tQuaternion<T> &b)
 	T s = sqrt(dot(a, a) * dot(b, b));
 	return acos(dot(a, b) / s);
 }
-
 
 template<typename T>
 inline void set_rotation_x(tQuaternion<T> &q, T a)
@@ -131,9 +121,8 @@ inline void set_rotation_z(tQuaternion<T> &q, T a)
 	q.w = cos(a * T(0.5));
 }
 
-
 template<typename T>
-inline void set_rotation(tQuaternion<T> &q, const tVector3<T> &v, T a)
+inline void set_rotation(tQuaternion<T> &q, const tVector3<T>& v, T a)
 {
 	T d = length(v);
 
@@ -144,7 +133,6 @@ inline void set_rotation(tQuaternion<T> &q, const tVector3<T> &v, T a)
 	q.z = v.z * s;
 	q.w = cos(a * T(0.5));
 }
-
 
 template<typename T>
 inline void set_rotation(tQuaternion<T> &q, T yaw, T pitch, T roll)
@@ -188,7 +176,6 @@ inline void set_rotation(tQuaternion<T> &q, T yaw, T pitch, T roll)
 	q.w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
 	*/
 }
-
 
 template<typename T>
 inline tQuaternion<T> slerp(const tQuaternion<T> &a, const tQuaternion<T> &b, T t)
@@ -250,6 +237,5 @@ inline tQuaternion<T> slerp(const tQuaternion<T> &a, const tQuaternion<T> &b, T 
 						   sclp * a.z + sclq * end.z,
 						   sclp * a.w + sclq * end.w);
 }
-
 
 typedef tQuaternion<float> Quaternion;

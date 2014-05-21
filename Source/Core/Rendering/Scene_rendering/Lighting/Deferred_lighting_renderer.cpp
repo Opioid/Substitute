@@ -147,7 +147,10 @@ bool Deferred_lighting_renderer::resize_targets(const uint2& size, const Handle<
 	return true;
 }
 
-void Deferred_lighting_renderer::set_deferred_textures(const Handle<Shader_resource_view>& depth, const Handle<Shader_resource_view>& normal, const Handle<Shader_resource_view>& color, const Handle<Shader_resource_view>& surface)
+void Deferred_lighting_renderer::set_deferred_textures(const Handle<Shader_resource_view>& depth,
+													   const Handle<Shader_resource_view>& normal,
+													   const Handle<Shader_resource_view>& color,
+													   const Handle<Shader_resource_view>& surface)
 {
 	deferred_textures_[0] = depth;
 	deferred_textures_[1] = normal;
@@ -254,7 +257,6 @@ void Deferred_lighting_renderer::render_irradiance_volume(const scene::Irradianc
 	auto& change_per_light_data = change_per_light_.get_data();
 	change_per_light_data.world = world;
 	change_per_light_data.light_data = invert(camera.get_view()) * invert(world);
-
 	change_per_light_.update(device);
 
 	device.set_shader_resources(scene::Irradiance_volume::get_num_textures(), volume.get_textures(), irradiance_volume_texture_offset_);
@@ -342,7 +344,6 @@ void Deferred_lighting_renderer::render_light_probe(const scene::Light_probe& li
 	change_per_light_data.world = world;
 	change_per_light_data.light_data = invert(camera.get_view()) * invert(world);
 	change_per_light_data.position_vs = light_probe.get_world_position() * camera.get_view();
-
 	change_per_light_.update(device);
 
 	device.set_shader_resources(1, &light_probe.get_texture(), light_probe_texture_offset_);

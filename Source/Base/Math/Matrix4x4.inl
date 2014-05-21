@@ -3,7 +3,7 @@
 
 
 template<typename T>
-inline void set_reflection(tMatrix4x4<T> &m, const Plane& p)
+inline void set_reflection(tMatrix4x4<T>& m, const Plane& p)
 {
 	m.m00 = -T(2) * p.a * p.a + T(1); m.m01 = -T(2) * p.b * p.a;        m.m02 = -T(2) * p.c * p.a;        m.m03 = T(0);
 	m.m10 = -T(2) * p.a * p.b;        m.m11 = -T(2) * p.b * p.b + T(1); m.m12 = -T(2) * p.c * p.b;        m.m13 = T(0);

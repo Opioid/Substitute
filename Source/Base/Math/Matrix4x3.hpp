@@ -43,7 +43,7 @@ struct tMatrix4x3
 	}
 
 
-	explicit tMatrix4x3(const tMatrix4x4<T> &m) : m00(m.m00), m01(m.m01), m02(m.m02),
+	explicit tMatrix4x3(const tMatrix4x4<T>& m) : m00(m.m00), m01(m.m01), m02(m.m02),
 													m10(m.m10), m11(m.m11), m12(m.m12),
 													m20(m.m20), m21(m.m21), m22(m.m22), 
 													m30(m.m30), m31(m.m31), m32(m.m32)

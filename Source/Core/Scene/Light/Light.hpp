@@ -76,7 +76,7 @@ private:
 	float             lumen_;
 	float             falloff_epsilon_;
 
-	bool m_casts_shadow;
+	bool casts_shadow_;
 
 	Handle<rendering::Shader_resource_view> texture_;
 

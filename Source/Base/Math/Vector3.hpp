@@ -164,7 +164,7 @@ template<typename T>
 const tVector3<T> tVector3<T>::identity(T(0), T(0), T(0));
 
 template<typename T>
-inline tVector3<T> operator*(T s, const tVector3<T> &v)
+inline tVector3<T> operator*(T s, const tVector3<T>& v)
 {
 	return tVector3<T>(s * v.x, s * v.y, s * v.z);
 }
@@ -176,31 +176,31 @@ inline T dot(const tVector3<T> &a, const tVector3<T> &b)
 }
 
 template<typename T>
-inline T length(const tVector3<T> &v)
+inline T length(const tVector3<T>& v)
 {
 	return sqrt(dot(v, v));
 }
 
 template<typename T>
-inline T squared_length(const tVector3<T> &v)
+inline T squared_length(const tVector3<T>& v)
 {
 	return dot(v, v);
 }
 
 template<typename T>
-inline tVector3<T> normalize(const tVector3<T> &v)
+inline tVector3<T> normalize(const tVector3<T>& v)
 {
 	return v / length(v);
 }
 
 template<typename T>
-inline tVector3<T> reciprocal(const tVector3<T> &v)
+inline tVector3<T> reciprocal(const tVector3<T>& v)
 {
 	return tVector3<T>(1.f / v.x, 1.f / v.y, 1.f / v.z);
 }
 
 template<typename T>
-inline tVector3<T> absolute(const tVector3<T> &v)
+inline tVector3<T> absolute(const tVector3<T>& v)
 {
 	return tVector3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
 }
@@ -232,7 +232,7 @@ inline T squared_distance(const tVector3<T> &a, const tVector3<T> &b)
 }
 
 template<typename T>
-inline tVector3<T> saturate(const tVector3<T> &v)
+inline tVector3<T> saturate(const tVector3<T>& v)
 {
 	return tVector3<T>(std::min(std::max(v.x, T(0)), T(1)), std::min(std::max(v.y, T(0)), T(1)), std::min(std::max(v.z, T(0)), T(1)));
 }
@@ -245,7 +245,7 @@ inline tVector3<T> lerp(const tVector3<T> &a, const tVector3<T> &b, T t)
 }
 
 template<typename T>
-inline tVector3<T> reflect(const tVector3<T> &v, const tVector3<T> &normal)
+inline tVector3<T> reflect(const tVector3<T>& v, const tVector3<T> &normal)
 {
 	return v - 2.f * dot(v, normal) * normal;
 }

@@ -4,7 +4,7 @@
 namespace scene
 {
 
-Light::Light() : type_(Type::Directional), color_(rendering::color3::white), lumen_(1.f), falloff_epsilon_(0.01f), m_casts_shadow(false), fov_(0.f)
+Light::Light() : type_(Type::Directional), color_(rendering::color3::white), lumen_(1.f), falloff_epsilon_(0.01f), casts_shadow_(false), fov_(0.f)
 {}
 
 void Light::init(Type type)
@@ -69,12 +69,12 @@ float4 Light::get_spot_energy_and_range() const
 
 bool Light::casts_shadow() const
 {
-	return m_casts_shadow;
+	return casts_shadow_;
 }
 
 void Light::set_casts_shadow(bool shadow)
 {
-	m_casts_shadow = shadow;
+	casts_shadow_ = shadow;
 }
 
 float Light::get_fov() const

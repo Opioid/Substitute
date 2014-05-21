@@ -37,7 +37,10 @@ public:
 
 	bool resize_targets(const uint2& size, const Handle<Depth_stencil_shader_resource_view>& depth_stencil);
 
-	void set_deferred_textures(const Handle<Shader_resource_view>& depth, const Handle<Shader_resource_view>& normal, const Handle<Shader_resource_view>& color, const Handle<Shader_resource_view>& surface);
+	void set_deferred_textures(const Handle<Shader_resource_view>& depth,
+							   const Handle<Shader_resource_view>& normal,
+							   const Handle<Shader_resource_view>& color,
+							   const Handle<Shader_resource_view>& surface);
 
 	void render(const scene::Scene& scene, const Rendering_context& context);
 
