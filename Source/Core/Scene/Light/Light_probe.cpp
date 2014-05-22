@@ -16,9 +16,22 @@ void Light_probe::init(const float3& position, const float3& scale, const Quater
 	set_origin(world_transformation_, position);
 }
 
+void Light_probe::adjust(const float3& position, const float3& scale)
+{
+	world_transformation_ = float4x4::identity;
+
+	::scale(world_transformation_, scale);
+	set_origin(world_transformation_, position);
+}
+
 void Light_probe::clear()
 {
     texture_ = nullptr;
+}
+
+bool Light_probe::is_faulty() const
+{
+	return 0.f == world_transformation_.m00;
 }
 
 const float3& Light_probe::get_world_position() const

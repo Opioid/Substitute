@@ -120,6 +120,12 @@ void Scene::compile()
         {
             create_light_probe();
         }
+		else if (light_probes_[0]->is_faulty())
+		{
+			const AABB& aabb = aabb_tree_.get_root()->get_aabb();
+
+			light_probes_[0]->adjust(aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f));
+		}
     }
 }
 

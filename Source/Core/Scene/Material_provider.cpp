@@ -108,11 +108,11 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 		}
 		else if (node_name == "metallic")
 		{
-			material->set_metallic(node_value.GetDouble());
+			material->set_metallic(static_cast<float>(node_value.GetDouble()));
 		}
 		else if (node_name == "roughness")
 		{
-			material->set_roughness(node_value.GetDouble());
+			material->set_roughness(static_cast<float>(node_value.GetDouble()));
 		}
 		else if (node_name == "translucency")
 		{
@@ -120,7 +120,7 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 		}
 		else if (node_name == "emissive_factor")
 		{
-			material->set_emissive_factor(node_value.GetDouble());
+			material->set_emissive_factor(static_cast<float>(node_value.GetDouble()));
 		}
 		else if (node_name == "two_sided")
 		{

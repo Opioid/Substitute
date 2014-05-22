@@ -342,8 +342,8 @@ void Scene_loader::load_irradiance_volumes(const rapidjson::Value& volumes)
 void Scene_loader::load_irradiance_volume(const rapidjson::Value& volume)
 {
 	uint3 resolution(2, 2, 2);
-	float3 position(0.f, 0.f, 0.f);
-	float3 scale(0.f, 0.f, 0.f);
+	float3 position(float3::identity);
+	float3 scale(float3::identity);
 	Quaternion rotation(Quaternion::identity);
 
 	for (auto n = volume.MemberBegin(); n != volume.MemberEnd(); ++n)
@@ -387,8 +387,8 @@ void Scene_loader::load_light_probes(const rapidjson::Value& probes)
 
 void Scene_loader::load_light_probe(const rapidjson::Value& probe)
 {
-	float3 position(0.f, 0.f, 0.f);
-	float3 scale(1.f, 1.f, 1.f);
+	float3 position(float3::identity);
+	float3 scale(float3::identity);
 	Quaternion rotation(Quaternion::identity);
 
 	for (auto n = probe.MemberBegin(); n != probe.MemberEnd(); ++n)

@@ -8,3 +8,5 @@ SUBDIRS += \
     Asset_chef \
     Asset_importer \
     Gauze \
+
+HEADERS += Substitute.hpp \

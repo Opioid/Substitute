@@ -56,7 +56,7 @@ struct tVector4
 		return *this;
 	}
 
-    explicit operator unsigned int() const
+	explicit operator uint32_t() const
 	{
 		/*
 		const __m128 m4x255f = _mm_set_ps1(255.f);
@@ -90,10 +90,10 @@ struct tVector4
 		return  (m1.m128i_i32[0] << 24) | (m1.m128i_i32[1] << 16) | (m1.m128i_i32[2] << 8) | m1.m128i_i32[3];
 		*/
 
-		unsigned int red  (r * T(255));
-		unsigned int green(g * T(255));
-		unsigned int blue (b * T(255));
-		unsigned int alpha(a * T(255));
+		uint32_t red   = static_cast<uint32_t>(r * T(255));
+		uint32_t green = static_cast<uint32_t>(g * T(255));
+		uint32_t blue  = static_cast<uint32_t>(b * T(255));
+		uint32_t alpha = static_cast<uint32_t>(a * T(255));
 
 		return  (alpha << 24) | (blue << 16) | (green << 8) | red;
 	}

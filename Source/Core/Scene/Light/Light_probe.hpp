@@ -27,7 +27,10 @@ public:
 	Light_probe();
 
     void init(const float3& position, const float3& scale, const Quaternion& rotation);
+	void adjust(const float3& position, const float3& scale);
     void clear();
+
+	bool is_faulty() const;
 
 	const float3& get_world_position() const;
 
