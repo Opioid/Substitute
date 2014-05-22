@@ -137,17 +137,17 @@ AABB_node::Geometry* AABB_tree_loader::get_geometry(uint32_t index) const
 
 const rendering::Vertex_layout_description* AABB_tree_loader::read_vertex_layout_description(std::istream& stream) const
 {
-	uint32_t num_elements;
-	stream.read((char*)&num_elements, sizeof(uint32_t));
+	uint32_t num_elements_;
+	stream.read((char*)&num_elements_, sizeof(uint32_t));
 
-	rendering::Vertex_layout_description::Element* elements = new rendering::Vertex_layout_description::Element[num_elements];
+	rendering::Vertex_layout_description::Element* elements = new rendering::Vertex_layout_description::Element[num_elements_];
 
-	for (uint32_t i = 0; i < num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
 		stream >> elements[i];
 	}
 
-	const rendering::Vertex_layout_description* description = rendering_tool_.get_vertex_layout_cache().get_vertex_layout_description(num_elements, elements);
+	const rendering::Vertex_layout_description* description = rendering_tool_.get_vertex_layout_cache().get_vertex_layout_description(num_elements_, elements);
 	delete [] elements;
 	return description;
 }

@@ -10,7 +10,7 @@ NVTT_output_handler::NVTT_output_handler(Image_buffer<rendering::Color4c>& image
 	faulty_(false)
 {}
 
-void NVTT_output_handler::beginImage(int size, int width, int height, int depth, int face, int mip_level)
+void NVTT_output_handler::beginImage(int size, int width, int height, int /*depth*/, int /*face*/, int /*mip_level*/)
 {
 	receiving_image_data_ = true;
 

@@ -12,7 +12,7 @@ struct Data_format_mapping
 
 	int		internal_format;
 	int		format;
-	int 		num_elements;
+	int 		num_elements_;
 	uint32_t 	type;
 	unsigned char 	normalized;
 

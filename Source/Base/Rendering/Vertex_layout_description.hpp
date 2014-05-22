@@ -22,7 +22,7 @@ public:
 //	Vertex_layout_description(Vertex_layout_description const& a, Vertex_layout_description const& b);
 	~Vertex_layout_description();
 
-	uint32_t get_num_elements() const;
+	uint32_t get_num_elements_() const;
 	const Element& operator[](uint32_t index) const;
 	const Element* get_elements() const;
 
@@ -39,13 +39,13 @@ public:
 
 private:
 
-	uint32_t m_num_elements;
-	Element* m_elements;
+	uint32_t num_elements_;
+	Element* elements_;
 
-	uint32_t m_vertex_size;
+	uint32_t vertex_size_;
 
-	uint32_t  m_num_streams;
-	uint32_t* m_strides;
+	uint32_t  num_streams_;
+	uint32_t* strides_;
 
 public:
 

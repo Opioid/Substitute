@@ -27,6 +27,9 @@ public:
 
 	const Signature& get_signature() const;
 
+	// returns 0 if buffer is not found
+	uint32_t get_constant_buffer_size(const std::string& name) const;
+
 public:
 
 	class Signature
@@ -50,22 +53,22 @@ public:
 		Signature& operator=(const Signature& signature);
 		bool operator==(const Signature& b) const;
 
-		uint32_t get_num_elements() const;
+		uint32_t get_num_elements_() const;
 		const Element& operator[](uint32_t index) const;
 
-		void resize(uint32_t num_elements);
+		void resize(uint32_t num_elements_);
 
 	private:
 
-		uint32_t m_num_elements;
-		Element* m_elements;
+		uint32_t num_elements_;
+		Element* elements_;
 
 		friend Shader_program;
 	};
 
 private:
 
-	Signature m_signature;
+	Signature signature_;
 };
 
 }

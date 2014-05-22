@@ -59,17 +59,17 @@ bool Legacy_converter::convert(const std::string& input_name, const std::string&
 	ostream.write((char*)&pt, sizeof(uint32_t));
 
 	// Vertex description
-	uint32_t num_elements;
-	istream.read((char*)&num_elements, sizeof(uint32_t));
+	uint32_t num_elements_;
+	istream.read((char*)&num_elements_, sizeof(uint32_t));
 
-	rendering::Vertex_layout_description::Element* elements = new rendering::Vertex_layout_description::Element[num_elements];
+	rendering::Vertex_layout_description::Element* elements = new rendering::Vertex_layout_description::Element[num_elements_];
 
-	for (uint32_t i = 0; i < num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
 		read_vertex_layout_description_element(istream, elements[i]);
 	}
 
-	rendering::Vertex_layout_description vd(num_elements, elements);
+	rendering::Vertex_layout_description vd(num_elements_, elements);
 
 	if (!write_vertex_layout_description(ostream, rendering::Vertex_position3x32_tex_coord2x32_normal1010102::vertex_layout_description()))
 	{
@@ -162,10 +162,10 @@ bool Legacy_converter::write_vertex_layout_description(std::ostream &stream, con
 		return false;
 	}
 
-	uint32_t num_elements = vertex_layout_description->get_num_elements();
-	stream.write((char*)&num_elements, sizeof(uint32_t));
+	uint32_t num_elements_ = vertex_layout_description->get_num_elements_();
+	stream.write((char*)&num_elements_, sizeof(uint32_t));
 
-	for (uint32_t i = 0; i < num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
 		rendering::Vertex_layout_description::Element const& e = (*vertex_layout_description)[i];
 

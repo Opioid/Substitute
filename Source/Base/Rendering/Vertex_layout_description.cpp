@@ -7,144 +7,144 @@
 namespace rendering
 {
 
-Vertex_layout_description::Vertex_layout_description(uint32_t num_elements, const Element elements[]) : m_num_elements(num_elements), m_vertex_size(0) , m_num_streams(0)
+Vertex_layout_description::Vertex_layout_description(uint32_t num_elements, const Element elements[]) : num_elements_(num_elements), vertex_size_(0) , num_streams_(0)
 {
-	m_elements = new Element[m_num_elements];
+	elements_ = new Element[num_elements_];
 
-	for (uint32_t i = 0; i < m_num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
-		m_elements[i] = elements[i];
-		m_num_streams = std::max(m_num_streams, m_elements[i].slot);
+		elements_[i] = elements[i];
+		num_streams_ = std::max(num_streams_, elements_[i].slot);
 	}
 
-	++m_num_streams;
-	m_strides = new uint32_t[m_num_streams];
+	++num_streams_;
+	strides_ = new uint32_t[num_streams_];
 
-	std::fill_n(m_strides, m_num_streams, 0);
+	std::fill_n(strides_, num_streams_, 0);
 
-	for (uint32_t i = 0; i < m_num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
-		if (0xffffffff == m_elements[i].byte_offset)
+		if (0xFFFFFFFF == elements_[i].byte_offset)
 		{
-			m_elements[i].byte_offset = m_strides[m_elements[i].slot];
+			elements_[i].byte_offset = strides_[elements_[i].slot];
 		}
 		else
 		{
-			m_strides[m_elements[i].slot] = m_elements[i].byte_offset;
+			strides_[elements_[i].slot] = elements_[i].byte_offset;
 		}
 
-		m_strides[m_elements[i].slot] += uint32_t(Data_format::size_of(m_elements[i].format));
+		strides_[elements_[i].slot] += uint32_t(Data_format::size_of(elements_[i].format));
 	}
 
-	for (uint32_t i = 0; i < m_num_streams; ++i)
+	for (uint32_t i = 0; i < num_streams_; ++i)
 	{
-		m_vertex_size += m_strides[i];
+		vertex_size_ += strides_[i];
 	}
 }
 
-Vertex_layout_description::Vertex_layout_description(const Vertex_layout_description& other)
-	: m_num_elements(other.m_num_elements), m_elements(new Element[other.m_num_elements]), m_vertex_size(other.m_vertex_size),
-	  m_num_streams(other.m_num_streams), m_strides(new uint32_t[other.m_num_streams])
+Vertex_layout_description::Vertex_layout_description(const Vertex_layout_description& other) :
+	num_elements_(other.num_elements_), elements_(new Element[other.num_elements_]), vertex_size_(other.vertex_size_),
+	num_streams_(other.num_streams_), strides_(new uint32_t[other.num_streams_])
 {
-	for (uint32_t i = 0; i < m_num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
-		m_elements[i] = other.m_elements[i];
+		elements_[i] = other.elements_[i];
 	}
 
-	for (uint32_t i = 0; i < m_num_streams; ++i)
+	for (uint32_t i = 0; i < num_streams_; ++i)
 	{
-		m_strides[i] = other.m_strides[i];
+		strides_[i] = other.strides_[i];
 	}
 }
 
 Vertex_layout_description::Vertex_layout_description(Vertex_layout_description&& other)
-	: m_num_elements(other.m_num_elements), m_elements(other.m_elements), m_vertex_size(other.m_vertex_size),
-	  m_num_streams(other.m_num_streams), m_strides(other.m_strides)
+	: num_elements_(other.num_elements_), elements_(other.elements_), vertex_size_(other.vertex_size_),
+	  num_streams_(other.num_streams_), strides_(other.strides_)
 {
-	other.m_num_elements = 0;
-	other.m_elements = nullptr;
+	other.num_elements_ = 0;
+	other.elements_ = nullptr;
 
-	other.m_num_streams = 0;
-	other.m_strides = nullptr;
+	other.num_streams_ = 0;
+	other.strides_ = nullptr;
 }
 
 /*
 Vertex_layout_description::Vertex_layout_description(const Vertex_layout_description& a, const Vertex_layout_description& b)
 {
-	m_num_elements = a.m_num_elements + b.m_num_elements;
-	m_elements = new Element[m_num_elements];
+	num_elements_ = a.num_elements_ + b.num_elements_;
+	elements_ = new Element[num_elements_];
 
-	for (uint32_t i = 0; i < a.m_num_elements; ++i)
+	for (uint32_t i = 0; i < a.num_elements_; ++i)
 	{
-		m_elements[i] = a.m_elements[i];
+		elements_[i] = a.elements_[i];
 	}
 
-	for (uint32_t i = 0; i < b.m_num_elements; ++i)
+	for (uint32_t i = 0; i < b.num_elements_; ++i)
 	{
-		m_elements[i + a.m_num_elements] = b.m_elements[i];
-		m_elements[i + a.m_num_elements].m_slot += a.m_num_streams;
+		elements_[i + a.num_elements_] = b.elements_[i];
+		elements_[i + a.num_elements_].m_slot += a.num_streams_;
 	}
 
-	m_num_streams = a.m_num_streams + b.m_num_streams;
-	m_strides    = new uint32_t[m_num_streams];
+	num_streams_ = a.num_streams_ + b.num_streams_;
+	strides_    = new uint32_t[num_streams_];
 
-	for (uint32_t i = 0; i < a.m_num_streams; ++i)
+	for (uint32_t i = 0; i < a.num_streams_; ++i)
 	{
-		m_strides[i] = a.m_strides[i];
+		strides_[i] = a.strides_[i];
 	}
 
-	for (uint32_t i = 0; i < b.m_num_streams; ++i)
+	for (uint32_t i = 0; i < b.num_streams_; ++i)
 	{
-		m_strides[i + a.m_num_streams] = b.m_strides[i];
+		strides_[i + a.num_streams_] = b.strides_[i];
 	}
 }*/
 
 Vertex_layout_description::~Vertex_layout_description()
 {
-	delete [] m_elements;
-	delete [] m_strides;
+	delete [] elements_;
+	delete [] strides_;
 }
 
-uint32_t Vertex_layout_description::get_num_elements() const
+uint32_t Vertex_layout_description::get_num_elements_() const
 {
-	return m_num_elements;
+	return num_elements_;
 }
 
 const Vertex_layout_description::Element& Vertex_layout_description::operator[](uint32_t index) const
 {
-	return m_elements[index];
+	return elements_[index];
 }
 
 const Vertex_layout_description::Element* Vertex_layout_description::get_elements() const
 {
-	return m_elements;
+	return elements_;
 }
 
 uint32_t Vertex_layout_description::get_vertex_size() const
 {
-	return m_vertex_size;
+	return vertex_size_;
 }
 
 uint32_t* Vertex_layout_description::get_strides() const
 {
-	return m_strides;
+	return strides_;
 }
 
 uint32_t Vertex_layout_description::get_num_streams() const
 {
-	return m_num_streams;
+	return num_streams_;
 }
 
 bool Vertex_layout_description::consists_of(uint32_t num_elements, const Element elements[]) const
 {
-	if (m_num_elements != num_elements)
+	if (num_elements != num_elements_)
 	{
 		return false;
 	}
 
-	for (uint32_t i = 0; i < m_num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
-		if (m_elements[i] != elements[i])
+		if (elements_[i] != elements[i])
 		{
 			return false;
 		}
@@ -155,7 +155,7 @@ bool Vertex_layout_description::consists_of(uint32_t num_elements, const Element
 
 bool Vertex_layout_description::operator==(const Vertex_layout_description& description) const
 {
-	return consists_of(description.m_num_elements, description.m_elements);
+	return consists_of(description.num_elements_, description.elements_);
 }
 
 bool Vertex_layout_description::operator!=(const Vertex_layout_description& description) const
@@ -163,19 +163,19 @@ bool Vertex_layout_description::operator!=(const Vertex_layout_description& desc
 	return !((*this) == description);
 }
 
-Vertex_layout_description::Element::Element() 
-	: semantic_index(0), format(Data_format::Unknown), slot(0), byte_offset(0), slot_class(Classification::Per_vertex_data), instance_step_rate(0)
+Vertex_layout_description::Element::Element() :
+	semantic_index(0), format(Data_format::Unknown), slot(0), byte_offset(0), slot_class(Classification::Per_vertex_data), instance_step_rate(0)
 {}
 
-Vertex_layout_description::Element::Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, uint32_t slot, uint32_t byte_offset)
-	: semantic_name(semantic_name), semantic_index(semantic_index), format(format), slot(slot),
-	  byte_offset(byte_offset), slot_class(Classification::Per_vertex_data), instance_step_rate(0)
+Vertex_layout_description::Element::Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, uint32_t slot, uint32_t byte_offset) :
+	semantic_name(semantic_name), semantic_index(semantic_index), format(format), slot(slot),
+	 byte_offset(byte_offset), slot_class(Classification::Per_vertex_data), instance_step_rate(0)
 {}
 
 Vertex_layout_description::Element::Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, Classification::Value classification,
-	                                        uint32_t step_rate, uint32_t slot, uint32_t byte_offset)
-	: semantic_name(semantic_name), semantic_index(semantic_index), format(format), slot(slot),
-	  byte_offset(byte_offset), slot_class(classification), instance_step_rate(step_rate)
+											uint32_t step_rate, uint32_t slot, uint32_t byte_offset) :
+	semantic_name(semantic_name), semantic_index(semantic_index), format(format), slot(slot),
+	byte_offset(byte_offset), slot_class(classification), instance_step_rate(step_rate)
 {}
 
 bool Vertex_layout_description::Element::operator==(const Element& element) const

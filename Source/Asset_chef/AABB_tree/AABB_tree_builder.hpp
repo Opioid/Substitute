@@ -44,7 +44,7 @@ private:
 	Evaluate_splitting_plane_job m_evaluateSplittingPlane;
 	Assign_node_data_job         m_assignNodeData;
 
-	const uint32_t m_max_triangles_per_node;
+	const uint32_t max_triangles_per_node_;
 
 	uint32_t m_current_node_index;
 

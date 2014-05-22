@@ -2,7 +2,6 @@
 #include "Constant_buffer_adapter.hpp"
 #include "Rendering/Rendering_device.hpp"
 #include "Rendering/Resource_view.hpp"
-#include <GL/glew.h>
 
 namespace rendering
 {
@@ -106,21 +105,12 @@ bool Effect::get_buffer_size(const std::string& name, uint32_t& num_bytes) const
 {
 	for (size_t i = 0; i < techniques_.size(); ++i)
 	{
-		const Effect_technique* technique = techniques_[i];
+		num_bytes = techniques_[i]->get_program()->get_constant_buffer_size(name);
 
-		uint32_t program_id = technique->get_program()->get_id();
-
-		uint32_t index = glGetUniformBlockIndex(program_id, name.c_str());
-
-		if (GL_INVALID_INDEX == index)
+		if (0 == num_bytes)
 		{
 			continue;
 		}
-
-		int block_size;
-		glGetActiveUniformBlockiv(program_id, index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
-
-		num_bytes = uint32_t(block_size);
 
 		return true;
 	}

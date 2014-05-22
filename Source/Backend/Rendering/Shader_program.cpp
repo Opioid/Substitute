@@ -48,7 +48,7 @@ bool Shader_program::link(std::vector<Handle<Shader>> shaders, std::string& erro
 	int num_attributes;
 	glGetProgramiv(id_, GL_ACTIVE_ATTRIBUTES, &num_attributes);
 
-	m_signature.resize(num_attributes);
+	signature_.resize(num_attributes);
 
 	const uint32_t buffer_size = 64;
 	char attribute_name[buffer_size];
@@ -62,7 +62,7 @@ bool Shader_program::link(std::vector<Handle<Shader>> shaders, std::string& erro
 
 		int location = glGetAttribLocation(id_, attribute_name);
 
-		m_signature.m_elements[i].location = location;
+		signature_.elements_[i].location = location;
 
 		if (semantic_mapping)
 		{
@@ -72,12 +72,12 @@ bool Shader_program::link(std::vector<Handle<Shader>> shaders, std::string& erro
 
 			if (semantic_mapping->end() != semantic)
 			{
-				m_signature.m_elements[i].semantic = semantic->second;
+				signature_.elements_[i].semantic = semantic->second;
 			}
 		}
 		else
 		{
-			m_signature.m_elements[i].semantic = std::string(attribute_name);
+			signature_.elements_[i].semantic = std::string(attribute_name);
 		}
 	}
 
@@ -91,7 +91,22 @@ void Shader_program::use() const
 
 const Shader_program::Signature& Shader_program::get_signature() const
 {
-	return m_signature;
+	return signature_;
+}
+
+uint32_t Shader_program::get_constant_buffer_size(const std::string& name) const
+{
+	uint32_t index = glGetUniformBlockIndex(id_, name.c_str());
+
+	if (GL_INVALID_INDEX == index)
+	{
+		return 0;
+	}
+
+	int block_size = 0;
+	glGetActiveUniformBlockiv(id_, index, GL_UNIFORM_BLOCK_DATA_SIZE, &block_size);
+
+	return static_cast<uint32_t>(block_size);
 }
 
 bool Shader_program::Signature::Element::operator!=(const Element& b) const
@@ -99,32 +114,32 @@ bool Shader_program::Signature::Element::operator!=(const Element& b) const
 	return location != b.location || semantic != b.semantic;
 }
 
-Shader_program::Signature::Signature() : m_num_elements(0), m_elements(nullptr)
+Shader_program::Signature::Signature() : num_elements_(0), elements_(nullptr)
 {}
 
-Shader_program::Signature::Signature(const Signature& signature) : m_num_elements(signature.m_num_elements), m_elements(new Element[signature.m_num_elements])
+Shader_program::Signature::Signature(const Signature& signature) : num_elements_(signature.num_elements_), elements_(new Element[signature.num_elements_])
 {
-	for (uint32_t i = 0; i < m_num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
-		m_elements[i] = signature.m_elements[i];
+		elements_[i] = signature.elements_[i];
 	}
 }
 
 Shader_program::Signature::~Signature()
 {
-	delete [] m_elements;
+	delete [] elements_;
 }
 
 Shader_program::Signature& Shader_program::Signature::operator=(const Signature& signature)
 {
-	m_num_elements = signature.m_num_elements;
+	num_elements_ = signature.num_elements_;
 
-	delete [] m_elements;
-	m_elements = new Element[m_num_elements];
+	delete [] elements_;
+	elements_ = new Element[num_elements_];
 
-	for (uint32_t i = 0; i < m_num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
-		m_elements[i] = signature.m_elements[i];
+		elements_[i] = signature.elements_[i];
 	}
 
 	return *this;
@@ -132,14 +147,14 @@ Shader_program::Signature& Shader_program::Signature::operator=(const Signature&
 
 bool Shader_program::Signature::operator==(const Signature& b) const
 {
-	if (m_num_elements != b.m_num_elements)
+	if (num_elements_ != b.num_elements_)
 	{
 		return false;
 	}
 
-	for (uint32_t i = 0; i < m_num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
-		if (m_elements[i] != b.m_elements[i])
+		if (elements_[i] != b.elements_[i])
 		{
 			return false;
 		}
@@ -148,28 +163,28 @@ bool Shader_program::Signature::operator==(const Signature& b) const
 	return true;
 }
 
-uint32_t Shader_program::Signature::get_num_elements() const
+uint32_t Shader_program::Signature::get_num_elements_() const
 {
-	return m_num_elements;
+	return num_elements_;
 }
 
 const Shader_program::Signature::Element& Shader_program::Signature::operator[](uint32_t index) const
 {
-	return m_elements[index];
+	return elements_[index];
 }
 
 void Shader_program::Signature::resize(uint32_t num_elements)
 {
-	if (num_elements == m_num_elements)
+	if (num_elements == num_elements_)
 	{
 		return;
 	}
 
-	delete [] m_elements;
+	delete [] elements_;
 
-	m_num_elements = num_elements;
+	num_elements_ = num_elements;
 
-	m_elements = new Element[m_num_elements];
+	elements_ = new Element[num_elements_];
 }
 
 }

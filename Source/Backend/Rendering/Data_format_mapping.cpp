@@ -4,8 +4,8 @@
 namespace rendering
 {
 
-Data_format_mapping::Data_format_mapping(int internal_format, int format, int num_elements, uint32_t type, bool normalized)
-	: internal_format(internal_format), format(format), num_elements(num_elements), type(type), normalized(normalized ? GL_TRUE : GL_FALSE)
+Data_format_mapping::Data_format_mapping(int internal_format, int format, int num_elements_, uint32_t type, bool normalized)
+	: internal_format(internal_format), format(format), num_elements_(num_elements_), type(type), normalized(normalized ? GL_TRUE : GL_FALSE)
 {}
 
 Data_format_mapping Data_format_mapping::map(Data_format::Value format)

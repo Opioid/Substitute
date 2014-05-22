@@ -13,7 +13,6 @@
 #include <cstring>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <GL/glew.h>
 #include <iostream>
 
 namespace rendering
@@ -129,7 +128,7 @@ bool Effect_provider::load_techniques(Effect& effect, const rapidjson::Value& te
 
 		const std::string name = name_node->value.GetString();
 
-		Effect_technique* technique = load_technique(node, effect, constant_buffer_code, sampler_code, data_layout_descriptions);
+		Effect_technique* technique = load_technique(node, constant_buffer_code, sampler_code, data_layout_descriptions);
 
 		if (technique)
 		{
@@ -144,10 +143,10 @@ bool Effect_provider::load_techniques(Effect& effect, const rapidjson::Value& te
 	return true;
 }
 
-Effect_technique* Effect_provider::load_technique(const rapidjson::Value& technique_node, const Effect& effect, const std::string& constant_buffer_code,
+Effect_technique* Effect_provider::load_technique(const rapidjson::Value& technique_node, const std::string& constant_buffer_code,
 												  const std::string& sampler_code, const Shader_data_layout& data_layout_descriptions) const
 {
-	Effect_technique* technique = new Effect_technique(rendering_tool_.get_device().create_shader_program(), &effect);
+	Effect_technique* technique = new Effect_technique(rendering_tool_.get_device().create_shader_program());
 
 	std::string vertex_input_name;
 

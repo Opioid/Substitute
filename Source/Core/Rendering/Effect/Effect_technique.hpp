@@ -6,7 +6,6 @@
 namespace rendering
 {
 
-class Effect;
 class Rendering_device;
 
 class Effect_technique
@@ -14,7 +13,7 @@ class Effect_technique
 
 public:
 
-	Effect_technique(const Handle<Shader_program>& program, const Effect* effect);
+	Effect_technique(const Handle<Shader_program>& program);
 
 	void use() const;
 
@@ -23,9 +22,7 @@ public:
 
 private:
 
-	Handle<Shader_program> m_program;
-
-	const Effect* effect_;
+	Handle<Shader_program> program_;
 };
 
 }

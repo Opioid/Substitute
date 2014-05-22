@@ -28,10 +28,10 @@ bool Vertex_writer::write_vertex_layout_description(std::ostream &stream, const 
 		return false;
 	}
 
-	uint32_t num_elements = vertex_layout_description->get_num_elements();
-	stream.write((char*)&num_elements, sizeof(uint32_t));
+	uint32_t num_elements_ = vertex_layout_description->get_num_elements_();
+	stream.write((char*)&num_elements_, sizeof(uint32_t));
 
-	for (uint32_t i = 0; i < num_elements; ++i)
+	for (uint32_t i = 0; i < num_elements_; ++i)
 	{
 		rendering::Vertex_layout_description::Element const& e = (*vertex_layout_description)[i];
 

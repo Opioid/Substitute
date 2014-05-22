@@ -99,6 +99,7 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 			a = selected_entity_->get_world_up();
 			break;
 		case Axis::Z:
+		default:
 			a = selected_entity_->get_world_direction();
 			break;
 		}

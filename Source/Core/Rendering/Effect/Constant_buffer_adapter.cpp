@@ -2,7 +2,6 @@
 #include "Rendering/Shader_program.hpp"
 #include "Rendering/Rendering_device.hpp"
 #include <cstring>
-#include <GL/glew.h>
 
 namespace rendering
 {
@@ -50,9 +49,9 @@ void Constant_buffer_adapter::set(int offset, size_t num_bytes, const void* valu
 	dirty_ = true;
 }
 
-void Constant_buffer_adapter::bind(const Rendering_device& /*device*/)
+void Constant_buffer_adapter::bind(const Rendering_device& device)
 {
-	glBindBufferBase(GL_UNIFORM_BUFFER, binding_point_, constant_buffer_->get_id());
+	device.set_constant_buffer(constant_buffer_, binding_point_);
 }
 
 //void Constant_buffer_adapter::restart_circle()

@@ -103,7 +103,7 @@ Handle<Constant_buffer> Rendering_device::create_constant_buffer(uint32_t num_by
 
 Handle<Input_layout> Rendering_device::create_input_layout(const Vertex_layout_description& vertex_description, const Shader_program::Signature& signature) const
 {
-	if (!signature.get_num_elements())
+	if (!signature.get_num_elements_())
 	{
 		return nullptr;
 	}
@@ -120,7 +120,7 @@ Handle<Input_layout> Rendering_device::create_input_layout(const Vertex_layout_d
 
 	Handle<Input_layout> input_layout = Handle<Input_layout>(new Input_layout(id));
 
-	for (uint32_t i = 0; i < signature.get_num_elements(); ++i)
+	for (uint32_t i = 0; i < signature.get_num_elements_(); ++i)
 	{
 		auto& se = signature[i];
 
@@ -129,7 +129,7 @@ Handle<Input_layout> Rendering_device::create_input_layout(const Vertex_layout_d
 			continue;
 		}
 
-		for (uint32_t j = 0; j < vertex_description.get_num_elements(); ++j)
+		for (uint32_t j = 0; j < vertex_description.get_num_elements_(); ++j)
 		{
 			auto& ve = vertex_description[j];
 
@@ -146,7 +146,7 @@ Handle<Input_layout> Rendering_device::create_input_layout(const Vertex_layout_d
 
 				Data_format_mapping dfm = Data_format_mapping::map(ve.format);
 
-				glVertexAttribFormat(location, dfm.num_elements, dfm.type, dfm.normalized, ve.byte_offset);
+				glVertexAttribFormat(location, dfm.num_elements_, dfm.type, dfm.normalized, ve.byte_offset);
 				glVertexAttribBinding(location, ve.slot);
 
 				input_layout->m_attribute_states[location] = true;
@@ -733,6 +733,11 @@ void Rendering_device::set_index_buffer(const Index_buffer* index_buffer)
 	current_index_buffer_ = index_buffer;
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer->id_);
+}
+
+void Rendering_device::set_constant_buffer(const Handle<Constant_buffer>& constant_buffer, uint32_t slot) const
+{
+	glBindBufferBase(GL_UNIFORM_BUFFER, slot, constant_buffer->id_);
 }
 
 void Rendering_device::set_input_layout(const Input_layout* input_layout)

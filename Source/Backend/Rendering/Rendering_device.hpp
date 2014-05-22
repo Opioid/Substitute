@@ -96,6 +96,7 @@ public:
 	void set_vertex_buffer(const Handle<Vertex_buffer>& vb, uint32_t stride, uint32_t offset = 0, uint32_t slot = 0) const;
 	void set_vertex_buffers(uint32_t num_buffers, const Handle<Vertex_buffer> vertex_buffers[], const uint32_t strides[], const uint32_t offsets[] = nullptr, uint32_t start_slot = 0) const;
 	void set_index_buffer(const Index_buffer* index_buffer);
+	void set_constant_buffer(const Handle<Constant_buffer>& constant_buffer, uint32_t slot) const;
 	void set_input_layout(const Input_layout* input_layout);
 
 	void set_framebuffer(const Handle<Framebuffer>& framebuffer);

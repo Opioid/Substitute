@@ -5,8 +5,8 @@
 #include <iostream>
 
 AABB_tree_builder::AABB_tree_builder(uint32_t max_triangles_per_node) :
-	m_max_triangles_per_node(max_triangles_per_node), m_calculateAabb(), m_clipping(),
-	m_evaluateSplittingPlane(), m_assignNodeData(max_triangles_per_node)
+	m_calculateAabb(), m_clipping(), m_evaluateSplittingPlane(), m_assignNodeData(max_triangles_per_node),
+	max_triangles_per_node_(max_triangles_per_node)
 {}
 
 AABB_tree* AABB_tree_builder::build(const Model& model)
@@ -92,7 +92,7 @@ void AABB_tree_builder::split(AABB_node *node, std::vector<Triangle>& triangles)
 	node->aabb = m_calculateAabb.calculate_AABB(triangles);
 	node->index = get_new_node_index();
 
-	if (triangles.size() <= m_max_triangles_per_node)
+	if (triangles.size() <= max_triangles_per_node_)
 	{
 		assign_data(node, triangles);
 	}

@@ -38,7 +38,7 @@ private:
 	bool load_techniques(Effect& effect, const rapidjson::Value& techniques_node, const Constant_buffer_description_container& constant_buffer_descriptions,
 						 const std::vector<Effect_sampler::Description>& sampler_descriptions, const Shader_data_layout& data_layout) const;
 
-	Effect_technique* load_technique(const rapidjson::Value& technique_node, const Effect& effect, const std::string& constant_buffer_code, const std::string& sampler_code,
+	Effect_technique* load_technique(const rapidjson::Value& technique_node, const std::string& constant_buffer_code, const std::string& sampler_code,
 									 const Shader_data_layout& data_layout_descriptions) const;
 
 	void load_data_type_descriptions(const rapidjson::Value& layout_node, Shader_data_layout& layout) const;

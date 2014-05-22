@@ -26,17 +26,17 @@ void Vertex_layout_cache::release()
 	m_input_layouts.clear();
 }
 
-const Vertex_layout_description* Vertex_layout_cache::get_vertex_layout_description(uint32_t num_elements, const Vertex_layout_description::Element elements[])
+const Vertex_layout_description* Vertex_layout_cache::get_vertex_layout_description(uint32_t num_elements_, const Vertex_layout_description::Element elements[])
 {
 	for (auto vd : m_vertex_descriptions)
 	{
-		if (vd->consists_of(num_elements, elements))
+		if (vd->consists_of(num_elements_, elements))
 		{
 			return vd;
 		}
 	}
 
-	Vertex_layout_description* desc = new Vertex_layout_description(num_elements, elements);
+	Vertex_layout_description* desc = new Vertex_layout_description(num_elements_, elements);
 
 	m_vertex_descriptions.push_back(desc);
 

@@ -7,6 +7,8 @@
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Surface.hpp"
 
+#include <iostream>
+
 namespace rendering
 {
 
@@ -61,13 +63,20 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 	generate_shadow_.technique            = generate_shadow_.effect->get_technique("Generate_shadow_map");
 	generate_shadow_.alpha_test_technique = generate_shadow_.effect->get_technique("Generate_shadow_map_alpha_test");
 
-	generate_shadow_.input_layout = rendering_tool.get_vertex_layout_cache().get_input_layout(*Vertex_position3x32::vertex_layout_description(), generate_shadow_.technique->get_program()->get_signature());
+	if (!generate_shadow_.technique)
+	{
+		return std::cout << "Alarm!";
+	}
+
+	auto& vertex_layout_cache = rendering_tool.get_vertex_layout_cache();
+
+	generate_shadow_.input_layout = vertex_layout_cache.get_input_layout(*Vertex_position3x32::vertex_layout_description(), generate_shadow_.technique->get_program()->get_signature());
 	if (!generate_shadow_.input_layout)
 	{
 		return false;
 	}
 
-	generate_shadow_.alpha_test_input_layout = rendering_tool.get_vertex_layout_cache().get_input_layout(*Vertex_position3x32_tex_coord2x32::vertex_layout_description(), generate_shadow_.alpha_test_technique->get_program()->get_signature());
+	generate_shadow_.alpha_test_input_layout = vertex_layout_cache.get_input_layout(*Vertex_position3x32_tex_coord2x32::vertex_layout_description(), generate_shadow_.alpha_test_technique->get_program()->get_signature());
 	if (!generate_shadow_.alpha_test_input_layout)
 	{
 		return false;
@@ -92,7 +101,7 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 	resolve_shadow_.technique_linear = resolve_shadow_.effect->get_technique("Resolve_linear");
 	resolve_shadow_.technique_not_linear = resolve_shadow_.effect->get_technique("Resolve_not_linear");
 
-	resolve_shadow_.input_layout = rendering_tool.get_vertex_layout_cache().get_input_layout(*Vertex_position2x32::vertex_layout_description(), resolve_shadow_.technique_linear->get_program()->get_signature());
+	resolve_shadow_.input_layout = vertex_layout_cache.get_input_layout(*Vertex_position2x32::vertex_layout_description(), resolve_shadow_.technique_linear->get_program()->get_signature());
 	if (!resolve_shadow_.input_layout)
 	{
 		return false;

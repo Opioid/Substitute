@@ -14,8 +14,6 @@ CONFIG(debug, release|debug):DEFINES += _DEBUG
 
 DEFINES += CLIP_NEAR_Z_MINUS_ONE
 
-win32:DEFINES += GLEW_STATIC
-
 SOURCES +=
 
 HEADERS +=
@@ -45,8 +43,6 @@ DEPENDPATH += $$PWD/../Backend
 
 INCLUDEPATH += $$PWD/../../../../Libraries/rapidjson/include
 DEPENDPATH += $$PWD/../../../../Libraries/rapidjson/include
-
-win32:INCLUDEPATH += $$PWD/../../../../Libraries/glew-1.10.0/include
 
 win32:INCLUDEPATH += $$PWD/../../../../Libraries/angelscript_2.28.2/angelscript/include
 

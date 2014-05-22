@@ -1,6 +1,6 @@
 #include "AABB_node.hpp"
 
-AABB_node::AABB_node() : geometry_index(0xFFFFFFFF), skip_offset(0), geometry(nullptr), child0(nullptr), child1(nullptr)
+AABB_node::AABB_node() : geometry_index(0xFFFFFFFF), geometry(nullptr), skip_offset(0), child0(nullptr), child1(nullptr)
 {}
 
 AABB_node::~AABB_node()

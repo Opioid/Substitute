@@ -2,7 +2,6 @@
 #include "Rendering/Framebuffer.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Effect/Constant_buffer_adapter.hpp"
-#include <GL/glew.h>
 
 namespace rendering
 {
@@ -95,15 +94,6 @@ const Viewport& Rendering_tool::get_virtual_viewport() const
 
 void Rendering_tool::present() const
 {
-	/*
-    GLenum error = glGetError();
-
-    if (error)
-    {
-        std::cout << error;
-    }
-	*/
-
 	swapchain_.present();
 }
 
