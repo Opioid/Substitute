@@ -63,11 +63,6 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 	generate_shadow_.technique            = generate_shadow_.effect->get_technique("Generate_shadow_map");
 	generate_shadow_.alpha_test_technique = generate_shadow_.effect->get_technique("Generate_shadow_map_alpha_test");
 
-	if (!generate_shadow_.technique)
-	{
-		return std::cout << "Alarm!";
-	}
-
 	auto& vertex_layout_cache = rendering_tool.get_vertex_layout_cache();
 
 	generate_shadow_.input_layout = vertex_layout_cache.get_input_layout(*Vertex_position3x32::vertex_layout_description(), generate_shadow_.technique->get_program()->get_signature());
