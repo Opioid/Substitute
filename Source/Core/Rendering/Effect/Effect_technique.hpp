@@ -17,8 +17,8 @@ public:
 
 	void use() const;
 
-	const Shader_program* get_program() const;
-	Shader_program* get_program();
+	const Shader_program* program() const;
+	Shader_program* program();
 
 private:
 

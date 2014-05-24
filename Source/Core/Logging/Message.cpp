@@ -2,21 +2,23 @@
 
 namespace logging
 {
-	Message::Message(const std::string& text, Type::Value type, const void* source) : text_(text), type_(type), m_source(source)
-	{}
 
-	const std::string& Message::get_text() const
-	{
-		return text_;
-	}
+Message::Message(const std::string& text, Type type, const void* source) : text_(text), type_(type), source_(source)
+{}
 
-	Message::Type::Value Message::get_type() const
-	{
-		return type_;
-	}
+const std::string& Message::get_text() const
+{
+	return text_;
+}
 
-	const void* Message::get_source() const
-	{
-		return m_source;
-	}
+Message::Type Message::get_type() const
+{
+	return type_;
+}
+
+const void* Message::get_source() const
+{
+	return source_;
+}
+
 }

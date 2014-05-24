@@ -167,7 +167,7 @@ namespace gui
 				}
 				else
 				{
-					printer.set_position(get_absolute_position() + float2(2.f, 0 + printer.get_line_height() * float(m_printed_rows)));
+					printer.set_position(get_absolute_position() + float2(2.f, 0 + printer.line_height() * float(m_printed_rows)));
 
 					printer.print/*_raw*/(segment.length() > m_num_columns ? segment.substr(0, m_num_columns) : segment);
 

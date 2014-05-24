@@ -16,9 +16,9 @@ public:
 
 	~Cached_image();
 
-	const Image<rendering::Color4c>& get_source_image() const;
+	const Image<rendering::Color4c>& source_image() const;
 
-	const Image_buffer<rendering::Color4>& get_float_image_buffer(bool sRGB = false);
+	const Image_buffer<rendering::Color4>& float_image_buffer(bool sRGB = false);
 
 private:
 

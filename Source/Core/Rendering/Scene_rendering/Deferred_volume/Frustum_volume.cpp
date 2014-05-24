@@ -7,7 +7,7 @@ namespace rendering
 
 bool Frustum_volume::init(Rendering_tool& rendering_tool)
 {
-	vertex_buffer_ = rendering_tool.get_device().create_vertex_buffer(sizeof(float3) * 8);
+	vertex_buffer_ = rendering_tool.device().create_vertex_buffer(sizeof(float3) * 8);
 	if (!vertex_buffer_)
 	{
 		return false;
@@ -64,18 +64,18 @@ bool Frustum_volume::init(Rendering_tool& rendering_tool)
 	indices[34] = 7;
 	indices[35] = 6;
 
-	index_buffer_ = rendering_tool.get_device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
+	index_buffer_ = rendering_tool.device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
 	return index_buffer_ != nullptr;
 }
 
 void Frustum_volume::setup(const float3& pos, const Frustum& frustum, Rendering_tool& rendering_tool)
 {
-	rendering_tool.get_device().update_buffer(*vertex_buffer_, 0, 8 * sizeof(float3), frustum.points_);
+	rendering_tool.device().update_buffer(*vertex_buffer_, 0, 8 * sizeof(float3), frustum.points_);
 }
 
 void Frustum_volume::render(Rendering_tool& rendering_tool)
 {
-	auto& device = rendering_tool.get_device();
+	auto& device = rendering_tool.device();
 
 	device.set_primitive_topology(Primitive_topology::Triangle_list);
 

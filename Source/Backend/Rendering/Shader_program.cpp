@@ -89,12 +89,12 @@ void Shader_program::use() const
 	glUseProgram(id_);
 }
 
-const Shader_program::Signature& Shader_program::get_signature() const
+const Shader_program::Signature& Shader_program::signature() const
 {
 	return signature_;
 }
 
-uint32_t Shader_program::get_constant_buffer_size(const std::string& name) const
+uint32_t Shader_program::query_constant_buffer_size(const std::string& name) const
 {
 	uint32_t index = glGetUniformBlockIndex(id_, name.c_str());
 
@@ -163,7 +163,7 @@ bool Shader_program::Signature::operator==(const Signature& b) const
 	return true;
 }
 
-uint32_t Shader_program::Signature::get_num_elements_() const
+uint32_t Shader_program::Signature::num_elements() const
 {
 	return num_elements_;
 }

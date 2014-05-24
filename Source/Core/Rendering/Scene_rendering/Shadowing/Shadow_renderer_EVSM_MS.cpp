@@ -14,8 +14,8 @@ namespace rendering
 
 bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rendering_tool, Resource_manager& resource_manager, Constant_buffer_cache& /*constant_buffer_cache*/)
 {
-	auto& device = rendering_tool.get_device();
-	auto& render_target_cache = rendering_tool.get_render_target_cache();
+	auto& device = rendering_tool.device();
+	auto& render_target_cache = rendering_tool.render_target_cache();
 
 	Texture_description texture_description;
 	texture_description.type = Texture_description::Type::Texture_2D_multisample;
@@ -36,7 +36,7 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 		return false;
 	}
 
-	generate_shadow_.framebuffer->set_render_targets(depth_->get_depth_stencil_view());
+	generate_shadow_.framebuffer->set_render_targets(depth_->depth_stencil_view());
 	if (!generate_shadow_.framebuffer->is_valid())
 	{
 		return false;
@@ -48,7 +48,7 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 		return false;
 	}
 
-	resolve_shadow_.framebuffer->set_render_targets(shadow_map_->get_render_target_view());
+	resolve_shadow_.framebuffer->set_render_targets(shadow_map_->render_tarview());
 	if (!resolve_shadow_.framebuffer->is_valid())
 	{
 		return false;
@@ -60,18 +60,18 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 		return false;
 	}
 
-	generate_shadow_.technique            = generate_shadow_.effect->get_technique("Generate_shadow_map");
-	generate_shadow_.alpha_test_technique = generate_shadow_.effect->get_technique("Generate_shadow_map_alpha_test");
+	generate_shadow_.technique            = generate_shadow_.effect->technique("Generate_shadow_map");
+	generate_shadow_.alpha_test_technique = generate_shadow_.effect->technique("Generate_shadow_map_alpha_test");
 
-	auto& vertex_layout_cache = rendering_tool.get_vertex_layout_cache();
+	auto& vertex_layout_cache = rendering_tool.vertex_layout_cache();
 
-	generate_shadow_.input_layout = vertex_layout_cache.get_input_layout(*Vertex_position3x32::vertex_layout_description(), generate_shadow_.technique->get_program()->get_signature());
+	generate_shadow_.input_layout = vertex_layout_cache.input_layout(*Vertex_position3x32::vertex_layout_description(), generate_shadow_.technique->program()->signature());
 	if (!generate_shadow_.input_layout)
 	{
 		return false;
 	}
 
-	generate_shadow_.alpha_test_input_layout = vertex_layout_cache.get_input_layout(*Vertex_position3x32_tex_coord2x32::vertex_layout_description(), generate_shadow_.alpha_test_technique->get_program()->get_signature());
+	generate_shadow_.alpha_test_input_layout = vertex_layout_cache.input_layout(*Vertex_position3x32_tex_coord2x32::vertex_layout_description(), generate_shadow_.alpha_test_technique->program()->signature());
 	if (!generate_shadow_.alpha_test_input_layout)
 	{
 		return false;
@@ -93,10 +93,10 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 		return false;
 	}
 
-	resolve_shadow_.technique_linear = resolve_shadow_.effect->get_technique("Resolve_linear");
-	resolve_shadow_.technique_not_linear = resolve_shadow_.effect->get_technique("Resolve_not_linear");
+	resolve_shadow_.technique_linear = resolve_shadow_.effect->technique("Resolve_linear");
+	resolve_shadow_.technique_not_linear = resolve_shadow_.effect->technique("Resolve_not_linear");
 
-	resolve_shadow_.input_layout = vertex_layout_cache.get_input_layout(*Vertex_position2x32::vertex_layout_description(), resolve_shadow_.technique_linear->get_program()->get_signature());
+	resolve_shadow_.input_layout = vertex_layout_cache.input_layout(*Vertex_position2x32::vertex_layout_description(), resolve_shadow_.technique_linear->program()->signature());
 	if (!resolve_shadow_.input_layout)
 	{
 		return false;
@@ -107,7 +107,7 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 		return false;
 	}
 
-	return create_render_states(rendering_tool.get_render_state_cache());
+	return create_render_states(rendering_tool.render_state_cache());
 }
 
 void Shadow_renderer_EVSM_MS::generate_shadow(const float4x4& view_projection, const std::vector<Render_surface>& surfaces, const Viewport& viewport, Rendering_device& device)
@@ -122,7 +122,7 @@ void Shadow_renderer_EVSM_MS::generate_shadow(const float4x4& view_projection, c
 
 	generate_shadow_.effect->use(device);
 
-	generate_shadow_.change_per_view.get_data().view_projection = view_projection;
+	generate_shadow_.change_per_view.data().view_projection = view_projection;
 	generate_shadow_.change_per_view.update(device);
 
 	previous_material_ = nullptr;
@@ -136,7 +136,7 @@ void Shadow_renderer_EVSM_MS::generate_shadow(const float4x4& view_projection, c
 		if (s.surface->world != previous_world_transformation)
 		{
 			const float4x4& transform = *s.surface->world;
-			generate_shadow_.change_per_object.get_data().world = transform;
+			generate_shadow_.change_per_object.data().world = transform;
 			generate_shadow_.change_per_object.update(device);
 
 			previous_world_transformation = s.surface->world;
@@ -148,7 +148,7 @@ void Shadow_renderer_EVSM_MS::generate_shadow(const float4x4& view_projection, c
 
 		if (input_layout_changed || s.surface->index_buffer != previous_ib)
 		{
-			device.set_vertex_buffers(s.surface->vd->get_num_streams(), s.surface->vertex_buffers, s.surface->vd->get_strides());
+			device.set_vertex_buffers(s.surface->vd->num_streams(), s.surface->vertex_buffers, s.surface->vd->strides());
 			device.set_index_buffer(s.surface->index_buffer);
 
 			previous_ib = s.surface->index_buffer;
@@ -165,7 +165,7 @@ bool Shadow_renderer_EVSM_MS::prepare_material(const scene::Material* material, 
 		return false;
 	}
 
-	device.set_shader_resources(1, &material->get_textures()[0]);
+	device.set_shader_resources(1, &material->textures()[0]);
 
 	bool two_sided = material->is_two_sided();
 
@@ -199,7 +199,7 @@ bool Shadow_renderer_EVSM_MS::prepare_material(const scene::Material* material, 
 
 void Shadow_renderer_EVSM_MS::resolve_shadow_linear(const Handle<Framebuffer> target, const Handle<Shader_resource_view>& source, const float2& depth_clamp, const Viewport& viewport, Rendering_tool rendering_tool)
 {
-	Rendering_device& device = rendering_tool.get_device();
+	Rendering_device& device = rendering_tool.device();
 
 	device.set_rasterizer_state(resolve_shadow_.rasterizer_state);
 	device.set_depth_stencil_state(resolve_shadow_.ds_state, 0);
@@ -214,7 +214,7 @@ void Shadow_renderer_EVSM_MS::resolve_shadow_linear(const Handle<Framebuffer> ta
 
 	resolve_shadow_.effect->use(device);
 
-	resolve_shadow_.change_per_view.get_data().depth_clamp = depth_clamp;
+	resolve_shadow_.change_per_view.data().depth_clamp = depth_clamp;
 	resolve_shadow_.change_per_view.update(device);
 
 	resolve_shadow_.technique_linear->use();
@@ -224,7 +224,7 @@ void Shadow_renderer_EVSM_MS::resolve_shadow_linear(const Handle<Framebuffer> ta
 
 void Shadow_renderer_EVSM_MS::resolve_shadow_not_linear(const Handle<Framebuffer> target, const Handle<Shader_resource_view>& source, const float2& linear_depth_projection, const Viewport& viewport, Rendering_tool rendering_tool)
 {
-	Rendering_device& device = rendering_tool.get_device();
+	Rendering_device& device = rendering_tool.device();
 
 	device.set_rasterizer_state(resolve_shadow_.rasterizer_state);
 	device.set_depth_stencil_state(resolve_shadow_.ds_state, 0);
@@ -239,7 +239,7 @@ void Shadow_renderer_EVSM_MS::resolve_shadow_not_linear(const Handle<Framebuffer
 
 	resolve_shadow_.effect->use(device);
 
-	resolve_shadow_.change_per_view.get_data().depth_clamp = linear_depth_projection;
+	resolve_shadow_.change_per_view.data().depth_clamp = linear_depth_projection;
 	resolve_shadow_.change_per_view.update(device);
 
 	resolve_shadow_.technique_not_linear->use();

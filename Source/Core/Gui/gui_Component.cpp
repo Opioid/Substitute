@@ -41,7 +41,7 @@ void Component::set_position(const float2& pos)
 	position = pos;
 }
 
-const float2& Component::get_size() const
+const float2& Component::dimensions() const
 {
 	return size_;
 }

@@ -15,11 +15,11 @@ public:
 
 	virtual bool init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache);
 
-	virtual Handle<Shader_resource_view>& get_shadow_map();
+	virtual Handle<Shader_resource_view>& shadow_map();
 
-	uint32_t get_filter_kernel_size() const;
+	uint32_t filter_kernel_size() const;
 
-	virtual const float4* get_filter_kernel() const;
+	virtual const float4* filter_kernel() const;
 
 private:
 

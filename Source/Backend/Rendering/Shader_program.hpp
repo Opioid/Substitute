@@ -25,10 +25,10 @@ public:
 
 	void use() const;
 
-	const Signature& get_signature() const;
+	const Signature& signature() const;
 
 	// returns 0 if buffer is not found
-	uint32_t get_constant_buffer_size(const std::string& name) const;
+	uint32_t query_constant_buffer_size(const std::string& name) const;
 
 public:
 
@@ -53,7 +53,7 @@ public:
 		Signature& operator=(const Signature& signature);
 		bool operator==(const Signature& b) const;
 
-		uint32_t get_num_elements_() const;
+		uint32_t num_elements() const;
 		const Element& operator[](uint32_t index) const;
 
 		void resize(uint32_t num_elements_);

@@ -28,7 +28,7 @@ class Texture;
 class Texture_transfer;
 struct Texture_description;
 class Shader_resource_view;
-class Render_target_view;
+class Render_tarview;
 class Render_target_shader_resource_view;
 class Cube_render_target_shader_resource_view;
 class Depth_stencil_view;
@@ -67,7 +67,7 @@ public:
 	Handle<Texture_transfer> create_texture_transfer(const Texture_description& description) const;
 
 	Handle<Shader_resource_view> create_shader_resource_view(const Handle<Texture>& texture, const std::string& name) const;
-	Handle<Render_target_view> create_render_target_view(const Handle<Texture>& texture, uint32_t min_layer = 0, uint32_t num_layers = 1) const;
+	Handle<Render_tarview> create_render_tarview(const Handle<Texture>& texture, uint32_t min_layer = 0, uint32_t num_layers = 1) const;
 	Handle<Render_target_shader_resource_view> create_render_target_shader_resource_view(const Texture_description& description) const;
 	Handle<Cube_render_target_shader_resource_view> create_cube_render_target_shader_resource_view(const Texture_description& description) const;
 	Handle<Depth_stencil_view> create_depth_stencil_view(const Texture_description& description) const;
@@ -87,7 +87,7 @@ public:
 
 	void generate_mip_maps(const Handle<Texture>& texture) const;
 
-	void copy(const Handle<Texture_transfer>& destination, const Handle<Render_target_view>& source) const;
+	void copy(const Handle<Texture_transfer>& destination, const Handle<Render_tarview>& source) const;
 	void map(unsigned char** buffer, const Handle<Texture_transfer>& texture) const;
 	void unmap(const Handle<Texture_transfer>& texture) const;
 

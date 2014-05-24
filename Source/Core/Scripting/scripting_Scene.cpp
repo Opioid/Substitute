@@ -14,7 +14,7 @@ namespace scripting
 
 	bool init_scene(Script_tool& tool)
 	{
-		Script_engine const& engine = tool.get_engine();
+		Script_engine const& engine = tool.engine();
 
 		engine.set_default_namespace("scene");
 
@@ -35,12 +35,12 @@ namespace scripting
 
 	void set_exposure(float exposure)
 	{
-		app->get_scene().get_camera().set_exposure(exposure);
+		app->scene().camera().set_exposure(exposure);
 	}
 
 	void set_linear_white(float white)
 	{
-		app->get_scene().get_camera().set_linear_white(float3(white, white, white));
+		app->scene().camera().set_linear_white(float3(white, white, white));
 	}
 
 }

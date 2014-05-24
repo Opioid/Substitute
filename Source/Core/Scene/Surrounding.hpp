@@ -17,10 +17,10 @@ public:
 
     void clear();
 
-	const rendering::Color3& get_color() const;
+	const rendering::Color3& color() const;
 	void set_color(const rendering::Color3& color);
 
-	const Handle<rendering::Shader_resource_view> get_texture() const;
+	const Handle<rendering::Shader_resource_view> texture() const;
 	void set_texture(const Handle<rendering::Shader_resource_view>& texture);
 
 private:

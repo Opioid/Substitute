@@ -5,7 +5,7 @@ namespace id
 	ID_manager manager;
 }
 
-size_t ID_manager::get_id(const std::string& type_name)
+size_t ID_manager::id(const std::string& type_name)
 {
 	for (size_t i = 0; i < get_names().size(); ++i)
 	{
@@ -20,7 +20,7 @@ size_t ID_manager::get_id(const std::string& type_name)
 	return get_names().size() - 1;
 }
 
-std::string ID_manager::get_name(size_t id) const
+std::string ID_manager::name(size_t id) const
 {
 	return get_names()[id];
 }

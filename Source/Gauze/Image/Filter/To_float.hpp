@@ -14,7 +14,7 @@ public:
 
     bool filter(Image_buffer<rendering::Color4>& destination, const Image_buffer<rendering::Color4c>& source) const
     {
-		uint32_t num_pixels = std::min(destination.get_num_pixels(), source.get_num_pixels());
+		uint32_t num_pixels = std::min(destination.num_pixels(), source.num_pixels());
 
 		for (uint32_t i = 0; i < num_pixels; ++i)
 		{

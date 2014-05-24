@@ -19,7 +19,7 @@ public:
 
 	bool init(const Effect* effect, const std::string& buffer_name)
 	{
-		adapter_ = effect->get_constant_buffer_adapter(buffer_name);
+		adapter_ = effect->constant_buffer_adapter(buffer_name);
 		if (!adapter_)
 		{
 			return false;
@@ -28,12 +28,12 @@ public:
 		return true;
 	}
 
-	T& get_data()
+	T& data()
 	{
 		return data_;
 	}
 
-	Constant_buffer_adapter* get_adapter()
+	Constant_buffer_adapter* adapter()
 	{
 		return adapter_;
 	}

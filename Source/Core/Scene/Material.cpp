@@ -20,7 +20,7 @@ Material::Material(const std::string& name) :
 Material::~Material()
 {}
 
-Material::Technique Material::get_technique() const
+Material::Technique Material::technique() const
 {
 	return technique_;
 }
@@ -50,12 +50,12 @@ void Material::set_two_sided(bool two_sided)
 	properties_.set(Property::Two_sided, two_sided);
 }
 
-const rendering::Color4& Material::get_color_and_emissive_factor() const
+const rendering::Color4& Material::color_and_emissive_factor() const
 {
 	return color_and_emissive_factor_;
 }
 
-const rendering::Color3& Material::get_color() const
+const rendering::Color3& Material::color() const
 {
 	return color_and_emissive_factor_.rgb;
 }
@@ -65,7 +65,7 @@ void Material::set_color(const rendering::Color3& color)
 	color_and_emissive_factor_.rgb = color;
 }
 
-float Material::get_emissive_factor() const
+float Material::emissive_factor() const
 {
 	return color_and_emissive_factor_.w * 100.f;
 }
@@ -75,7 +75,7 @@ void Material::set_emissive_factor(float emissive_factor)
 	color_and_emissive_factor_.w = emissive_factor / 100.f;
 }
 
-const float2& Material::get_metallic_and_roughness() const
+const float2& Material::metallic_and_roughness() const
 {
 	return metallic_and_roughness_;
 }
@@ -85,7 +85,7 @@ void Material::set_metallic_and_roughness(const float2& metallic_and_roughness)
 	metallic_and_roughness_ = metallic_and_roughness;
 }
 
-float Material::get_metallic() const
+float Material::metallic() const
 {
 	return metallic_and_roughness_.x;
 }
@@ -95,7 +95,7 @@ void Material::set_metallic(float metallic)
 	metallic_and_roughness_.x = metallic;
 }
 
-float Material::get_roughness() const
+float Material::roughness() const
 {
 	return metallic_and_roughness_.y;
 }
@@ -105,7 +105,7 @@ void Material::set_roughness(float roughness)
 	metallic_and_roughness_.y = std::max(roughness, 2.f / 255.f);
 }
 
-const float2& Material::get_height_scale() const
+const float2& Material::height_scale() const
 {
 	return height_scale_;
 }
@@ -115,7 +115,7 @@ void Material::set_height_scale(const float2& scale)
 	height_scale_ = scale;
 }
 
-const Handle<rendering::Shader_resource_view>* Material::get_textures() const
+const Handle<rendering::Shader_resource_view>* Material::textures() const
 {
 	return textures_;
 }

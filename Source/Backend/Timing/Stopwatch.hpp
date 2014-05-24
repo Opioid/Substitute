@@ -18,17 +18,17 @@ public:
 
     double stop();
 
-    double get_elapsed_time() const;
+    double elapsed_time() const;
 
 private:
 
-    uint64_t get_current_time() const;
+    uint64_t current_time() const;
 
-    uint64_t m_start_time;
+    uint64_t start_time_;
 
-    double m_elapsed_time;
+    double elapsed_time_;
 
-    double m_frequency;
+    double frequency_;
 };
 
 }

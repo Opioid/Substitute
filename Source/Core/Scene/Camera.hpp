@@ -13,25 +13,25 @@ public:
 
 	Camera();
 
-	const float4x4& get_view() const;
-	const float4x4& get_projection() const;
-	const float4x4& get_view_projection() const;
+	const float4x4& view() const;
+	const float4x4& projection() const;
+	const float4x4& view_projection() const;
 
-	const Frustum& get_frustum() const;
+	const Frustum& frustum() const;
 
-	const float3* get_view_rays_vs() const;
-	const float3* get_view_rays_ws() const;
+	const float3* view_rays_vs() const;
+	const float3* view_rays_ws() const;
 
-	const float2& get_linear_depth_projection() const;
+	const float2& linear_depth_projection() const;
 
-	float get_fov() const;
-	float get_ratio() const;
-	float get_z_near() const;
-	float get_z_far() const;
+	float FOV() const;
+	float ratio() const;
+	float z_near() const;
+	float z_far() const;
 
 	bool is_upside_down() const;
 
-	float get_greatest_distance_to_near_plane() const;
+	float greatest_distance_to_near_plane() const;
 
 	void update_view();
 	void update_frustum();
@@ -44,10 +44,10 @@ public:
 	void set_rot(const float3x3& rot);
 	void translate(const float3& v);
 
-	float get_exposure() const;
+	float exposure() const;
 	void set_exposure(float exposure);
 
-	const float3& get_linear_white() const;
+	const float3& linear_white() const;
 	void set_linear_white(const float3& linear_white);
 
 private:

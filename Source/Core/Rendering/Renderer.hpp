@@ -56,20 +56,20 @@ public:
 	bool init(Application& app, Resource_manager& resource_manager, bool enable_fxaa);
 	void release();
 
-	baking::Light_baker* get_light_baker();
+	baking::Light_baker* light_baker();
 
 	void render(Application& app, float speed);
 
-	bool get_render_analytical_lighting() const;
+	bool render_analytical_lighting() const;
 	void set_render_analytical_lighting(bool enable);
 
-	bool get_render_image_based_lighting() const;
+	bool render_image_based_lighting() const;
 	void set_render_image_based_lighting(bool enable);
 
-	bool get_render_bounding_volumes() const;
+	bool render_bounding_volumes() const;
 	void set_render_bounding_volumes(bool enable);
 
-	bool get_render_help_light() const;
+	bool render_help_light() const;
 	void set_render_help_light(bool enable);
 
 private:

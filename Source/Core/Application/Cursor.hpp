@@ -18,8 +18,8 @@ public:
 
 	void update(const float2& coords);
 
-	const float2& get_coord() const;
-	const float2& get_previous_coord() const;
+	const float2& coord() const;
+	const float2& previous_coord() const;
 
 	Ray3 get_ray(const scene::Camera& camera, const uint2& screen_size) const;
 

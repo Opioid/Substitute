@@ -63,7 +63,7 @@ class Resource_manager
 
 			while (r != resources.end())
 			{
-				if (r->second.get_reference_count() <= 1)
+				if (r->second.reference_count() <= 1)
 				{
 					r = resources.erase(r);
 
@@ -120,22 +120,22 @@ class Resource_manager
 			size_t c = 1;
 			for (auto r = resource_handles_.begin(); r != resource_handles_.end(); ++r, ++c)
 			{
-				const size_t num_bytes = r->second->get_num_bytes();
+				const size_t num_bytes = r->second->num_bytes();
 				num_bytes_total += num_bytes;
 
-				std::ostringstream ost;
-				ost << "[" << c - 1 << "]" << (c <= 10 ? "  " : " ") << "\"" << r->first 
-				    << "\", " << string::format_byte_size(num_bytes) << " (" << r->second.get_reference_count() - 1 << ")";
+				std::ostringstream stream;
+				stream << "[" << c - 1 << "]" << (c <= 10 ? "  " : " ") << "\"" << r->first
+					   << "\", " << string::format_byte_size(num_bytes) << " (" << r->second.reference_count() - 1 << ")";
 
-				info.push_back(ost.str());
+				info.push_back(stream.str());
 			}
 
-			info[start] = provider_->get_name() + ", " + string::format_byte_size(num_bytes_total) + ":";
+			info[start] = provider_->name() + ", " + string::format_byte_size(num_bytes_total) + ":";
 
 			return num_bytes_total;
 		}
 
-		const Resource_provider<Type>* get_provider() const
+		const Resource_provider<Type>* provider() const
 		{
 			return provider_;
 		}
@@ -156,7 +156,7 @@ public:
 	template<typename Type>
 	void cleanup()
 	{
-		auto store = stores_.find(Resource_provider<Type>::get_id());
+		auto store = stores_.find(Resource_provider<Type>::id());
 
 		if (stores_.end() != store)
 		{
@@ -169,12 +169,12 @@ public:
 	{
 		if (provider)
 		{
-			stores_[Resource_provider<Type>::get_id()] = new Resource_store<Type>(provider);
+			stores_[Resource_provider<Type>::id()] = new Resource_store<Type>(provider);
 		}
 	}
 
 	template<typename Type>
-	const Resource_provider<Type>* get_provider() const
+	const Resource_provider<Type>* provider() const
 	{
 		auto store = get_resource_store<Type>();
 
@@ -183,13 +183,13 @@ public:
 			return nullptr;
 		}
 
-		return store->get_provider();
+		return store->provider();
 	}
 
 	template<typename Type>
 	uint32_t get_unique_ID()
 	{
-		return stores_[Resource_provider<Type>::get_id()]->get_unique_resource_ID();
+		return stores_[Resource_provider<Type>::id()]->get_unique_resource_ID();
 	}
 
 	template<typename Type>
@@ -219,9 +219,9 @@ public:
 
 		std::string resolved_path;
 
-		if (!virtual_file_system_.get_resolved_complete_path(resolved_path, name))
+		if (!virtual_file_system_.query_resolved_complete_path(resolved_path, name))
 		{
-			logging::error("Resource_manager::load<" + store->get_provider()->get_name() + ">(): could not open stream for \"" + name + "\".");
+			logging::error("Resource_manager::load<" + store->provider()->name() + ">(): could not open stream for \"" + name + "\".");
 			return nullptr;
 		}
 
@@ -233,11 +233,11 @@ public:
 		if (!stream)
 		{
 			virtual_file_system_.pop_mount();
-			logging::error("Resource_manager::load<" + store->get_provider()->get_name() + ">(): could not open stream for \"" + name + "\".");
+			logging::error("Resource_manager::load<" + store->provider()->name() + ">(): could not open stream for \"" + name + "\".");
 			return nullptr;
 		}
 
-		resource = store->get_provider()->load(stream, *this, flags);
+		resource = store->provider()->load(stream, *this, flags);
 
 		if (!resource)
 		{
@@ -263,9 +263,9 @@ public:
 			return nullptr;
 		}
 
-		Handle<Type> resource = store->get_provider()->clone(original, *this);
+		Handle<Type> resource = store->provider()->clone(original, *this);
 
-		store->add_resource(resource, original->get_name() + string::to_string(store->query_new_id()));
+		store->add_resource(resource, original->name() + string::to_string(store->query_new_id()));
 
 		return resource;
 	}
@@ -295,7 +295,7 @@ private:
 	template<typename Type>
 	const Resource_store<Type>* get_resource_store() const
 	{
-		auto store_base = stores_.find(Resource_provider<Type>::get_id());
+		auto store_base = stores_.find(Resource_provider<Type>::id());
 
 		if (stores_.end() == store_base)
 		{
@@ -308,7 +308,7 @@ private:
 	template<typename Type>
 	Resource_store<Type>* get_resource_store()
 	{
-		auto store_base = stores_.find(Resource_provider<Type>::get_id());
+		auto store_base = stores_.find(Resource_provider<Type>::id());
 
 		if (stores_.end() == store_base)
 		{
@@ -320,7 +320,7 @@ private:
 
 public:
 
-	file::Virtual_file_system& get_virtual_file_system();
+	file::Virtual_file_system& virtual_file_system();
 
 	void get_resource_info(std::vector<std::string>& info, const std::string& type = "") const;
 

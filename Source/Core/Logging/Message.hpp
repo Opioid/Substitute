@@ -4,33 +4,32 @@
 
 namespace logging
 {
-	class Message
+
+class Message
+{
+
+public:
+
+	enum class Type
 	{
-
-	public:
-
-		struct Type
-		{
-			enum Value
-			{
-				Input,
-				Output,
-				Ok,
-				Warning,
-				Error
-			};
-		};
-
-		Message(const std::string& text, Type::Value type, const void* source = nullptr);
-
-		const std::string& get_text() const;
-		Type::Value get_type() const;
-		const void* get_source() const;
-
-	private:
-
-		std::string text_;
-		Type::Value type_;
-		const void* m_source;
+		Input,
+		Output,
+		Ok,
+		Warning,
+		Error
 	};
+
+	Message(const std::string& text, Type type, const void* source = nullptr);
+
+	const std::string& get_text() const;
+	Type get_type() const;
+	const void* get_source() const;
+
+private:
+
+	std::string text_;
+	Type type_;
+	const void* source_;
+};
+
 }

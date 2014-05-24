@@ -14,7 +14,7 @@ public:
 
     void set_deferred_depth(const Handle<Shader_resource_view>& depth);
 
-	virtual Handle<Shader_resource_view>& get_white_buffer() = 0;
+	virtual Handle<Shader_resource_view>& white_buffer() = 0;
 
 protected:
 

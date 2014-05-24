@@ -35,8 +35,8 @@ public:
 	void begin();
 	void end();
 
-	float2 get_screen_size() const;
-	int get_line_height() const;
+	float2 screen_dimensions() const;
+	int line_height() const;
 
 	bool set_font(const std::string& name, uint32_t width, uint32_t height = 0);
 

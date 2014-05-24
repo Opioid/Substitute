@@ -60,7 +60,7 @@ Light_probe_baker::~Light_probe_baker()
 
 bool Light_probe_baker::init(Resource_manager& resource_manager, const uint2& dimensions)
 {
-	if (!scene::Light_probe::get_integrated_brdf())
+	if (!scene::Light_probe::integrated_brdf())
 	{
 		scene::Light_probe::set_intergrated_brdf(create_integrated_brdf(1024, resource_manager));
 	}
@@ -90,7 +90,7 @@ bool Light_probe_baker::init(Resource_manager& resource_manager, const uint2& di
 		return false;
 	}
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->get_technique(0)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->technique(0)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
@@ -111,16 +111,16 @@ bool Light_probe_baker::init(Resource_manager& resource_manager, const uint2& di
 
 bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& resource_manager) const
 {
-	auto& file_system = resource_manager.get_virtual_file_system();
+	auto& file_system = resource_manager.virtual_file_system();
 
-	uint64_t scene_last_modified = file_system.file_last_modified(scene.get_name());
+	uint64_t scene_last_modified = file_system.file_last_modified(scene.name());
 
-	std::string cache_load_name_template = get_cache_load_name_template(scene.get_name());
+	std::string cache_load_name_template = get_cache_load_name_template(scene.name());
 
 	Flags flags;
 	flags.set(rendering::Texture_provider::Options::Texture_Cube, true);
 
-	if (scene.get_surrounding_light_probe())
+	if (scene.surrounding_light_probe())
 	{
 		std::string cache_load_name = cache_load_name_template + "_surrounding_light_probe.sui";
 
@@ -135,7 +135,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 
 		if (environment_map)
 		{
-			scene.get_surrounding_light_probe()->set_texture(environment_map);
+			scene.surrounding_light_probe()->set_texture(environment_map);
 		}
 		else
 		{
@@ -171,7 +171,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 
 bool Light_probe_baker::allocate_targets()
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	framebuffer_ = device.create_framebuffer();
 
@@ -193,7 +193,7 @@ bool Light_probe_baker::allocate_targets()
 		return false;
 	}
 
-	framebuffer_->set_render_targets(filter_target_->get_render_target_view());
+	framebuffer_->set_render_targets(filter_target_->render_tarview());
 
 	if (framebuffer_->is_valid())
 	{
@@ -213,7 +213,7 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 {
 	environment_map_renderer.configure_for_single_cube_map(dimensions_);
 
-	Handle<Shader_resource_view>& color_shader_resource = environment_map_renderer.get_color_target()->get_shader_resource_view();
+	Handle<Shader_resource_view>& color_shader_resource = environment_map_renderer.color_target()->shader_resource_view();
 
 	Rendering_context::Rendering_options options;
 
@@ -221,9 +221,9 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 	options.set(Rendering_context::Options::Render_surrounding, true);
 	options.set(Rendering_context::Options::Face_culling, true);
 
-	std::string cache_save_name_template = get_cache_save_name_template(scene.get_name(), resource_manager);
+	std::string cache_save_name_template = get_cache_save_name_template(scene.name(), resource_manager);
 
-	if (scene.get_surrounding_light_probe() && 0 == pass)
+	if (scene.surrounding_light_probe() && 0 == pass)
 	{
 
 		options.set(Rendering_context::Options::Render_static_geometry, false);
@@ -235,7 +235,7 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 
 		std::string cache_save_name = cache_save_name_template + "_surrounding_light_probe.sui";
 
-		scene.get_surrounding_light_probe()->set_texture(filter_environment_map(color_shader_resource, true, cache_save_name));
+		scene.surrounding_light_probe()->set_texture(filter_environment_map(color_shader_resource, true, cache_save_name));
 	}
 
 	options.set(Rendering_context::Options::Render_static_geometry, true);
@@ -245,7 +245,7 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 
 	for (auto p : scene.get_light_probes())
 	{
-		environment_map_renderer.render(scene, p->get_world_position(), options);
+		environment_map_renderer.render(scene, p->world_position(), options);
 
 		std::string cache_save_name = cache_save_name_template + "_light_probe_0.sui";
 
@@ -255,7 +255,7 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 
 Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Handle<Shader_resource_view>& environment_map, bool cache, const std::string& cache_name)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	Texture_description texture_description;
 	texture_description.type = rendering::Texture_description::Type::Texture_2D;
@@ -283,7 +283,7 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 
 	camera.set_projection(math::to_radians(90.f), 1.f, 0.1f, 100.f);
 
-	uint32_t bytes_per_pixel = uint32_t(Data_format::size_of(texture_description.format));
+	uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(texture_description.format);
 
 	Viewport viewport;
 
@@ -293,8 +293,8 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 		camera.set_view(view);
 		camera.update_frustum();
 
-		const float3* rays = camera.get_view_rays_ws();
-		auto& changer_per_view_data = change_per_view_.get_data();
+		const float3* rays = camera.view_rays_ws();
+		auto& changer_per_view_data = change_per_view_.data();
 		changer_per_view_data.ray0 = rays[0];
 		changer_per_view_data.ray1 = rays[1];
 		changer_per_view_data.ray2 = rays[2];
@@ -308,14 +308,14 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 			viewport.size = float2(data.dimensions.xy);
 			device.set_viewports(1, &viewport);
 
-			change_per_roughness_.get_data().roughness = roughness_[r];
+			change_per_roughness_.data().roughness = roughness_[r];
 			change_per_roughness_.update(device);
 
-			effect_->get_technique(0)->use();
+			effect_->technique(0)->use();
 
             rendering_tool_.render_fullscreen_effect();
 
-			device.copy(texture_transfer, filter_target_->get_render_target_view());
+			device.copy(texture_transfer, filter_target_->render_tarview());
 
 			unsigned char* buffer;
 			device.map(&buffer, texture_transfer);
@@ -345,7 +345,7 @@ bool Light_probe_baker::create_render_states()
 {
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_ = rendering_tool_.get_render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_)
 	{
 		return false;
@@ -364,7 +364,7 @@ bool Light_probe_baker::create_render_states()
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
 
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -374,7 +374,7 @@ bool Light_probe_baker::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;
@@ -499,7 +499,7 @@ Handle<Shader_resource_view> Light_probe_baker::create_integrated_brdf(uint32_t 
 
 //	rendering::texture_storage::save("../../Data/Textures/LUT/integrated_brdf_" + string::to_string(num_samples) + ".dds", texture_data_adapter, file::File_type::DDS);
 
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	Handle<Texture> texture = device.create_texture_2D(texture_data_adapter);
 

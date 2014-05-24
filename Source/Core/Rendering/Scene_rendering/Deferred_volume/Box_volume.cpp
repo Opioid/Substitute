@@ -18,7 +18,7 @@ bool Box_volume::init(Rendering_tool& rendering_tool)
 	vertices[6] = float3( 1.f,  1.0f, 1.f);
 	vertices[7] = float3( 1.f, -1.0f, 1.f);
 
-	vertex_buffer_ = rendering_tool.get_device().create_vertex_buffer(sizeof(float3) * 8, vertices);
+	vertex_buffer_ = rendering_tool.device().create_vertex_buffer(sizeof(float3) * 8, vertices);
 	if (!vertex_buffer_)
 	{
 		return false;
@@ -75,13 +75,13 @@ bool Box_volume::init(Rendering_tool& rendering_tool)
 	indices[34] = 3;
 	indices[35] = 7;
 
-	index_buffer_ = rendering_tool.get_device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
+	index_buffer_ = rendering_tool.device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
 	return index_buffer_ != nullptr;
 }
 
 void Box_volume::render(Rendering_tool& rendering_tool) const
 {
-	auto& device = rendering_tool.get_device();
+	auto& device = rendering_tool.device();
 
 	device.set_primitive_topology(Primitive_topology::Triangle_list);
 

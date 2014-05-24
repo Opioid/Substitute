@@ -88,13 +88,13 @@ void AABB_tree::add_static_prop(Static_prop* prop)
 
 bool AABB_tree::add_static_prop(Static_prop* prop, AABB_node* node)
 {
-	const AABB& aabb = prop->get_aabb();
+	const AABB& aabb = prop->aabb();
 
 	AABB_node* enclosing_node = nullptr;
 
 	while (node)
 	{
-		Intersection_type::Value intersection = node->get_aabb().intersect(aabb);
+		Intersection_type::Value intersection = node->aabb().intersect(aabb);
 
 		if (Intersection_type::Inside == intersection)
 		{

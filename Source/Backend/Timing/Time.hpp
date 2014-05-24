@@ -4,6 +4,6 @@
 
 namespace timing
 {
-	std::string get_time_string();
-	std::string get_date_string();
+	std::string time_string();
+	std::string date_string();
 }

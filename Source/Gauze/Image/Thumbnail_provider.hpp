@@ -18,13 +18,13 @@ public:
 
 	~Thumbnail_provider();
 
-	const uint2& get_thumbnail_dimensions();
+	const uint2& thumbnail_dimensions();
 
-    const Image_buffer<rendering::Color4c>& get_checkerboard() const;
+	const Image_buffer<rendering::Color4c>& checkerboard() const;
 
 	Image_buffer<rendering::Color4>* get_thumbnail(const std::string& file_name);
 
-	Image_buffer<rendering::Color4>& get_scratch_buffer();
+	Image_buffer<rendering::Color4>& scratch_buffer();
 
 private:
 

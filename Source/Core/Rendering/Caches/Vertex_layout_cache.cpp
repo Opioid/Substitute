@@ -26,7 +26,7 @@ void Vertex_layout_cache::release()
 	m_input_layouts.clear();
 }
 
-const Vertex_layout_description* Vertex_layout_cache::get_vertex_layout_description(uint32_t num_elements_, const Vertex_layout_description::Element elements[])
+const Vertex_layout_description* Vertex_layout_cache::vertex_layout_description(uint32_t num_elements_, const Vertex_layout_description::Element elements[])
 {
 	for (auto vd : m_vertex_descriptions)
 	{
@@ -43,7 +43,7 @@ const Vertex_layout_description* Vertex_layout_cache::get_vertex_layout_descript
 	return desc;
 }
 
-Handle<Input_layout> Vertex_layout_cache::get_input_layout(const Vertex_layout_description& vd, const Shader_program::Signature& sig)
+Handle<Input_layout> Vertex_layout_cache::input_layout(const Vertex_layout_description& vd, const Shader_program::Signature& sig)
 {
 	for (auto l : m_input_layouts)
 	{

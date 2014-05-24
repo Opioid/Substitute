@@ -43,7 +43,7 @@ bool Renderer::init(Application& app, Resource_manager& resource_manager, bool e
 		return false;
 	}
 
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	logging::post(device.get_api_info());
 
@@ -62,11 +62,11 @@ bool Renderer::init(Application& app, Resource_manager& resource_manager, bool e
 
 //	scene_renderer_ = new Test_scene_renderer0(rendering_tool_, surface_collector_, *surrounding_renderer_);
 
-	const uint2& virtual_size = rendering_tool_.get_virtual_size();
+	const uint2& virtual_size = rendering_tool_.virtual_dimensions();
 
 	Constant_buffer_cache constant_buffer_cache;
 
-	if (!scene_renderer_->init(resource_manager, constant_buffer_cache) || !scene_renderer_->resize_targets(virtual_size, rendering_tool_.get_main_depth_stencil()))
+	if (!scene_renderer_->init(resource_manager, constant_buffer_cache) || !scene_renderer_->resize_targets(virtual_size, rendering_tool_.main_depth_stencil()))
 	{
 		logging::error("Main scene renderer could not be initialized.");
 		return false;
@@ -91,22 +91,22 @@ bool Renderer::init(Application& app, Resource_manager& resource_manager, bool e
 		return false;
 	}
 
-	framebuffer_->set_render_targets(hdr_target_->get_render_target_view(), rendering_tool_.get_main_depth_stencil()->get_depth_stencil_view());
+	framebuffer_->set_render_targets(hdr_target_->render_tarview(), rendering_tool_.main_depth_stencil()->depth_stencil_view());
 
 	if (!framebuffer_->is_valid())
 	{
 		return false;
 	}
 
-	const auto& scene  = app.get_scene();
-	const auto& camera = scene.get_camera();
+	const auto& scene  = app.scene();
+	const auto& camera = scene.camera();
 
-	hdr_context_.set_viewport(rendering_tool_.get_virtual_viewport());
+	hdr_context_.set_viewport(rendering_tool_.virtual_viewport());
 	hdr_context_.set_framebuffer(framebuffer_);
 	hdr_context_.set_camera(camera);
 
-	presentation_context_.set_viewport(rendering_tool_.get_viewport());
-	presentation_context_.set_framebuffer(rendering_tool_.get_default_framebuffer());
+	presentation_context_.set_viewport(rendering_tool_.viewport());
+	presentation_context_.set_framebuffer(rendering_tool_.default_framebuffer());
 	presentation_context_.set_camera(camera);
 
 	if (!post_processing_.init(resource_manager) || !post_processing_.resize_targets(virtual_size, Data_format::R8G8B8A8_UNorm_sRGB))
@@ -186,31 +186,31 @@ void Renderer::release()
 	texture_storage::release();
 }
 
-baking::Light_baker* Renderer::get_light_baker()
+baking::Light_baker* Renderer::light_baker()
 {
 	return light_baker_;
 }
 
 void Renderer::render(Application& app, float /*speed*/)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	Color4 clear_color(0.f, 0.f, 0.f, 0.f);
 	device.clear_color(framebuffer_, 1, &clear_color);
 	device.clear_depth_stencil(framebuffer_, 1.f, 0);
 
-	auto& options = hdr_context_.get_options();
+	auto& options = hdr_context_.options();
 	options.set(Rendering_context::Options::Render_analytical_lighting, render_analytical_lighting_);
 	options.set(Rendering_context::Options::Render_image_based_lighting, render_image_based_lighting_);
 
-	const auto& scene = app.get_scene();
+	const auto& scene = app.scene();
 	scene_renderer_->render(scene, hdr_context_);
 
-	const auto& camera = hdr_context_.get_camera();
-	hdr_filter_->set_exposure(camera.get_exposure());
-	hdr_filter_->set_linear_white(camera.get_linear_white());
+	const auto& camera = hdr_context_.camera();
+	hdr_filter_->set_exposure(camera.exposure());
+	hdr_filter_->set_linear_white(camera.linear_white());
 
-	post_processing_.render(hdr_target_->get_shader_resource_view(), hdr_context_.get_viewport(), presentation_context_);
+	post_processing_.render(hdr_target_->shader_resource_view(), hdr_context_.viewport(), presentation_context_);
 
 	if (render_help_light_)
 	{
@@ -222,22 +222,22 @@ void Renderer::render(Application& app, float /*speed*/)
 		bounding_renderer_->render(scene, presentation_context_);
 	}
 
-	if (Application::Mode::Edit == app.get_mode())
+	if (Application::Mode::Edit == app.mode())
 	{
-		editor_renderer_->render(scene, app.get_editor(), presentation_context_);
+		editor_renderer_->render(scene, app.editor(), presentation_context_);
 	}
 /*
 	Color4 clear_color(0.f, 0.f, 0.f, 0.f);
-	device.clear_color(presentation_context_.get_framebuffer(), 1, &clear_color);
+	device.clear_color(presentation_context_.framebuffer(), 1, &clear_color);
 
-	device.clear_depth_stencil(presentation_context_.get_framebuffer(), 1.f, 0);
+	device.clear_depth_stencil(presentation_context_.framebuffer(), 1.f, 0);
 
-	const auto& scene = app.get_scene();
+	const auto& scene = app.scene();
 	scene_renderer_->render(scene, presentation_context_);
 	*/
 }
 
-bool Renderer::get_render_analytical_lighting() const
+bool Renderer::render_analytical_lighting() const
 {
 	return render_analytical_lighting_;
 }
@@ -247,7 +247,7 @@ void Renderer::set_render_analytical_lighting(bool enable)
 	render_analytical_lighting_ = enable;
 }
 
-bool Renderer::get_render_image_based_lighting() const
+bool Renderer::render_image_based_lighting() const
 {
 	return render_image_based_lighting_;
 }
@@ -258,7 +258,7 @@ void Renderer::set_render_image_based_lighting(bool enable)
 }
 
 
-bool Renderer::get_render_bounding_volumes() const
+bool Renderer::render_bounding_volumes() const
 {
 	return render_bounding_volumes_;
 }
@@ -268,7 +268,7 @@ void Renderer::set_render_bounding_volumes(bool enable)
 	render_bounding_volumes_ = enable;
 }
 
-bool Renderer::get_render_help_light() const
+bool Renderer::render_help_light() const
 {
 	return render_help_light_;
 }

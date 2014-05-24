@@ -103,7 +103,7 @@ Handle<Constant_buffer> Rendering_device::create_constant_buffer(uint32_t num_by
 
 Handle<Input_layout> Rendering_device::create_input_layout(const Vertex_layout_description& vertex_description, const Shader_program::Signature& signature) const
 {
-	if (!signature.get_num_elements_())
+	if (!signature.num_elements())
 	{
 		return nullptr;
 	}
@@ -120,7 +120,7 @@ Handle<Input_layout> Rendering_device::create_input_layout(const Vertex_layout_d
 
 	Handle<Input_layout> input_layout = Handle<Input_layout>(new Input_layout(id));
 
-	for (uint32_t i = 0; i < signature.get_num_elements_(); ++i)
+	for (uint32_t i = 0; i < signature.num_elements(); ++i)
 	{
 		auto& se = signature[i];
 
@@ -129,13 +129,13 @@ Handle<Input_layout> Rendering_device::create_input_layout(const Vertex_layout_d
 			continue;
 		}
 
-		for (uint32_t j = 0; j < vertex_description.get_num_elements_(); ++j)
+		for (uint32_t j = 0; j < vertex_description.num_elements(); ++j)
 		{
 			auto& ve = vertex_description[j];
 
 			if (se.semantic == ve.semantic_name)
 			{
-				if (ve.slot >= vertex_description.get_num_streams())
+				if (ve.slot >= vertex_description.num_streams())
 				{
 					return nullptr;
 				}
@@ -247,7 +247,7 @@ Handle<Texture> Rendering_device::create_texture_2D(const Texture_data_adapter& 
 		return nullptr;
 	}
 
-	const Texture_description& description = texture_data.get_description();
+	const Texture_description& description = texture_data.description();
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
 	glTextureStorage2DEXT(id, GL_TEXTURE_2D, description.num_mip_levels, mapping.internal_format, description.dimensions.x, description.dimensions.y);
@@ -265,7 +265,7 @@ Handle<Texture> Rendering_device::create_texture_2D(const Texture_data_adapter& 
 	}
 	else
 	{
-		uint32_t bytes_per_pixel = uint32_t(Data_format::size_of(description.format));
+		uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
 
 		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
@@ -302,7 +302,7 @@ Handle<Texture> Rendering_device::create_texture_3D(const Texture_data_adapter& 
 		return nullptr;
 	}
 
-	const Texture_description& description = texture_data.get_description();
+	const Texture_description& description = texture_data.description();
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
 	glTextureStorage3DEXT(id, GL_TEXTURE_3D, description.num_mip_levels, mapping.internal_format, description.dimensions.x, description.dimensions.y, description.dimensions.z);
@@ -320,7 +320,7 @@ Handle<Texture> Rendering_device::create_texture_3D(const Texture_data_adapter& 
 	}
 	else
 	{
-		uint32_t bytes_per_pixel = uint32_t(Data_format::size_of(description.format));
+		uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
 
 		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
@@ -374,7 +374,7 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 		return nullptr;
 	}
 
-	const Texture_description& description = texture_data.get_description();
+	const Texture_description& description = texture_data.description();
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
 	glTextureStorage2DEXT(id, GL_TEXTURE_CUBE_MAP, description.num_mip_levels, mapping.internal_format, description.dimensions.x, description.dimensions.y);
@@ -395,7 +395,7 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 	}
 	else
 	{
-		uint32_t bytes_per_pixel = uint32_t(Data_format::size_of(description.format));
+		uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
 
 		for (uint32_t f = 0; f < description.num_layers; ++f)
 		{
@@ -453,7 +453,7 @@ Handle<Shader_resource_view> Rendering_device::create_shader_resource_view(const
 	return Handle<Shader_resource_view>(new Shader_resource_view(id, description, texture, name));
 }
 
-Handle<Render_target_view> Rendering_device::create_render_target_view(const Handle<Texture>& texture, uint32_t min_layer, uint32_t num_layers) const
+Handle<Render_tarview> Rendering_device::create_render_tarview(const Handle<Texture>& texture, uint32_t min_layer, uint32_t num_layers) const
 {
 	if (!texture)
 	{
@@ -479,7 +479,7 @@ Handle<Render_target_view> Rendering_device::create_render_target_view(const Han
 	new_description.type = multisample ? Texture_description::Type::Texture_2D_multisample : Texture_description::Type::Texture_2D;
 	new_description.num_layers = num_layers;
 	new_description.num_mip_levels = 1;
-	return Handle<Render_target_view>(new Render_target_view(id, new_description, texture));
+	return Handle<Render_tarview>(new Render_tarview(id, new_description, texture));
 }
 
 Handle<Render_target_shader_resource_view> Rendering_device::create_render_target_shader_resource_view(const Texture_description& description) const
@@ -491,9 +491,9 @@ Handle<Render_target_shader_resource_view> Rendering_device::create_render_targe
 		return nullptr;
 	}
 
-	Handle<Render_target_view> render_target_view = create_render_target_view(texture);
+	Handle<Render_tarview> render_tarview = create_render_tarview(texture);
 
-	if (!render_target_view)
+	if (!render_tarview)
 	{
 		return nullptr;
 	}
@@ -505,7 +505,7 @@ Handle<Render_target_shader_resource_view> Rendering_device::create_render_targe
 		return nullptr;
 	}
 
-	return Handle<Render_target_shader_resource_view>(new Render_target_shader_resource_view(render_target_view, shader_resource_view));
+	return Handle<Render_target_shader_resource_view>(new Render_target_shader_resource_view(render_tarview, shader_resource_view));
 }
 
 Handle<Cube_render_target_shader_resource_view> Rendering_device::create_cube_render_target_shader_resource_view(const Texture_description& description) const
@@ -517,13 +517,13 @@ Handle<Cube_render_target_shader_resource_view> Rendering_device::create_cube_re
 		return nullptr;
 	}
 
-	Handle<Render_target_view> render_target_views[6];
+	Handle<Render_tarview> render_tarviews[6];
 
 	for (uint32_t i = 0; i < 6; ++i)
 	{
-		render_target_views[i] = create_render_target_view(texture, i);
+		render_tarviews[i] = create_render_tarview(texture, i);
 
-		if (!render_target_views[i])
+		if (!render_tarviews[i])
 		{
 			return nullptr;
 		}
@@ -536,7 +536,7 @@ Handle<Cube_render_target_shader_resource_view> Rendering_device::create_cube_re
 		return nullptr;
 	}
 
-	return Handle<Cube_render_target_shader_resource_view>(new Cube_render_target_shader_resource_view(render_target_views, shader_resource_view));
+	return Handle<Cube_render_target_shader_resource_view>(new Cube_render_target_shader_resource_view(render_tarviews, shader_resource_view));
 }
 
 Handle<Depth_stencil_view> Rendering_device::create_depth_stencil_view(const Texture_description& description) const
@@ -673,12 +673,12 @@ void Rendering_device::generate_mip_maps(const Handle<Texture>& texture) const
 	__glewGenerateTextureMipmapEXT(texture->id_, texture->internal_type_);
 }
 
-void Rendering_device::copy(const Handle<Texture_transfer>& destination, const Handle<Render_target_view>& source) const
+void Rendering_device::copy(const Handle<Texture_transfer>& destination, const Handle<Render_tarview>& source) const
 {
 	const Texture_description& description = source->description_;
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
-	glGetTextureImageEXT(source->id_, source->get_internal_type(), 0, mapping.format, mapping.type, destination->buffer_);
+	glGetTextureImageEXT(source->id_, source->internal_type(), 0, mapping.format, mapping.type, destination->buffer_);
 }
 
 void Rendering_device::map(unsigned char** buffer, const Handle<Texture_transfer>& texture) const
@@ -813,7 +813,7 @@ void Rendering_device::set_shader_resources(uint32_t num_resources, const Handle
 {
 	for (uint32_t i = 0; i < num_resources; ++i)
 	{
-		glBindMultiTextureEXT(GL_TEXTURE0 + start_slot + i, resources[i] ? resources[i]->get_internal_type() : GL_TEXTURE_2D, resources[i] ? resources[i]->id_ : 0);
+		glBindMultiTextureEXT(GL_TEXTURE0 + start_slot + i, resources[i] ? resources[i]->internal_type() : GL_TEXTURE_2D, resources[i] ? resources[i]->id_ : 0);
 	}
 }
 

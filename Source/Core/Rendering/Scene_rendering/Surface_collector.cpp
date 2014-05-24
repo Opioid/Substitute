@@ -17,7 +17,7 @@ Render_surface::Render_surface(const scene::Surface* surface, uint32_t model_id,
 
 	const scene::Material* material = surface->material;
 
-	uint32_t material_part = width_20 & (material->get_property_mask() << 16 | (width_16 & material->get_manageable_id()));
+	uint32_t material_part = width_20 & (material->get_property_mask() << 16 | (width_16 & material->manageable_id()));
 
 	signature = uint64_t(material_part) << 32 | uint32_t(distance * 1000.f);
 }
@@ -42,7 +42,7 @@ void Surface_collector::collect(const scene::Scene& scene, const float3& eye_pos
 
 		for (auto a : actors)
 		{
-			if (frustum.intersect(a->get_aabb()))
+			if (frustum.intersect(a->aabb()))
 			{
 				add(a, eye_position);
 			}
@@ -67,7 +67,7 @@ void Surface_collector::collect_unified(const scene::Scene& scene, const float3&
 
 		for (auto a : actors)
 		{
-			if (frustum.intersect(a->get_aabb()))
+			if (frustum.intersect(a->aabb()))
 			{
 				add_unified(a, eye_position);
 			}
@@ -89,7 +89,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->get_aabb()))
+			if (frustum.intersect(p->aabb()))
 			{
 				add(p, eye_position);
 			}
@@ -100,7 +100,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 
 	while (node)
 	{
-		if (!frustum.intersect(node->get_aabb()))
+		if (!frustum.intersect(node->aabb()))
 		{
 			node = node->get_skip_node();
 			continue;
@@ -110,7 +110,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->get_aabb()))
+			if (frustum.intersect(p->aabb()))
 			{
 				add(p, eye_position);
 			}
@@ -136,7 +136,7 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->get_aabb()))
+			if (frustum.intersect(p->aabb()))
 			{
 				add_unified(p, eye_position);
 			}
@@ -147,7 +147,7 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 
 	while (node)
 	{
-		if (!frustum.intersect(node->get_aabb()))
+		if (!frustum.intersect(node->aabb()))
 		{
 			node = node->get_skip_node();
 			continue;
@@ -157,7 +157,7 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->get_aabb()))
+			if (frustum.intersect(p->aabb()))
 			{
 				add_unified(p, eye_position);
 			}
@@ -185,7 +185,7 @@ void Surface_collector::add(const scene::AABB_node* node, const float3& eye_posi
 		return;
 	}
 
-	float dist = squared_distance(node->get_aabb().position, eye_position);
+	float dist = squared_distance(node->aabb().position, eye_position);
 
 	uint32_t model_id = 0;
 
@@ -207,7 +207,7 @@ void Surface_collector::add_unified(const scene::AABB_node* node, const float3& 
 		return;
 	}
 
-	float dist = squared_distance(node->get_aabb().position, eye_position);
+	float dist = squared_distance(node->aabb().position, eye_position);
 
 	uint32_t model_id = 0;
 
@@ -229,9 +229,9 @@ void Surface_collector::add_unified(const scene::AABB_node* node, const float3& 
 
 void Surface_collector::add(const scene::Prop* prop, const float3& eye_position)
 {
-	float dist = squared_distance(prop->get_aabb().position, eye_position);
+	float dist = squared_distance(prop->aabb().position, eye_position);
 
-	uint32_t model_id = prop->get_model()->get_manageable_id();
+	uint32_t model_id = prop->model()->manageable_id();
 
 	uint32_t num_surfaces = prop->get_num_surfaces();
 	const scene::Surface* surfaces = prop->get_surfaces();
@@ -244,9 +244,9 @@ void Surface_collector::add(const scene::Prop* prop, const float3& eye_position)
 
 void Surface_collector::add_unified(const scene::Prop* prop, const float3& eye_position)
 {
-	float dist = squared_distance(prop->get_aabb().position, eye_position);
+	float dist = squared_distance(prop->aabb().position, eye_position);
 
-	uint32_t model_id = prop->get_model()->get_manageable_id();
+	uint32_t model_id = prop->model()->manageable_id();
 
 	if (prop->has_mixed_render_states())
 	{

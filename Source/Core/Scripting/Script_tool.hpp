@@ -1,23 +1,25 @@
 #pragma once
 
 #include "Scripting/Script_engine.hpp"
-#include "../Logging/Message_sender.hpp"
+#include "Logging/Message_sender.hpp"
 
 namespace scripting
 {
-	class Script_tool : public logging::Message_sender
-	{
 
-	public:
+class Script_tool : public logging::Message_sender
+{
 
-		Script_tool(logging::Message_server& server);
+public:
 
-		Script_engine const& get_engine() const;
+	Script_tool(logging::Message_server& server);
 
-		void message_callback(const std::string& text, Script_engine::Message::Value type);
+	const Script_engine& engine() const;
 
-	private:
+	void message_callback(const std::string& text, Script_engine::Message_type type);
 
-		Script_engine engine_;
-	};
+private:
+
+	Script_engine engine_;
+};
+
 }

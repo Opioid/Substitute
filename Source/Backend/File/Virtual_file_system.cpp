@@ -53,7 +53,7 @@ bool Virtual_file_system::file_exists(const std::string& name) const
 	return PHYSFS_exists(name.c_str()) != 0;
 }
 
-bool Virtual_file_system::get_resolved_path(std::string& resolved_path, const std::string& name) const
+bool Virtual_file_system::query_resolved_path(std::string& resolved_path, const std::string& name) const
 {
 	const char* resolved = PHYSFS_getRealDir(name.c_str());
 
@@ -67,9 +67,9 @@ bool Virtual_file_system::get_resolved_path(std::string& resolved_path, const st
 	return true;
 }
 
-bool Virtual_file_system::get_resolved_complete_path(std::string& resolved_path, const std::string& name) const
+bool Virtual_file_system::query_resolved_complete_path(std::string& resolved_path, const std::string& name) const
 {
-	if (!get_resolved_path(resolved_path, name))
+	if (!query_resolved_path(resolved_path, name))
 	{
 		return false;
 	}
@@ -79,9 +79,9 @@ bool Virtual_file_system::get_resolved_complete_path(std::string& resolved_path,
 	return true;
 }
 
-bool Virtual_file_system::get_resolved_name(std::string& resolved_name, const std::string& name) const
+bool Virtual_file_system::query_resolved_name(std::string& resolved_name, const std::string& name) const
 {
-	if (!get_resolved_path(resolved_name, name))
+	if (!query_resolved_path(resolved_name, name))
 	{
 		return false;
 	}

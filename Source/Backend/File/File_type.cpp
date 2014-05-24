@@ -4,7 +4,7 @@
 namespace file
 {
 
-File_type get_file_type(std::istream& stream)
+File_type query_file_type(std::istream& stream)
 {
 	stream.clear();
 	stream.seekg(0, std::ios_base::beg);

@@ -56,7 +56,7 @@ void Resource_manager::get_resource_info(std::vector<std::string>& info, const s
 	{
 		for (auto i : stores_)	
 		{
-			if (id::manager.get_name(i.first) == type)
+			if (id::manager.name(i.first) == type)
 			{
 				i.second->get_resource_info(info);
 				return;
@@ -68,7 +68,7 @@ void Resource_manager::get_resource_info(std::vector<std::string>& info, const s
 	}
 }
 
-file::Virtual_file_system& Resource_manager::get_virtual_file_system()
+file::Virtual_file_system& Resource_manager::virtual_file_system()
 {
 	return virtual_file_system_;
 }

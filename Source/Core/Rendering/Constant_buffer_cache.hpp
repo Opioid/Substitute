@@ -13,7 +13,7 @@ class Constant_buffer_cache
 
 public:
 
-	const Handle<Constant_buffer>& get_constant_buffer(const std::string& name) const;
+	const Handle<Constant_buffer>& constant_buffer(const std::string& name) const;
 
 	void set_constant_buffer(const std::string& name, const Handle<Constant_buffer>& buffer);
 

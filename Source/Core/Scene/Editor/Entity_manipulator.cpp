@@ -21,14 +21,14 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 	{
 		for (Entity* entity : entities)
 		{
-			if (entity->get_parent())
+			if (entity->parent())
 			{
 				continue;
 			}
 
-			float dist = distance(camera.get_world_position(), entity->get_world_position());
+			float dist = distance(camera.world_position(), entity->world_position());
 
-			if (ray.intersect(Sphere(entity->get_world_position(), dist * 0.006f)))
+			if (ray.intersect(Sphere(entity->world_position(), dist * 0.006f)))
 			{
 				focused_entity_ = entity;
 				break;
@@ -51,35 +51,35 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 
 	if (selected_entity_ && !dragging_)
 	{
-		float3 pos = selected_entity_->get_world_position();
+		float3 pos = selected_entity_->world_position();
 
 		translation_axis_ = Axis::None;
 		/*
-		if (ray.intersect(Cylinder(pos + 0.175f * selected_entity_->get_world_right(), selected_entity_->get_world_right(), 0.03f, 0.35f)))
+		if (ray.intersect(Cylinder(pos + 0.175f * selected_entity_->world_right(), selected_entity_->world_right(), 0.03f, 0.35f)))
 		{
 			translation_axis_ = Axis::X;
 		}
-		else if (ray.intersect(Cylinder(pos + 0.175f * selected_entity_->get_world_up(), selected_entity_->get_world_up(), 0.03f, 0.35f)))
+		else if (ray.intersect(Cylinder(pos + 0.175f * selected_entity_->world_up(), selected_entity_->world_up(), 0.03f, 0.35f)))
 		{
 			translation_axis_ = Axis::Y;
 		}
-		else if (ray.intersect(Cylinder(pos + 0.175f * selected_entity_->get_world_dir(), selected_entity_->get_world_dir(), 0.03f, 0.35f)))
+		else if (ray.intersect(Cylinder(pos + 0.175f * selected_entity_->world_direction(), selected_entity_->world_direction(), 0.03f, 0.35f)))
 		{
 			translation_axis_ = Axis::Z;
 		}
 		*/
 
-		if (ray.intersect(Sphere(pos + 0.175f * selected_entity_->get_world_right(), 0.1f)))
+		if (ray.intersect(Sphere(pos + 0.175f * selected_entity_->world_right(), 0.1f)))
 		{
 			translation_axis_ = Axis::X;
 			hit_in_previous_tick_ = true;
 		}
-		else if (ray.intersect(Sphere(pos + 0.175f * selected_entity_->get_world_up(), 0.1f)))
+		else if (ray.intersect(Sphere(pos + 0.175f * selected_entity_->world_up(), 0.1f)))
 		{
 			translation_axis_ = Axis::Y;
 			hit_in_previous_tick_ = true;
 		}
-		else if (ray.intersect(Sphere(pos + 0.175f * selected_entity_->get_world_direction(), 0.1f)))
+		else if (ray.intersect(Sphere(pos + 0.175f * selected_entity_->world_direction(), 0.1f)))
 		{
 			translation_axis_ = Axis::Z;
 			hit_in_previous_tick_ = true;
@@ -93,18 +93,18 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 		switch (translation_axis_)
 		{
 		case Axis::X:
-			a = selected_entity_->get_world_right();
+			a = selected_entity_->world_right();
 			break;
 		case Axis::Y:
-			a = selected_entity_->get_world_up();
+			a = selected_entity_->world_up();
 			break;
 		case Axis::Z:
 		default:
-			a = selected_entity_->get_world_direction();
+			a = selected_entity_->world_direction();
 			break;
 		}
 
-		Plane p(cross(a, camera.get_world_right()), selected_entity_->get_world_position());
+		Plane p(cross(a, camera.world_right()), selected_entity_->world_position());
 
 		float dist;
 		ray.intersect(p, dist);
@@ -115,7 +115,7 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 		{
 			float3 dif = hit - old_hit_;
 
-			selected_entity_->set_local_position(selected_entity_->get_world_position() + project(dif, a));
+			selected_entity_->set_local_position(selected_entity_->world_position() + project(dif, a));
 		}
 
 		old_hit_ = hit;
@@ -143,35 +143,35 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 		{
 			Entity* entity = entities[i];
 
-			if (entity->get_parent())
+			if (entity->parent())
 			{
 				continue;
 			}
 
-			dist = distance(camera.get_world_position(), entity->get_world_position());
+			dist = distance(camera.world_position(), entity->world_position());
 
-			if (ray.intersectSphere(entity->get_world_position(), dist * 0.0055f))
+			if (ray.intersectSphere(entity->world_position(), dist * 0.0055f))
 			{
 				selected_entity_ = entity;
 				old_hit_ = true;
 				m_rotateAxis = Axis::None;
 				break;
 			}
-			else if (ray.intersectSphere(entity->get_world_position() + 0.25f * entity->get_world_dir(), dist * 0.0055f))
+			else if (ray.intersectSphere(entity->world_position() + 0.25f * entity->world_direction(), dist * 0.0055f))
 			{
 				selected_entity_ = entity;
 				old_hit_ = true;
 				m_rotateAxis = Axis::X;
 				break;
 			}
-			else if (ray.intersectSphere(entity->get_world_position() + 0.25f * entity->get_world_up(), dist * 0.0055f))
+			else if (ray.intersectSphere(entity->world_position() + 0.25f * entity->world_up(), dist * 0.0055f))
 			{
 				selected_entity_ = entity;
 				old_hit_ = true;
 				m_rotateAxis = Axis::Y;
 				break;
 			}
-			else if (ray.intersectSphere(entity->get_world_position() + 0.25f * entity->get_world_right(), dist * 0.0055f))
+			else if (ray.intersectSphere(entity->world_position() + 0.25f * entity->world_right(), dist * 0.0055f))
 			{
 				selected_entity_ = entity;
 				old_hit_ = true;
@@ -202,14 +202,14 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 			}
 
 			float dist = 0.0f;
-			if (ray.intersect(Plane(dir, selected_entity_->get_world_position()), dist))
+			if (ray.intersect(Plane(dir, selected_entity_->world_position()), dist))
 			{
 				float3 pos = ray.org + dist * ray.dir;
 
 				//TODO: take parents rotation into account
-				float3 dif = selected_entity_->get_world_position() - pos;
+				float3 dif = selected_entity_->world_position() - pos;
 
-				selected_entity_->set_local_position(selected_entity_->get_local_position() - dif);
+				selected_entity_->set_local_position(selected_entity_->local_position() - dif);
 			}
 		}
 		else
@@ -219,9 +219,9 @@ void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camer
 
 			switch (m_rotateAxis)
 			{
-			case axis_X: v0 = m_selectedObject->getRight(); v1 = m_selectedObject->get_world_up();    break;
-			case axis_Y: v0 = m_selectedObject->getDir();   v1 = m_selectedObject->get_world_right(); break;
-			case axis_Z: v0 = m_selectedObject->getUp();    v1 = m_selectedObject->get_world_dir();   break;
+			case axis_X: v0 = m_selectedObject->getRight(); v1 = m_selectedObject->world_up();    break;
+			case axis_Y: v0 = m_selectedObject->getDir();   v1 = m_selectedObject->world_right(); break;
+			case axis_Z: v0 = m_selectedObject->getUp();    v1 = m_selectedObject->world_direction();   break;
 			}
 
 			float dist = 0.f;

@@ -25,9 +25,9 @@ public:
 
 	bool file_exists(const std::string& name) const;
 
-	bool get_resolved_path(std::string& resolved_path, const std::string& name) const;
-	bool get_resolved_complete_path(std::string& resolved_path, const std::string& name) const;
-	bool get_resolved_name(std::string& resolved_name, const std::string& name) const;
+	bool query_resolved_path(std::string& resolved_path, const std::string& name) const;
+	bool query_resolved_complete_path(std::string& resolved_path, const std::string& name) const;
+	bool query_resolved_name(std::string& resolved_name, const std::string& name) const;
 
 	uint64_t file_last_modified(const std::string& name) const;
 

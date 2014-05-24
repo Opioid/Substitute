@@ -8,7 +8,7 @@ namespace logging
 {
 	Html_log_writer::~Html_log_writer()
 	{
-		m_stream << "<h2>Closing Log @ " << timing::get_date_string() << " " << timing::get_time_string() << "</h2>" << std::endl;
+		m_stream << "<h2>Closing Log @ " << timing::date_string() << " " << timing::time_string() << "</h2>" << std::endl;
 
 		m_stream << "</body></html>";
 	}
@@ -35,8 +35,8 @@ namespace logging
 
 		m_stream << "</style></head><body>" << std::endl;
 
-		m_stream << "<h1>" << app.get_name() << " - " << app.get_build_info() << "</h1>" << std::endl;
-		m_stream << "<h2>Opening Log @ " << timing::get_date_string() << " " << timing::get_time_string() << "</h2>" << std::endl;
+		m_stream << "<h1>" << app.name() << " - " << app.build_info() << "</h1>" << std::endl;
+		m_stream << "<h2>Opening Log @ " << timing::date_string() << " " << timing::time_string() << "</h2>" << std::endl;
 
 		return true;
 	}

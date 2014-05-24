@@ -17,7 +17,7 @@ void Prop::clear()
     Renderable::clear();
 }
 
-const Model* Prop::get_model() const
+const Model* Prop::model() const
 {
 	return model_;
 }
@@ -31,11 +31,11 @@ bool Prop::create_surfaces(const Handle<Model>& model, uint32_t num_materials, c
 
 	model_ = model;
 
-	unified_surface_.vd             = model_->get_vertex_layout_description();
+	unified_surface_.vd             = model_->vertex_layout_description();
 	unified_surface_.start_index    = 0;
-	unified_surface_.num_indices    = model_->get_num_indices();
-	unified_surface_.vertex_buffers = model_->get_vertex_buffers();
-	unified_surface_.index_buffer   = model_->get_index_buffer();
+	unified_surface_.num_indices    = model_->num_indices();
+	unified_surface_.vertex_buffers = model_->vertex_buffers();
+	unified_surface_.index_buffer   = model_->index_buffer();
 	unified_surface_.world          = world;
 	unified_surface_.material       = materials[0];
 
@@ -57,13 +57,13 @@ bool Prop::create_surfaces(const Handle<Model>& model, uint32_t num_materials, c
 
 		const Model::Group& g = model_->get_groups()[i];
 
-		s.vd = model_->get_vertex_layout_description();
+		s.vd = model_->vertex_layout_description();
 
 		s.start_index = g.start_index;
 		s.num_indices = g.num_indices;
 
-		s.vertex_buffers = model_->get_vertex_buffers();
-		s.index_buffer   = model_->get_index_buffer();
+		s.vertex_buffers = model_->vertex_buffers();
+		s.index_buffer   = model_->index_buffer();
 
 		s.world = unified_surface_.world;
 
@@ -80,7 +80,7 @@ bool Prop::create_surfaces(const Handle<Model>& model, uint32_t num_materials, c
 	return true;
 }
 
-const AABB& Prop::get_aabb() const
+const AABB& Prop::aabb() const
 {
 	return transformed_aabb_;
 }

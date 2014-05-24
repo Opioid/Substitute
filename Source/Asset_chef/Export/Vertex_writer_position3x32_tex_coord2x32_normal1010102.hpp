@@ -11,6 +11,6 @@ public:
 
 	bool write_vertices(std::ostream &stream, const Model&  model) const;
 
-	const rendering::Vertex_layout_description* get_vertex_layout_description() const;
+	const rendering::Vertex_layout_description* vertex_layout_description() const;
 
 };

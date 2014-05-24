@@ -4,9 +4,9 @@
 
 namespace configuration
 {
-	extern uint2 client_size;
+	extern uint2 client_dimensions;
 	extern bool  client_windowed;
     extern int   v_sync;
-	extern uint2 virtual_size;
+	extern uint2 virtual_dimensions;
 	extern bool  fxaa;
 }

@@ -15,7 +15,7 @@ struct Shader_data_type
 	std::string semantic;
 	uint32_t    array_size = 0;
 
-	static std::string get_glsl_mapping(const std::string& type);
+	static std::string glsl_mapping(const std::string& type);
 };
 
 struct Shader_data_struct

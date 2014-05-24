@@ -22,10 +22,10 @@ bool save_SUI(const std::string& file_name, const Texture_data_adapter& adapter)
 	stream.write(header, sizeof(char) * 4);
 
 	// Description
-	const Texture_description& description = adapter.get_description();
+	const Texture_description& description = adapter.description();
 	stream.write((char*)&description, sizeof(Texture_description));
 
-	const uint32_t num_images = adapter.get_num_images();
+	const uint32_t num_images = adapter.num_images();
 
 	for (uint32_t i = 0; i < num_images; ++i)
 	{

@@ -31,7 +31,7 @@ Handle<Shader_resource_view> Texture_provider::load(file::Input_stream& stream, 
 			return nullptr;
 		}
 
-		texture = rendering_tool_.get_device().create_texture_3D(*texture_data);
+		texture = rendering_tool_.device().create_texture_3D(*texture_data);
 	}
 	else if (texture_cube)
 	{
@@ -43,7 +43,7 @@ Handle<Shader_resource_view> Texture_provider::load(file::Input_stream& stream, 
 			return nullptr;
 		}
 
-		texture = rendering_tool_.get_device().create_texture_cube(*texture_data);
+		texture = rendering_tool_.device().create_texture_cube(*texture_data);
 	}
 	else
 	{
@@ -55,10 +55,10 @@ Handle<Shader_resource_view> Texture_provider::load(file::Input_stream& stream, 
 			return nullptr;
 		}
 
-		texture = rendering_tool_.get_device().create_texture_2D(*texture_data);
+		texture = rendering_tool_.device().create_texture_2D(*texture_data);
 	}
 
-	Handle<Shader_resource_view> view = rendering_tool_.get_device().create_shader_resource_view(texture, stream.get_name());
+	Handle<Shader_resource_view> view = rendering_tool_.device().create_shader_resource_view(texture, stream.name());
 
 	return view;
 }

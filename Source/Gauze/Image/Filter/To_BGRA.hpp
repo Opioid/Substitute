@@ -14,7 +14,7 @@ public:
 
 	bool filter_uncentered(Image_buffer<rendering::Color4c>& destination, const Image_buffer<rendering::Color4>& source) const
 	{
-		uint32_t num_pixels = std::min(destination.get_num_pixels(), source.get_num_pixels());
+		uint32_t num_pixels = std::min(destination.num_pixels(), source.num_pixels());
 
 		for (uint32_t i = 0; i < num_pixels; ++i)
 		{
@@ -35,12 +35,12 @@ public:
 
 	bool filter(Image_buffer<rendering::Color4c>& destination, const Image_buffer<rendering::Color4>& source) const
 	{
-		return filter(destination, source, source.get_dimensions());
+		return filter(destination, source, source.dimensions());
 	}
 
 	bool filter(Image_buffer<rendering::Color4c>& destination, const Image_buffer<rendering::Color4>& source, const uint2& source_dimensions) const
 	{
-		const uint2& destination_dimensions = destination.get_dimensions();
+		const uint2& destination_dimensions = destination.dimensions();
 
 		if (destination_dimensions.x < source_dimensions.x || destination_dimensions.y < source_dimensions.y)
 		{
@@ -83,22 +83,22 @@ public:
 
 	bool filter(Image_buffer<rendering::Color4c>& destination, const Image_buffer<rendering::Color4c>& source) const
 	{
-		const uint2& source_dimensions = source.get_dimensions();
-		const uint2& destination_dimensions = destination.get_dimensions();
+		const uint2& source_dimensions = source.dimensions();
+		const uint2& destination_dimensions = destination.dimensions();
 
 		if (destination_dimensions.x < source_dimensions.x || destination_dimensions.y < source_dimensions.y)
 		{
 			return false;
 		}
 
-		if (destination.get_format() != source.get_format())
+		if (destination.format() != source.format())
 		{
 			return false;
 		}
 
-		for (uint32_t y = 0; y < source.get_dimensions().y; ++y)
+		for (uint32_t y = 0; y < source.dimensions().y; ++y)
 		{
-			for (uint32_t x = 0; x < source.get_dimensions().x; ++x)
+			for (uint32_t x = 0; x < source.dimensions().x; ++x)
 			{
 				const rendering::Color4c& source_color = source.get(uint2(x, y));
 

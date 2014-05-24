@@ -3,27 +3,27 @@
 namespace scene
 {
 
-Entity::Entity() : m_flags(Flags::Visible)
+Entity::Entity() : flags_(Flags::Visible)
 {}
 
 bool Entity::is_visible() const
 {
-	return (m_flags & Flags::Visible) == Flags::Visible;
+	return (flags_ & Flags::Visible) == Flags::Visible;
 }
 
 void Entity::set_visible(bool visible)
 {
-	visible ? m_flags |= Flags::Visible : m_flags &= ~Flags::Visible;
+	visible ? flags_ |= Flags::Visible : flags_ &= ~Flags::Visible;
 }
 
 bool Entity::is_interpolated() const
 {
-	return (m_flags & Flags::Interpolated) == Flags::Interpolated;
+	return (flags_ & Flags::Interpolated) == Flags::Interpolated;
 }
 
 void Entity::set_interpolated(bool interpolated)
 {
-	interpolated ? m_flags |= Flags::Interpolated : m_flags &= ~Flags::Interpolated;
+	interpolated ? flags_ |= Flags::Interpolated : flags_ &= ~Flags::Interpolated;
 }
 
 

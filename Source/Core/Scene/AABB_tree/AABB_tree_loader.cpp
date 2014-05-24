@@ -76,15 +76,15 @@ void AABB_tree_loader::read_geometry_clusters(uint32_t num_geometry_clusters, AA
 		// Vertices
 		stream.read((char*)&geometry.num_vertices_, sizeof(uint32_t));
 
-		geometry.vertex_buffers_ = new Handle<rendering::Vertex_buffer>[m_vd->get_num_streams()];
+		geometry.vertex_buffers_ = new Handle<rendering::Vertex_buffer>[m_vd->num_streams()];
 
-		for (uint32_t i = 0; i < m_vd->get_num_streams(); ++i)
+		for (uint32_t i = 0; i < m_vd->num_streams(); ++i)
 		{
-			uint32_t num_vertex_bytes = m_vd->get_strides()[i] * geometry.num_vertices_;
+			uint32_t num_vertex_bytes = m_vd->strides()[i] * geometry.num_vertices_;
 			char *vertices = new char[num_vertex_bytes];
 			stream.read(vertices, num_vertex_bytes);
 
-			geometry.vertex_buffers_[i] = rendering_tool_.get_device().create_vertex_buffer(num_vertex_bytes, vertices);
+			geometry.vertex_buffers_[i] = rendering_tool_.device().create_vertex_buffer(num_vertex_bytes, vertices);
 
 			delete [] vertices;
 		}
@@ -96,7 +96,7 @@ void AABB_tree_loader::read_geometry_clusters(uint32_t num_geometry_clusters, AA
 		char *indices = new char[indexBytes];
 		stream.read(indices, indexBytes);
 
-		geometry.index_buffer_ = rendering_tool_.get_device().create_index_buffer(indexBytes, indices, rendering::Data_format::R16_UInt);
+		geometry.index_buffer_ = rendering_tool_.device().create_index_buffer(indexBytes, indices, rendering::Data_format::R16_UInt);
 	
 		delete [] indices;
 
@@ -147,7 +147,7 @@ const rendering::Vertex_layout_description* AABB_tree_loader::read_vertex_layout
 		stream >> elements[i];
 	}
 
-	const rendering::Vertex_layout_description* description = rendering_tool_.get_vertex_layout_cache().get_vertex_layout_description(num_elements_, elements);
+	const rendering::Vertex_layout_description* description = rendering_tool_.vertex_layout_cache().vertex_layout_description(num_elements_, elements);
 	delete [] elements;
 	return description;
 }

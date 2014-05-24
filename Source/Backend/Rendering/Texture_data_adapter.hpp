@@ -13,9 +13,9 @@ public:
 	Texture_data_adapter(const Texture_description& description);
 	virtual ~Texture_data_adapter();
 
-	const Texture_description& get_description() const;
+	const Texture_description& description() const;
 
-	uint32_t get_num_images() const;
+	uint32_t num_images() const;
 
 	virtual bool get_level(Texture_description::Data& data, uint32_t level) const = 0;
 	virtual bool get_level(Texture_description::Data& data, uint32_t layer, uint32_t level) const = 0;

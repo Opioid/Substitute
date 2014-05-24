@@ -33,12 +33,12 @@ void Fps_counter::update()
 	++m_frame_counter;
 }
 
-double Fps_counter::get_frame_time() const
+double Fps_counter::frame_time() const
 {
 	return m_frame_time;
 }
 
-size_t Fps_counter::get_fps() const
+size_t Fps_counter::fps() const
 {
 	return m_fps;
 }

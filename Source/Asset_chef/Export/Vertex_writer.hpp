@@ -19,5 +19,5 @@ private:
 
 	virtual bool write_vertices(std::ostream &stream, const Model& model) const = 0;
 
-	virtual const rendering::Vertex_layout_description* get_vertex_layout_description() const = 0;
+	virtual const rendering::Vertex_layout_description* vertex_layout_description() const = 0;
 };

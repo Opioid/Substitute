@@ -14,7 +14,7 @@ enum class File_type
 	SUM
 };
 
-File_type get_file_type(std::istream& stream);
+File_type query_file_type(std::istream& stream);
 
 }
 

@@ -33,7 +33,7 @@ Vertex_layout_description::Vertex_layout_description(uint32_t num_elements, cons
 			strides_[elements_[i].slot] = elements_[i].byte_offset;
 		}
 
-		strides_[elements_[i].slot] += uint32_t(Data_format::size_of(elements_[i].format));
+		strides_[elements_[i].slot] += uint32_t(Data_format::num_bytes_per_block(elements_[i].format));
 	}
 
 	for (uint32_t i = 0; i < num_streams_; ++i)
@@ -105,7 +105,7 @@ Vertex_layout_description::~Vertex_layout_description()
 	delete [] strides_;
 }
 
-uint32_t Vertex_layout_description::get_num_elements_() const
+uint32_t Vertex_layout_description::num_elements() const
 {
 	return num_elements_;
 }
@@ -115,22 +115,22 @@ const Vertex_layout_description::Element& Vertex_layout_description::operator[](
 	return elements_[index];
 }
 
-const Vertex_layout_description::Element* Vertex_layout_description::get_elements() const
+const Vertex_layout_description::Element* Vertex_layout_description::elements() const
 {
 	return elements_;
 }
 
-uint32_t Vertex_layout_description::get_vertex_size() const
+uint32_t Vertex_layout_description::vertex_size() const
 {
 	return vertex_size_;
 }
 
-uint32_t* Vertex_layout_description::get_strides() const
+uint32_t* Vertex_layout_description::strides() const
 {
 	return strides_;
 }
 
-uint32_t Vertex_layout_description::get_num_streams() const
+uint32_t Vertex_layout_description::num_streams() const
 {
 	return num_streams_;
 }
@@ -169,10 +169,10 @@ Vertex_layout_description::Element::Element() :
 
 Vertex_layout_description::Element::Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, uint32_t slot, uint32_t byte_offset) :
 	semantic_name(semantic_name), semantic_index(semantic_index), format(format), slot(slot),
-	 byte_offset(byte_offset), slot_class(Classification::Per_vertex_data), instance_step_rate(0)
+	byte_offset(byte_offset), slot_class(Classification::Per_vertex_data), instance_step_rate(0)
 {}
 
-Vertex_layout_description::Element::Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, Classification::Value classification,
+Vertex_layout_description::Element::Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, Classification classification,
 											uint32_t step_rate, uint32_t slot, uint32_t byte_offset) :
 	semantic_name(semantic_name), semantic_index(semantic_index), format(format), slot(slot),
 	byte_offset(byte_offset), slot_class(classification), instance_step_rate(step_rate)

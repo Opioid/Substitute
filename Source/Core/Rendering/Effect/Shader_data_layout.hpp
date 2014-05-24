@@ -16,7 +16,7 @@ public:
 
 	typedef std::map<std::string, Shader_data_struct> Data_structs;
 
-	const Data_structs& get_descriptions() const;
+	const Data_structs& descriptions() const;
 
 	void add_description(const std::string& name, const Shader_data_struct& data_struct);
 

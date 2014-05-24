@@ -13,93 +13,93 @@ std::string to_string(bool value)
 
 std::string to_string(int value, int num_padded_zeros)
 {
-	std::ostringstream ost;
+	std::ostringstream stream;
 
 	if (num_padded_zeros)
 	{
-		ost << std::setw(num_padded_zeros + 1) << std::setfill('0');
+		stream << std::setw(num_padded_zeros + 1) << std::setfill('0');
 	}
 
-	ost << value;
-	return ost.str();
+	stream << value;
+	return stream.str();
 }
 
 std::string to_string(uint32_t value, int num_padded_zeros)
 {
-	std::ostringstream ost;
+	std::ostringstream stream;
 
 	if (num_padded_zeros)
 	{
-		ost << std::setw(num_padded_zeros + 1) << std::setfill('0');
+		stream << std::setw(num_padded_zeros + 1) << std::setfill('0');
 	}
 
-	ost << value;
-	return ost.str();
+	stream << value;
+	return stream.str();
 }
 
 std::string to_string(uint64_t value, int num_padded_zeros)
 {
-	std::ostringstream ost;
+	std::ostringstream stream;
 
 	if (num_padded_zeros)
 	{
-		ost << std::setw(num_padded_zeros + 1) << std::setfill('0');
+		stream << std::setw(num_padded_zeros + 1) << std::setfill('0');
 	}
 
-	ost << value;
-	return ost.str();
+	stream << value;
+	return stream.str();
 }
 
 std::string to_string_short(float value)
 {
-	std::ostringstream ost;
-	ost.precision(6);
-	ost << value;
-	return ost.str();
+	std::ostringstream stream;
+	stream.precision(6);
+	stream << value;
+	return stream.str();
 }
 
 std::string to_string(const float2& v)
 {
-    std::ostringstream ost;
-    ost << "[" << v.x << ", " << v.y << "]";
-    return ost.str();
+	std::ostringstream stream;
+	stream << "[" << v.x << ", " << v.y << "]";
+	return stream.str();
 }
 
 std::string to_string(const uint2& v)
 {
-    std::ostringstream ost;
-    ost << "[" << v.x << ", " << v.y << "]";
-    return ost.str();
+	std::ostringstream stream;
+	stream << "[" << v.x << ", " << v.y << "]";
+	return stream.str();
 }
 
 std::string to_string(const float3& v)
 {
-	std::ostringstream ost;
-	ost << "[" << v.x << ", " << v.y << ", " << v.z << "]";
-	return ost.str();
+	std::ostringstream stream;
+	stream << "[" << v.x << ", " << v.y << ", " << v.z << "]";
+	return stream.str();
 }
 
 std::string format_byte_size(size_t value)
 {
-	std::ostringstream ost;
+	std::ostringstream stream;
 
 	if (value < 1024)
 	{
-		ost << value;
-		ost << " b";
+		stream << value;
+		stream << " B";
 	}
 	else if (value < 1024 * 1024)
 	{
-		ost << math::round(float(value) / 1024.f * 100.f) / 100.f;
-		ost << " kb";
+		stream << math::round(float(value) / 1024.f * 100.f) / 100.f;
+		stream << " KiB";
 	}
 	else if (value < 1024 * 1024 * 1024)
 	{
-		ost << math::round(float(value) / (1024.f * 1024.f) * 100.f) / 100.f;
-		ost << " mb";
+		stream << math::round(float(value) / (1024.f * 1024.f) * 100.f) / 100.f;
+		stream << " MiB";
 	}
 
-	return ost.str();
+	return stream.str();
 }
 
 bool ends_with(const std::string& full_string, const std::string& ending)

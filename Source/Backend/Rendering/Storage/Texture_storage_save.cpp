@@ -22,7 +22,7 @@ bool save(const std::string& file_name, const Texture_data_adapter& adapter, fil
 		return save_SUI(file_name, adapter);
 	}
 
-	const Texture_description& description = adapter.get_description();
+	const Texture_description& description = adapter.description();
 
 	FIBITMAP* image = FreeImage_Allocate(description.dimensions.x, description.dimensions.y, 32);
 

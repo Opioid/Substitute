@@ -6,7 +6,7 @@ namespace scene
 Node::Node() : local_transformation_(Transformation::identity), world_transformation_(float4x4::identity), parent_(nullptr), next_(nullptr), child_(nullptr)
 {}
 
-const float3& Node::get_local_position() const
+const float3& Node::local_position() const
 {
 	return local_transformation_.position;
 }
@@ -16,7 +16,7 @@ void Node::set_local_position(const float3& position)
 	local_transformation_.position = position;
 }
 
-const float3& Node::get_local_scale() const
+const float3& Node::local_scale() const
 {
 	return local_transformation_.scale;
 }
@@ -26,7 +26,7 @@ void Node::set_local_scale(const float3& scale)
 	local_transformation_.scale = scale;
 }
 
-const Quaternion& Node::get_local_rotation() const
+const Quaternion& Node::local_rotation() const
 {
 	return local_transformation_.rotation;
 }
@@ -36,42 +36,42 @@ void Node::set_local_rotation(const Quaternion& rotation)
 	local_transformation_.rotation = rotation;
 }
 
-Transformation const& Node::get_local_transformation() const
+Transformation const& Node::local_transformation() const
 {
 	return local_transformation_;
 }
 
-float3 Node::get_world_position() const
+float3 Node::world_position() const
 {
 	return world_transformation_.rows[3].xyz;
 }
 
-float3 Node::get_world_scale() const
+float3 Node::world_scale() const
 {
 	return ::get_scale(world_transformation_);
 }
 
-float3 Node::get_world_direction() const
+float3 Node::world_direction() const
 {
 	return normalize(world_transformation_.rows[2].xyz); 
 }
 
-float3 Node::get_world_up() const
+float3 Node::world_up() const
 {
 	return normalize(world_transformation_.rows[1].xyz); 
 }
 
-float3 Node::get_world_right() const
+float3 Node::world_right() const
 {
 	return normalize(world_transformation_.rows[0].xyz); 
 }
 
-float3x3 Node::get_world_rotation() const
+float3x3 Node::world_rotation() const
 {
 	return get_unscaled_basis(world_transformation_);
 }
 
-const float4x4& Node::get_world_transformation() const
+const float4x4& Node::world_transformation() const
 {
 	return world_transformation_;
 }
@@ -92,7 +92,7 @@ void Node::propagate_transformation()
 {
 	if (child_)
 	{
-		child_->inherit_transformation(get_world_rotation(), world_transformation_);
+		child_->inherit_transformation(world_rotation(), world_transformation_);
 	}
 }
 
@@ -105,10 +105,10 @@ void Node::inherit_transformation(const float3x3& parent_rot, const float4x4& pa
 
 	// Using the get_world*() methods is important, because they (might) contain interpolated data
 
-	float3x3 world_rot = get_world_rotation() * parent_rot;
-	float3 world_pos = get_world_position() * parent_transformation;
+	float3x3 world_rot = world_rotation() * parent_rot;
+	float3 world_pos = world_position() * parent_transformation;
 
-	set_world_transformation(world_pos, get_world_scale(), world_rot);
+	set_world_transformation(world_pos, world_scale(), world_rot);
 
 	propagate_transformation();
 }
@@ -137,7 +137,7 @@ void Node::detach()
 	}
 }
 
-const Node* Node::get_parent() const
+const Node* Node::parent() const
 {
 	return parent_;
 }

@@ -43,7 +43,7 @@ Environment_map_renderer::Environment_map_renderer(Rendering_tool& rendering_too
 
 bool Environment_map_renderer::allocate_targets(const uint2& dimensions)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	target_dimensions_ = dimensions;
 
@@ -102,24 +102,24 @@ void Environment_map_renderer::configure_for_flattened_cube_map_batch(const uint
 	face_dimensions_ = face_dimensions;
 }
 
-const uint2& Environment_map_renderer::get_target_dimensions() const
+const uint2& Environment_map_renderer::target_dimensions() const
 {
 	return target_dimensions_;
 }
 
-Handle<Framebuffer>& Environment_map_renderer::get_framebuffer()
+Handle<Framebuffer>& Environment_map_renderer::framebuffer()
 {
 	return framebuffer_;
 }
 
-Handle<Cube_render_target_shader_resource_view>& Environment_map_renderer::get_color_target()
+Handle<Cube_render_target_shader_resource_view>& Environment_map_renderer::color_target()
 {
 	return color_target_;
 }
 
 void Environment_map_renderer::render(const scene::Scene& scene, const float3& position, const Rendering_context::Rendering_options& options)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	context_.set_options(options);
 
@@ -128,7 +128,7 @@ void Environment_map_renderer::render(const scene::Scene& scene, const float3& p
 
 	for (uint32_t i = 0; i < 6; ++i)
 	{
-		framebuffer_->set_render_targets(color_target_->get_render_target_view(i), depth_stencil_->get_depth_stencil_view());
+		framebuffer_->set_render_targets(color_target_->render_tarview(i), depth_stencil_->depth_stencil_view());
 
 		Color4 clear_color(0.f, 0.f, 0.f, 1.f);
 		device.clear_color(framebuffer_, 1, &clear_color);
@@ -148,11 +148,11 @@ void Environment_map_renderer::render(const scene::Scene& scene, const float3& p
 
 void Environment_map_renderer::start_batch(const Rendering_context::Rendering_options& options)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	context_.set_options(options);
 
-	framebuffer_->set_render_targets(color_target_->get_render_target_view(0), depth_stencil_->get_depth_stencil_view());
+	framebuffer_->set_render_targets(color_target_->render_tarview(0), depth_stencil_->depth_stencil_view());
 
 	Color4 clear_color(0.f, 0.f, 0.f, 1.f);
 	device.clear_color(framebuffer_, 1, &clear_color);
@@ -161,7 +161,7 @@ void Environment_map_renderer::start_batch(const Rendering_context::Rendering_op
 
 void Environment_map_renderer::render(const scene::Scene& scene, const float3& position, uint32_t batch_index)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	for (uint32_t i = 0; i < 6; ++i)
 	{
@@ -179,7 +179,7 @@ void Environment_map_renderer::render(const scene::Scene& scene, const float3& p
 	device.set_framebuffer(nullptr);
 }
 
-Main_scene_renderer& Environment_map_renderer::get_scene_renderer() const
+Main_scene_renderer& Environment_map_renderer::scene_renderer() const
 {
 	return scene_renderer_;
 }

@@ -33,7 +33,7 @@ public:
 
 	Type get_type() const;
 
-	const rendering::Color3& get_color() const;
+	const rendering::Color3& color() const;
 	void set_color(const rendering::Color3& color);
 
 	float get_lumen() const;
@@ -49,10 +49,10 @@ public:
 	bool casts_shadow() const;
 	void set_casts_shadow(bool shadow);
 
-	float get_fov() const;
+	float FOV() const;
 	void  set_fov(float fov);
 
-	const Handle<rendering::Shader_resource_view>& get_texture() const;
+	const Handle<rendering::Shader_resource_view>& texture() const;
 	void set_texture(const Handle<rendering::Shader_resource_view>& texture);
 
 	float4x4 calculate_view_projection() const;

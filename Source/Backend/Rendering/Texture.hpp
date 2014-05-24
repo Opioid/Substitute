@@ -16,9 +16,9 @@ public:
 	Texture(uint32_t id, const Texture_description& description);
 	virtual ~Texture();
 
-	const Texture_description& get_description() const;
+	const Texture_description& description() const;
 
-	static uint32_t get_gl_type(Texture_description::Type type);
+	static uint32_t gl_type(Texture_description::Type type);
 
 protected:
 

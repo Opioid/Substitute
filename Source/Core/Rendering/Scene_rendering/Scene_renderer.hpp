@@ -22,7 +22,7 @@ public:
 
 	virtual bool init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache) = 0;
 
-	const uint2& get_target_dimensions() const;
+	const uint2& target_dimensions() const;
 
 	const Handle<Depth_stencil_shader_resource_view>& get_depth_stencil() const;
 

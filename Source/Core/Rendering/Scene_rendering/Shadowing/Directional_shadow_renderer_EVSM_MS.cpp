@@ -23,7 +23,7 @@ Directional_shadow_renderer_EVSM_MS::Directional_shadow_renderer_EVSM_MS(Renderi
 
 bool Directional_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache)
 {
-    auto& device = rendering_tool_.get_device();
+    auto& device = rendering_tool_.device();
 
     Texture_description texture_description;
 
@@ -44,7 +44,7 @@ bool Directional_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manage
         return false;
     }
 
-    apply_shadow_.framebuffer = rendering_tool_.get_device().create_framebuffer();
+    apply_shadow_.framebuffer = rendering_tool_.device().create_framebuffer();
     if (!apply_shadow_.framebuffer)
     {
         return false;
@@ -59,16 +59,16 @@ bool Directional_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manage
         return false;
     }
 
-    apply_shadow_.technique        = apply_shadow_.effect->get_technique("Apply_shadow_map");
-    apply_shadow_.volume_technique = apply_shadow_.effect->get_technique("Apply_shadow_map_volume");
+    apply_shadow_.technique        = apply_shadow_.effect->technique("Apply_shadow_map");
+    apply_shadow_.volume_technique = apply_shadow_.effect->technique("Apply_shadow_map_volume");
 
-    apply_shadow_.input_layout = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), apply_shadow_.technique->get_program()->get_signature());
+    apply_shadow_.input_layout = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), apply_shadow_.technique->program()->signature());
     if (!apply_shadow_.input_layout)
     {
         return false;
     }
 
-    apply_shadow_.volume_input_layout = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position3x32::vertex_layout_description(), apply_shadow_.volume_technique->get_program()->get_signature());
+    apply_shadow_.volume_input_layout = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position3x32::vertex_layout_description(), apply_shadow_.volume_technique->program()->signature());
     if (!apply_shadow_.volume_input_layout)
     {
         return false;
@@ -79,13 +79,13 @@ bool Directional_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manage
         return false;
     }
 
-    Constant_buffer_adapter* change_per_camera_adapter = apply_shadow_.effect->get_constant_buffer_adapter("Change_per_camera");
+    Constant_buffer_adapter* change_per_camera_adapter = apply_shadow_.effect->constant_buffer_adapter("Change_per_camera");
     if (!change_per_camera_adapter)
     {
         return false;
     }
 
-    Handle<Constant_buffer> change_per_camera_buffer = constant_buffer_cache.get_constant_buffer("Change_per_camera");
+    Handle<Constant_buffer> change_per_camera_buffer = constant_buffer_cache.constant_buffer("Change_per_camera");
     if (!change_per_camera_buffer)
     {
         return false;
@@ -107,7 +107,7 @@ bool Directional_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manage
 
     for (uint32_t i = 0; i < filter_kernel_size_; ++i)
     {
-        apply_shadow_.filter_kernel.get_data().filter_kernel[i] = filter_kernel_[i];
+        apply_shadow_.filter_kernel.data().filter_kernel[i] = filter_kernel_[i];
     }
 
     apply_shadow_.filter_kernel.update(device);
@@ -115,14 +115,14 @@ bool Directional_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manage
     return create_render_states();
 }
 
-Handle<Shader_resource_view>& Directional_shadow_renderer_EVSM_MS::get_shadow_map()
+Handle<Shader_resource_view>& Directional_shadow_renderer_EVSM_MS::shadow_map()
 {
-    return shadow_map_->get_shader_resource_view();
+    return shadow_map_->shader_resource_view();
 }
 
-Handle<Shader_resource_view>& Directional_shadow_renderer_EVSM_MS::get_white_buffer()
+Handle<Shader_resource_view>& Directional_shadow_renderer_EVSM_MS::white_buffer()
 {
-    return white_buffer_->get_shader_resource_view();
+    return white_buffer_->shader_resource_view();
 }
 
 void Directional_shadow_renderer_EVSM_MS::prepare_rendering(const Rendering_context& /*context*/)
@@ -130,31 +130,31 @@ void Directional_shadow_renderer_EVSM_MS::prepare_rendering(const Rendering_cont
 
 void Directional_shadow_renderer_EVSM_MS::render_cascade(const Rendering_context& context, const Cascade_data& cascade_data)
 {
-    generate_shadow(cascade_data.shadow_view_projection, surface_collector_.get_surfaces(), viewport_, rendering_tool_.get_device());
+    generate_shadow(cascade_data.shadow_view_projection, surface_collector_.get_surfaces(), viewport_, rendering_tool_.device());
 
-	resolve_shadow_linear(resolve_shadow_.framebuffer, depth_->get_shader_resource_view(), cascade_data.depth_clamp, viewport_, rendering_tool_);
+	resolve_shadow_linear(resolve_shadow_.framebuffer, depth_->shader_resource_view(), cascade_data.depth_clamp, viewport_, rendering_tool_);
 
     apply_shadow(context, cascade_data);
 }
 
 void Directional_shadow_renderer_EVSM_MS::apply_shadow(const Rendering_context& context, const Cascade_data& cascade_data)
 {
-    Rendering_device& device = rendering_tool_.get_device();
+    Rendering_device& device = rendering_tool_.device();
 
-    device.set_viewports(1, &context.get_viewport());
+    device.set_viewports(1, &context.viewport());
     device.set_framebuffer(apply_shadow_.framebuffer);
 
     device.set_shader_resources(1, &deferred_depth_);
-    device.set_shader_resources(1, &shadow_map_->get_shader_resource_view(), 1);
+    device.set_shader_resources(1, &shadow_map_->shader_resource_view(), 1);
 
     apply_shadow_.effect->use(device);
 
     device.set_blend_state(apply_shadow_.blend_state);
 
-    const auto& camera = context.get_camera();
+    const auto& camera = context.camera();
 
-    auto& change_per_cascade_data = apply_shadow_.change_per_cascade.get_data();
-    change_per_cascade_data.shadow_transform = invert(camera.get_view()) * cascade_data.shadow_view_projection * scene::Light::get_texture_transform();
+    auto& change_per_cascade_data = apply_shadow_.change_per_cascade.data();
+    change_per_cascade_data.shadow_transform = invert(camera.view()) * cascade_data.shadow_view_projection * scene::Light::get_texture_transform();
     change_per_cascade_data.depth_clamp = cascade_data.depth_clamp;
 
     if (cascade_data.last_cascade)
@@ -188,7 +188,7 @@ void Directional_shadow_renderer_EVSM_MS::apply_shadow(const Rendering_context& 
 
 bool Directional_shadow_renderer_EVSM_MS::on_resize_targets(const uint2& dimensions, const Handle<Depth_stencil_shader_resource_view>& depth_stencil)
 {
-    auto& cache = rendering_tool_.get_render_target_cache();
+    auto& cache = rendering_tool_.render_target_cache();
 
     Texture_description texture_description;
     texture_description.type = Texture_description::Type::Texture_2D;
@@ -201,7 +201,7 @@ bool Directional_shadow_renderer_EVSM_MS::on_resize_targets(const uint2& dimensi
         return false;
     }
 
-    apply_shadow_.framebuffer->set_render_targets(white_buffer_->get_render_target_view(), depth_stencil->get_depth_stencil_view());
+    apply_shadow_.framebuffer->set_render_targets(white_buffer_->render_tarview(), depth_stencil->depth_stencil_view());
 
     if (!apply_shadow_.framebuffer->is_valid())
     {
@@ -213,7 +213,7 @@ bool Directional_shadow_renderer_EVSM_MS::on_resize_targets(const uint2& dimensi
 
 bool Directional_shadow_renderer_EVSM_MS::create_render_states()
 {
-    Render_state_cache& cache = rendering_tool_.get_render_state_cache();
+    Render_state_cache& cache = rendering_tool_.render_state_cache();
 
     Rasterizer_state::Description rasterizer_description;
 

@@ -21,7 +21,7 @@ bool Control_mappings::Action::start(const platform::Input_signal& signal)
 
 void Control_mappings::Action::stop(const platform::Input_signal& signal)
 {
-	if (signal_.get_id() != signal.get_id())
+	if (signal_.id() != signal.id())
 	{
 		return;
 	}
@@ -43,7 +43,7 @@ bool Control_mappings::Action::process(float speed)
 {
 	if (active_ || just_activated_)
 	{
-		action_(just_activated_, signal_.get_data(), speed);
+		action_(just_activated_, signal_.data(), speed);
 	}
 
 	just_activated_ = false;
@@ -122,14 +122,14 @@ void Control_mappings::insert(const platform::Input_signal& signal)
 		return;
 	}
 
-	Action_map::iterator i = current_action_map_->find(signal.get_id());
+	Action_map::iterator i = current_action_map_->find(signal.id());
 
 	if (i == current_action_map_->end())
 	{
 		return;
 	}
 
-	if (!signal.get_data())
+	if (!signal.data())
 	{
 		i->second->stop(signal);
 	}

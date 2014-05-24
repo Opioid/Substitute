@@ -66,7 +66,7 @@ void Image_controls::init(uint32_t num_channels, const rendering::Color3& consta
 
 	ui->image_source_combo_box_->addItem(treat_missing_source_as_constant ? "Use constant" : "");
 
-	thumbnail_.resize(thumbnail_provider->get_thumbnail_dimensions());
+	thumbnail_.resize(thumbnail_provider->thumbnail_dimensions());
 
 	update_constant();
 }
@@ -280,7 +280,7 @@ void Image_controls::set_checkerboard()
 		return;
 	}
 
-	const Image_buffer<rendering::Color4c>& checkerboard = thumbnail_provider_->get_checkerboard();
+	const Image_buffer<rendering::Color4c>& checkerboard = thumbnail_provider_->checkerboard();
 
 	set_thumbnail(checkerboard);
 }
@@ -334,8 +334,8 @@ void Image_controls::set_thumbnail(const Image_buffer<rendering::Color4c>& sourc
 	To_BGRA filter(true);
 	filter.filter(thumbnail_, source);
 
-	QImage qimage(reinterpret_cast<const uchar*>(thumbnail_.get_data()),
-				  thumbnail_.get_dimensions().x, thumbnail_.get_dimensions().y, QImage::Format_RGB32);
+	QImage qimage(reinterpret_cast<const uchar*>(thumbnail_.data()),
+				  thumbnail_.dimensions().x, thumbnail_.dimensions().y, QImage::Format_RGB32);
 
 	QPixmap pixmap = QPixmap::fromImage(qimage);
 
@@ -344,19 +344,19 @@ void Image_controls::set_thumbnail(const Image_buffer<rendering::Color4c>& sourc
 
 void Image_controls::set_thumbnail(const Image_buffer<rendering::Color4>& source)
 {
-	const uint2& source_dimensions = source.get_dimensions();
-	const uint2& thumbnail_dimensions = thumbnail_.get_dimensions();
+	const uint2& source_dimensions = source.dimensions();
+	const uint2& thumbnail_dimensions = thumbnail_.dimensions();
 
 	if (source_dimensions.x < thumbnail_dimensions.x || source_dimensions.y < thumbnail_dimensions.y)
 	{
 		Copy<rendering::Color4c> copy;
-		copy.filter(thumbnail_, thumbnail_provider_->get_checkerboard());
+		copy.filter(thumbnail_, thumbnail_provider_->checkerboard());
 	}
 
 	To_BGRA filter(true);
 	filter.filter(thumbnail_, source);
 
-	QImage qimage(reinterpret_cast<const uchar*>(thumbnail_.get_data()),
+	QImage qimage(reinterpret_cast<const uchar*>(thumbnail_.data()),
 				  thumbnail_dimensions.x, thumbnail_dimensions.y, QImage::Format_RGB32);
 
 	QPixmap pixmap = QPixmap::fromImage(qimage);
@@ -366,7 +366,7 @@ void Image_controls::set_thumbnail(const Image_buffer<rendering::Color4>& source
 
 void Image_controls::set_thumbnail(const Image_buffer<rendering::Color4>& source, uint32_t channel, bool inverted, float modulate_factor)
 {
-	Image_buffer<rendering::Color4>& scratch_buffer = thumbnail_provider_->get_scratch_buffer();
+	Image_buffer<rendering::Color4>& scratch_buffer = thumbnail_provider_->scratch_buffer();
 
 	Channel_to_grayscale<rendering::Color4> to_grayscale(channel);
 	to_grayscale.filter(scratch_buffer, source);
@@ -383,20 +383,20 @@ void Image_controls::set_thumbnail(const Image_buffer<rendering::Color4>& source
 		modulate.filter(scratch_buffer, scratch_buffer);
 	}
 
-	const uint2& source_dimensions = source.get_dimensions();
-	const uint2& thumbnail_dimensions = thumbnail_.get_dimensions();
+	const uint2& source_dimensions = source.dimensions();
+	const uint2& thumbnail_dimensions = thumbnail_.dimensions();
 
 	if (source_dimensions.x < thumbnail_dimensions.x || source_dimensions.y < thumbnail_dimensions.y)
 	{
 		Copy<rendering::Color4c> copy;
-		copy.filter(thumbnail_, thumbnail_provider_->get_checkerboard());
+		copy.filter(thumbnail_, thumbnail_provider_->checkerboard());
 	}
 
 	// No need to swap channels for Qt here, as it is grayscale
 	To_BGRA filter(false);
-	filter.filter(thumbnail_, scratch_buffer, source.get_dimensions());
+	filter.filter(thumbnail_, scratch_buffer, source.dimensions());
 
-	QImage qimage(reinterpret_cast<const uchar*>(thumbnail_.get_data()),
+	QImage qimage(reinterpret_cast<const uchar*>(thumbnail_.data()),
 				  thumbnail_dimensions.x, thumbnail_dimensions.y, QImage::Format_RGB32);
 
 	QPixmap pixmap = QPixmap::fromImage(qimage);

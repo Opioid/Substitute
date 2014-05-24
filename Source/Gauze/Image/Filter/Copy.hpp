@@ -11,15 +11,15 @@ public:
 
 	bool filter(Image_buffer<T>& destination, const Image_buffer<T>& source) const
 	{
-		if (destination.get_format()     != source.get_format()
-		||  destination.get_dimensions() != source.get_dimensions())
+		if (destination.format()     != source.format()
+		||  destination.dimensions() != source.dimensions())
 		{
 			return false;
 		}
 
-		const T* source_data = source.get_data();
+		const T* source_data = source.data();
 
-		std::copy(source_data, source_data + source.get_num_pixels(), destination.get_data());
+		std::copy(source_data, source_data + source.num_pixels(), destination.data());
 
 		return true;
 	}

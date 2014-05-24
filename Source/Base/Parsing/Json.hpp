@@ -10,20 +10,20 @@ namespace json
 
 bool parse(rapidjson::Document& document, std::istream& stream);
 
-std::string get_error(rapidjson::Document& document, std::istream& stream);
+std::string read_error(rapidjson::Document& document, std::istream& stream);
 
-float2 get_float2(const rapidjson::Value& value);
-float3 get_float3(const rapidjson::Value& value);
-float4 get_float4(const rapidjson::Value& value);
+float2 read_float2(const rapidjson::Value& value);
+float3 read_float3(const rapidjson::Value& value);
+float4 read_float4(const rapidjson::Value& value);
 
-uint3  get_uint3(const rapidjson::Value& value);
+uint3  read_uint3(const rapidjson::Value& value);
 
-Quaternion get_quaternion(const rapidjson::Value& value);
-float3x3   get_rotation_matrix(const rapidjson::Value& value);
-Quaternion get_local_rotation(const rapidjson::Value& value);
+Quaternion read_quaternion(const rapidjson::Value& value);
+float3x3   read_rotation_matrix(const rapidjson::Value& value);
+Quaternion read_local_rotation(const rapidjson::Value& value);
 
-bool get_bool(const rapidjson::Value& value, const std::string& name, bool default_value);
-std::string get_string(const rapidjson::Value& value, const std::string& name, const std::string& default_value);
-uint32_t get_uint(const rapidjson::Value& value, const std::string& name, uint32_t default_value);
+bool read_bool(const rapidjson::Value& value, const std::string& name, bool default_value);
+std::string read_string(const rapidjson::Value& value, const std::string& name, const std::string& default_value);
+uint32_t read_uint(const rapidjson::Value& value, const std::string& name, uint32_t default_value);
 
 }

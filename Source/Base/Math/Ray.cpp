@@ -13,7 +13,7 @@ Ray3::Ray3(const float3& org, const float3& dir) : org(org), dir(dir)
 bool Ray3::intersect(const Plane& p, float &dist) const
 {
 	float numer = dot(p, org);
-	float denom = dot(p.get_normal(), dir);
+	float denom = dot(p.normal(), dir);
 
 	if (denom == 0.f) return false;
 

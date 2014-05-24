@@ -7,7 +7,7 @@ Storage_options::Storage_options(rendering::Data_format::Value format, bool alph
 	container_(container)
 {}
 
-rendering::Data_format::Value Storage_options::get_format() const
+rendering::Data_format::Value Storage_options::format() const
 {
 	return format_;
 }

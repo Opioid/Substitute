@@ -11,7 +11,7 @@ Post_processing_pipeline::Post_processing_pipeline(Rendering_tool& rendering_too
 
 bool Post_processing_pipeline::init(Resource_manager& /*resource_manager*/)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	framebuffer_ = device.create_framebuffer();
 
@@ -25,7 +25,7 @@ bool Post_processing_pipeline::init(Resource_manager& /*resource_manager*/)
 
 bool Post_processing_pipeline::resize_targets(const uint2& size, Data_format::Value format)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	Texture_description texture_description;
 	texture_description.type = Texture_description::Type::Texture_2D;
@@ -38,7 +38,7 @@ bool Post_processing_pipeline::resize_targets(const uint2& size, Data_format::Va
 		return false;
 	}
 
-	framebuffer_->set_render_targets(m_scratch_texture->get_render_target_view());
+	framebuffer_->set_render_targets(m_scratch_texture->render_tarview());
 
 	if (!framebuffer_->is_valid())
 	{
@@ -50,12 +50,12 @@ bool Post_processing_pipeline::resize_targets(const uint2& size, Data_format::Va
 
 void Post_processing_pipeline::render(const Handle<Shader_resource_view>& source, const Viewport& source_viewport, const Rendering_context& context)
 {
-	context_.set_camera(context.get_camera());
+	context_.set_camera(context.camera());
 
 	if (!effect_)
 	{
-		context_.set_viewport(context.get_viewport());
-		context_.set_framebuffer(context.get_framebuffer());
+		context_.set_viewport(context.viewport());
+		context_.set_framebuffer(context.framebuffer());
 	}
 	else
 	{
@@ -70,7 +70,7 @@ void Post_processing_pipeline::render(const Handle<Shader_resource_view>& source
 
 	if (effect_)
 	{
-		effect_->render(m_scratch_texture->get_shader_resource_view(), source_viewport, context);
+		effect_->render(m_scratch_texture->shader_resource_view(), source_viewport, context);
 	}
 
 }

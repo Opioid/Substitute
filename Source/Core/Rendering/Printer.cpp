@@ -10,8 +10,8 @@
 namespace rendering
 {
 
-Printer::Font::Instance::Instance(Printer::Font* font, uint32_t width, uint32_t height)
-	: font(font), width(width), height(height)
+Printer::Font::Instance::Instance(Printer::Font* font, uint32_t width, uint32_t height) :
+	font(font), width(width), height(height)
 {}
 
 Printer::Font::Instance::~Instance()
@@ -28,9 +28,9 @@ Printer::Font::~Font()
 	}
 }
 
-Printer::Printer(Rendering_tool& rendering_tool)
-    : rendering_tool_(rendering_tool), m_column(0), m_has_texture(false),
-      color_(0xffffffff), num_vertices_(1024), m_current_vertex(0), m_current_font_instance(nullptr)
+Printer::Printer(Rendering_tool& rendering_tool) :
+	rendering_tool_(rendering_tool), m_column(0), m_has_texture(false),
+	color_(0xFFFFFFFF), num_vertices_(1024), m_current_vertex(0), m_current_font_instance(nullptr)
 {
     vertices_ = new Rect_vertex[num_vertices_];
 }
@@ -60,9 +60,9 @@ bool Printer::init(Resource_manager& resource_manager)
 		return false;
 	}
 
-	color__technique   = effect_->get_technique("Color");
-	texture__technique = effect_->get_technique("Texture");
-	m_font_technique    = effect_->get_technique("Font");
+	color__technique   = effect_->technique("Color");
+	texture__technique = effect_->technique("Texture");
+	m_font_technique    = effect_->technique("Font");
 
 	Vertex_layout_description::Element layout[] =
 	{
@@ -73,7 +73,7 @@ bool Printer::init(Resource_manager& resource_manager)
 
 	Vertex_layout_description description(3, layout);
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(description, m_font_technique->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(description, m_font_technique->program()->signature());
 
 	if (!input_layout_)
 	{
@@ -85,7 +85,7 @@ bool Printer::init(Resource_manager& resource_manager)
 		return false;
 	}
 
-	vertex_buffer_ = rendering_tool_.get_device().create_vertex_buffer(sizeof(Rect_vertex) * num_vertices_);
+	vertex_buffer_ = rendering_tool_.device().create_vertex_buffer(sizeof(Rect_vertex) * num_vertices_);
 	if (!vertex_buffer_)
 	{
 		return false;
@@ -101,7 +101,7 @@ bool Printer::init(Resource_manager& resource_manager)
 
 void Printer::begin()
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.set_primitive_topology(Primitive_topology::Point_list);
 	device.set_input_layout(input_layout_);
@@ -113,8 +113,8 @@ void Printer::begin()
 
 	effect_->use(device);
 
-	uint2 size = rendering_tool_.get_size();
-	change_per_source_.get_data().inverse_half_source_size = float2(1.f / (0.5f * size.x), -1.f / (0.5f * size.y));
+	uint2 size = rendering_tool_.dimensions();
+	change_per_source_.data().inverse_half_source_size = float2(1.f / (0.5f * size.x), -1.f / (0.5f * size.y));
 	change_per_source_.update(device);
 }
 
@@ -125,12 +125,12 @@ void Printer::end()
 	set_texture(nullptr);
 }
 
-float2 Printer::get_screen_size() const
+float2 Printer::screen_dimensions() const
 {
-	return float2(rendering_tool_.get_size());
+	return float2(rendering_tool_.dimensions());
 }
 
-int Printer::get_line_height() const
+int Printer::line_height() const
 {
 	if (!m_current_font_instance)
 	{
@@ -173,7 +173,7 @@ bool Printer::set_font(const std::string& name, uint32_t width, uint32_t height)
 		// This is where we finally have to create a new font texture...
 
 		std::string resolved_name;
-		if (!resource_manager_->get_virtual_file_system().get_resolved_name(resolved_name, "Fonts/" + font->name + ".ttf"))
+		if (!resource_manager_->virtual_file_system().query_resolved_name(resolved_name, "Fonts/" + font->name + ".ttf"))
 		{
 			return false;
 		}
@@ -220,21 +220,21 @@ bool Printer::set_font(const std::string& name, uint32_t width, uint32_t height)
 
 		Generic_texture_data_adapter adapter(description, &data, false);
 
-		Handle<Texture> texture = rendering_tool_.get_device().create_texture_2D(adapter);
+		Handle<Texture> texture = rendering_tool_.device().create_texture_2D(adapter);
 
 		if (!texture)
 		{
 			return false;
 		}
 
-		m_current_font_instance->texture_ = rendering_tool_.get_device().create_shader_resource_view(texture, resolved_name);
+		m_current_font_instance->texture_ = rendering_tool_.device().create_shader_resource_view(texture, resolved_name);
 
-	//	exportFont(name, width, height, m_currentFontInstance->texture_->get_texture(), desc);
+	//	exportFont(name, width, height, m_currentFontInstance->texture_->texture(), desc);
 	}
 
 	flush();
 
-	rendering_tool_.get_device().set_shader_resources(1, &m_current_font_instance->texture_, 1);
+	rendering_tool_.device().set_shader_resources(1, &m_current_font_instance->texture_, 1);
 
 	return true;
 }
@@ -257,7 +257,7 @@ void Printer::set_texture_coordinates(const float2& left_top, const float2& righ
 
 void Printer::set_texture(const Handle<Shader_resource_view>& texture)
 {
-	rendering_tool_.get_device().set_shader_resources(1, &texture, 0);
+	rendering_tool_.device().set_shader_resources(1, &texture, 0);
 
 	m_has_texture = texture != nullptr;
 }
@@ -352,7 +352,7 @@ void Printer::draw_quad(const float2& size)
 
 void Printer::draw_all(uint32_t count)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.update_buffer(*vertex_buffer_, 0, sizeof(Rect_vertex) * count, vertices_);
 
@@ -363,7 +363,7 @@ bool Printer::create_render_states()
 {
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_ = rendering_tool_.get_render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_)
 	{
 		return false;
@@ -372,7 +372,7 @@ bool Printer::create_render_states()
 	Depth_stencil_state::Description ds_description;
 	ds_description.depth_enable = false;
 	ds_description.depth_write_mask = false;
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -388,7 +388,7 @@ bool Printer::create_render_states()
 	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
 	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::All;
 
-	blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;

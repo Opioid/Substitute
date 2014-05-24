@@ -30,13 +30,13 @@ public:
 
 	uint32_t get_num_probes() const;
 
-	const float3& get_world_position() const;
+	const float3& world_position() const;
 
-	const float4x4& get_world_transformation() const;
+	const float4x4& world_transformation() const;
 
 	float3 get_probe_position(uint32_t index) const;
 
-	const Handle<rendering::Shader_resource_view>* get_textures() const;
+	const Handle<rendering::Shader_resource_view>* textures() const;
 	void set_texture(const Handle<rendering::Shader_resource_view>& texture, uint32_t index);
 
 	static uint32_t get_num_textures();

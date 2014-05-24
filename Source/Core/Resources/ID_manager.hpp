@@ -8,9 +8,9 @@ class ID_manager
 
 public:
 
-	size_t get_id(const std::string& type_name);
+	size_t id(const std::string& type_name);
 
-	std::string get_name(size_t id) const;
+	std::string name(size_t id) const;
 
 	std::vector<std::string>& get_names() const;
 };

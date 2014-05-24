@@ -18,7 +18,7 @@ Handle<Model> Model_provider::load(file::Input_stream& stream, Resource_manager&
 {
 	if (!stream)
 	{
-		logging::error("Model_provider::load_SUM(): \"" + stream.get_name() + "\" could not be loaded. File not found.");
+		logging::error("Model_provider::load_SUM(): \"" + stream.name() + "\" could not be loaded. File not found.");
 		return nullptr;
 	}
 
@@ -26,7 +26,7 @@ Handle<Model> Model_provider::load(file::Input_stream& stream, Resource_manager&
 
 	if (!model)
 	{
-		logging::error("Model_provider::load(): \"" + stream.get_name() + "\" could not be loaded.");
+		logging::error("Model_provider::load(): \"" + stream.name() + "\" could not be loaded.");
 		return nullptr;
 	}
 
@@ -51,7 +51,7 @@ Model* Model_provider::load_SUM(file::Input_stream& stream) const
 		return nullptr;
 	}
 
-	Model *model = new Model(stream.get_name());
+	Model *model = new Model(stream.name());
 
 	// Groups
 	stream.read((char*)&model->num_groups_, sizeof(uint32_t));
@@ -69,15 +69,15 @@ Model* Model_provider::load_SUM(file::Input_stream& stream) const
 	// Vertices
 	stream.read((char*)&model->num_vertices_, sizeof(uint32_t));
 
-	model->vertex_buffers_ = new Handle<rendering::Vertex_buffer>[model->m_vd->get_num_streams()];
+	model->vertex_buffers_ = new Handle<rendering::Vertex_buffer>[model->m_vd->num_streams()];
 
-	for (uint32_t i = 0; i < model->m_vd->get_num_streams(); ++i)
+	for (uint32_t i = 0; i < model->m_vd->num_streams(); ++i)
 	{
-		const uint32_t num_vertex_bytes = model->m_vd->get_strides()[i] * model->num_vertices_;
+		const uint32_t num_vertex_bytes = model->m_vd->strides()[i] * model->num_vertices_;
 		char *vertices = new char[num_vertex_bytes];
 		stream.read(vertices, num_vertex_bytes);
 
-		model->vertex_buffers_[i] = rendering_tool_.get_device().create_vertex_buffer(num_vertex_bytes, vertices);
+		model->vertex_buffers_[i] = rendering_tool_.device().create_vertex_buffer(num_vertex_bytes, vertices);
 
 		delete [] vertices;
 
@@ -94,11 +94,11 @@ Model* Model_provider::load_SUM(file::Input_stream& stream) const
 
 	stream.read((char*)&model->num_indices_, sizeof(uint32_t));
 
-	const uint32_t num_index_bytes = model->num_indices_ * uint32_t(rendering::Data_format::size_of(index_type));
+	const uint32_t num_index_bytes = model->num_indices_ * rendering::Data_format::num_bytes_per_block(index_type);
 	char* indices = new char[num_index_bytes];
 	stream.read(indices, num_index_bytes);
 
-	model->index_buffer_ = rendering_tool_.get_device().create_index_buffer(num_index_bytes, indices, index_type);
+	model->index_buffer_ = rendering_tool_.device().create_index_buffer(num_index_bytes, indices, index_type);
 
 	delete [] indices;
 
@@ -152,7 +152,7 @@ const rendering::Vertex_layout_description* Model_provider::read_vertex_layout_d
 		stream >> elements[i];
 	}
 
-	const rendering::Vertex_layout_description* description = rendering_tool_.get_vertex_layout_cache().get_vertex_layout_description(num_elements_, elements);
+	const rendering::Vertex_layout_description* description = rendering_tool_.vertex_layout_cache().vertex_layout_description(num_elements_, elements);
 
 	delete [] elements;
 

@@ -50,7 +50,7 @@ struct Plane
 		return 0.f;
 	}
 
-	float3 get_normal() const
+	float3 normal() const
 	{
 		return float3(a, b, c);
 	}
@@ -118,14 +118,14 @@ inline bool behind(const Plane& p, const float3& point)
 
 inline Plane normalize(const Plane& p)
 {
-	float t = 1.f / length(p.get_normal());
+	float t = 1.f / length(p.normal());
 
 	return Plane(p.a * t, p.b * t, p.c * t, p.d * t);
 }
 
 inline float3 reflect(const float3& v, const Plane& p)
 {
-	return -2.f * p.d * p.get_normal() + reflect(v, p.get_normal());
+	return -2.f * p.d * p.normal() + reflect(v, p.normal());
 }
 
 inline Plane operator*(const Plane& p, const float4x4& m)

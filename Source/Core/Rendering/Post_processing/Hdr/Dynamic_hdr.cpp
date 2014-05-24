@@ -22,14 +22,14 @@ bool Dynamic_hdr::init(Resource_manager& resource_manager)
 		return false;
 	}
 
-	compose_technique_         = effect_->get_technique("Compose");
-	luminance_technique_       = effect_->get_technique("Luminance");
-	scale_down_technique_      = effect_->get_technique("Scale_down");
-	bright_pass_technique_     = effect_->get_technique("Bright_pass");
-	blur_horizontal_technique_ = effect_->get_technique("Blur_horizontal");
-	blur_vertical_technique_   = effect_->get_technique("Blur_vertical");
+	compose_technique_         = effect_->technique("Compose");
+	luminance_technique_       = effect_->technique("Luminance");
+	scale_down_technique_      = effect_->technique("Scale_down");
+	bright_pass_technique_     = effect_->technique("Bright_pass");
+	blur_horizontal_technique_ = effect_->technique("Blur_horizontal");
+	blur_vertical_technique_   = effect_->technique("Blur_vertical");
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->get_technique(0)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->technique(0)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
@@ -50,7 +50,7 @@ bool Dynamic_hdr::init(Resource_manager& resource_manager)
 
 void Dynamic_hdr::render(const Handle<Shader_resource_view>& source, const Viewport& /*source_viewport*/, const Rendering_context& context)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	device.set_input_layout(input_layout_);
 
@@ -61,18 +61,18 @@ void Dynamic_hdr::render(const Handle<Shader_resource_view>& source, const Viewp
 
 	calculate_average_luminance();
 
-	device.set_shader_resources(1, &luminance_target_->get_shader_resource_view(), 1);
+	device.set_shader_resources(1, &luminance_target_->shader_resource_view(), 1);
 
 	bloom();
 
-	device.set_framebuffer(context.get_framebuffer());
-	device.set_viewports(1, &context.get_viewport());
+	device.set_framebuffer(context.framebuffer());
+	device.set_viewports(1, &context.viewport());
 
 	device.set_blend_state(compose_blend_state_);
 
-	device.set_shader_resources(1, &bloom_targets_[0]->get_shader_resource_view(), 2);
+	device.set_shader_resources(1, &bloom_targets_[0]->shader_resource_view(), 2);
 
-	change_per_scene_.get_data().linear_white = linear_white_;
+	change_per_scene_.data().linear_white = linear_white_;
 	change_per_scene_.update(device);
 
 	compose_technique_->use();
@@ -82,7 +82,7 @@ void Dynamic_hdr::render(const Handle<Shader_resource_view>& source, const Viewp
 
 bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 {
-	auto& cache = rendering_tool_.get_render_target_cache();
+	auto& cache = rendering_tool_.render_target_cache();
 
 	uint2 luminance_dimensions = uint2(1024, 1024);
 
@@ -100,14 +100,14 @@ bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 		return false;
 	}
 
-	luminance_framebuffer_ = rendering_tool_.get_device().create_framebuffer();
+	luminance_framebuffer_ = rendering_tool_.device().create_framebuffer();
 
 	if (!luminance_framebuffer_)
 	{
 		return false;
 	}
 
-	luminance_framebuffer_->set_render_targets(luminance_target_->get_render_target_view());
+	luminance_framebuffer_->set_render_targets(luminance_target_->render_tarview());
 
 	if (!luminance_framebuffer_->is_valid())
 	{
@@ -136,14 +136,14 @@ bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 
 	for (uint32_t i = 0; i < 2; ++i)
 	{
-		bloom_framebuffers_[i] = rendering_tool_.get_device().create_framebuffer();
+		bloom_framebuffers_[i] = rendering_tool_.device().create_framebuffer();
 
 		if (!bloom_framebuffers_[i])
 		{
 			return false;
 		}
 
-		bloom_framebuffers_[i]->set_render_targets(bloom_targets_[i]->get_render_target_view());
+		bloom_framebuffers_[i]->set_render_targets(bloom_targets_[i]->render_tarview());
 
 		if (!bloom_framebuffers_[i]->is_valid())
 		{
@@ -158,7 +158,7 @@ bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 
 void Dynamic_hdr::calculate_average_luminance()
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	device.set_viewports(1, &luminance_viewport_);
 
@@ -170,12 +170,12 @@ void Dynamic_hdr::calculate_average_luminance()
 
 	rendering_tool_.render_fullscreen_effect();
 
-	device.generate_mip_maps(luminance_target_->get_shader_resource_view()->get_texture());
+	device.generate_mip_maps(luminance_target_->shader_resource_view()->texture());
 }
 
 void Dynamic_hdr::bloom()
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	device.set_viewports(1, &bloom_viewport_);
 
@@ -186,24 +186,24 @@ void Dynamic_hdr::bloom()
 	rendering_tool_.render_fullscreen_effect();
 /*
 	device.set_framebuffer(bloom_framebuffers_[1]);
-	device.set_shader_resources(1, &bloom_targets_[0]->get_shader_resource_view(), 2);
+	device.set_shader_resources(1, &bloom_targets_[0]->shader_resource_view(), 2);
 	bright_pass_technique_->use();
 	rendering_tool_.render_fullscreen_effect();
 */
 	device.set_framebuffer(bloom_framebuffers_[1]);
-	device.set_shader_resources(1, &bloom_targets_[0]->get_shader_resource_view(), 3);
+	device.set_shader_resources(1, &bloom_targets_[0]->shader_resource_view(), 3);
 	blur_horizontal_technique_->use();
 	rendering_tool_.render_fullscreen_effect();
 
 	device.set_framebuffer(bloom_framebuffers_[0]);
-	device.set_shader_resources(1, &bloom_targets_[1]->get_shader_resource_view(), 3);
+	device.set_shader_resources(1, &bloom_targets_[1]->shader_resource_view(), 3);
 	blur_vertical_technique_->use();
 	rendering_tool_.render_fullscreen_effect();
 }
 
 void Dynamic_hdr::prepare_filter_kernel(const uint2& dimensions)
 {
-	auto& filter_kernel_data = filter_kernel_.get_data();
+	auto& filter_kernel_data = filter_kernel_.data();
 	filter_kernel_data.texel_size = 1.f / float2(dimensions);
 
 	const float2 sample_offset = 0.5f * filter_kernel_data.texel_size;
@@ -213,7 +213,7 @@ void Dynamic_hdr::prepare_filter_kernel(const uint2& dimensions)
 	filter_kernel_data.filter_kernel[2] = float4(-sample_offset.x, -sample_offset.y, weight, 0.f);
 	filter_kernel_data.filter_kernel[3] = float4( sample_offset.x, -sample_offset.y, weight, 0.f);
 
-	filter_kernel_.update(rendering_tool_.get_device());
+	filter_kernel_.update(rendering_tool_.device());
 }
 
 bool Dynamic_hdr::create_render_states()
@@ -223,7 +223,7 @@ bool Dynamic_hdr::create_render_states()
 	ds_description.depth_write_mask = false;
 	ds_description.stencil_enable = false;
 
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -234,7 +234,7 @@ bool Dynamic_hdr::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	compose_blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	compose_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!compose_blend_state_)
 	{
 		return false;
@@ -242,7 +242,7 @@ bool Dynamic_hdr::create_render_states()
 
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red;
 
-	luminance_blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	luminance_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!luminance_blend_state_)
 	{
 		return false;
@@ -250,7 +250,7 @@ bool Dynamic_hdr::create_render_states()
 
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	bloom_blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	bloom_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!bloom_blend_state_)
 	{
 		return false;
@@ -285,17 +285,17 @@ bool Standard_Hdr::init(const uint2& size, Data_format::Value format, Resource_m
 
 	m_size_div4 = size / 4;
 
-	m_targets[0] = m_render_tool.getScratchTexturePool().get_texture(m_size_div4, format);
+	m_targets[0] = m_render_tool.getScratchTexturePool().texture(m_size_div4, format);
 
 	std::list<const Render_target_shader_resource_view*> must_not_match;
 	must_not_match.push_back(m_targets[0]);
-	m_targets[1] = m_render_tool.getScratchTexturePool().get_texture(m_size_div4, format, false, &must_not_match);
+	m_targets[1] = m_render_tool.getScratchTexturePool().texture(m_size_div4, format, false, &must_not_match);
 
 	m_luminance_size = uint2(1024, 1024);
-	m_luminance = m_render_tool.getScratchTexturePool().get_texture(m_luminance_size, Data_format::R16_Float, true);
+	m_luminance = m_render_tool.getScratchTexturePool().texture(m_luminance_size, Data_format::R16_Float, true);
 
-	m_layout = m_render_tool.getInputLayoutManager().getInputLayout(Vertex_Pos3x32_Tex2x32::vertex_layout_description(), effect_, "Render");
-	if (!m_layout) 
+	layout_ = m_render_tool.getInputLayoutManager().getInputLayout(Vertex_Pos3x32_Tex2x32::vertex_layout_description(), effect_, "Render");
+	if (!layout_)
 	{
 		return false;
 	}
@@ -308,7 +308,7 @@ void Standard_Hdr::resolve(const Render_context& context, const Shader_resource_
 {
 	m_render_tool.get_context().set_depth_stencil_state(ds_state_);
 
-	m_render_tool.get_context().set_input_layout(m_layout);
+	m_render_tool.get_context().set_input_layout(layout_);
 
 
 
@@ -321,15 +321,15 @@ void Standard_Hdr::resolve(const Render_context& context, const Shader_resource_
 	m_render_tool.get_context().set_render_target(context.m_target, nullptr);
 	m_render_tool.get_context().set_viewport(context.viewport_);
 
-//	effect_->setResource("g_source", &m_targets[1]->get_shader_resource_view());
-//	effect_->get_technique("Render").apply(m_render_tool.get_context());
+//	effect_->setResource("g_source", &m_targets[1]->shader_resource_view());
+//	effect_->technique("Render").apply(m_render_tool.get_context());
 
 	effect_->setFloat("g_linear_white", linear_white_);
 
 	effect_->setResource("g_source", source);
-	effect_->setResource("g_average_luminance", &m_luminance->get_shader_resource_view());
-	effect_->setResource("g_bloom", &m_targets[1]->get_shader_resource_view());
-	effect_->get_technique("Compose").apply(m_render_tool.get_context());
+	effect_->setResource("g_average_luminance", &m_luminance->shader_resource_view());
+	effect_->setResource("g_bloom", &m_targets[1]->shader_resource_view());
+	effect_->technique("Compose").apply(m_render_tool.get_context());
 
 	m_render_tool.drawFullscreenTriangle();
 }
@@ -342,15 +342,15 @@ void Standard_Hdr::calculate_average_luminance(const Shader_resource_view* sourc
 
 	m_render_tool.get_context().set_blend_state(blend_state__luminance);
 
-	m_render_tool.get_context().set_render_target(&m_luminance->get_render_target_view(), nullptr);
+	m_render_tool.get_context().set_render_target(&m_luminance->render_tarview(), nullptr);
 
 	effect_->setResource("g_source", source);
 
-	effect_->get_technique("Luminance").apply(m_render_tool.get_context());
+	effect_->technique("Luminance").apply(m_render_tool.get_context());
 
 	m_render_tool.drawFullscreenTriangle();
 
-	m_render_tool.get_context().generateMips(&m_luminance->get_shader_resource_view());
+	m_render_tool.get_context().generateMips(&m_luminance->shader_resource_view());
 }
 
 
@@ -361,7 +361,7 @@ void Standard_Hdr::bloom(const Shader_resource_view* source, const uint2& size)
 
 	m_render_tool.get_context().set_blend_state(blend_state__bloom);
 
-	m_render_tool.get_context().set_render_target(&m_targets[0]->get_render_target_view(), nullptr);
+	m_render_tool.get_context().set_render_target(&m_targets[0]->render_tarview(), nullptr);
 
 	float2 texel_size(1.f / float(size.x), 1.f / float(size.y));
 
@@ -369,31 +369,31 @@ void Standard_Hdr::bloom(const Shader_resource_view* source, const uint2& size)
 
 	effect_->setResource("g_source", source);
 
-	effect_->get_technique("Scale_down").apply(m_render_tool.get_context());
+	effect_->technique("Scale_down").apply(m_render_tool.get_context());
 	m_render_tool.drawFullscreenTriangle();
 	
 	texel_size = float2(1.f / float(m_size_div4.x), 1.f / float(m_size_div4.y));
 
 	effect_->setVector("g_texel_size", texel_size);
 
-	m_render_tool.get_context().set_render_target(&m_targets[1]->get_render_target_view(), nullptr);
-	effect_->setResource("g_source", &m_targets[0]->get_shader_resource_view());
-	effect_->setResource("g_average_luminance", &m_luminance->get_shader_resource_view());
-	effect_->get_technique("Bright_filter").apply(m_render_tool.get_context());
+	m_render_tool.get_context().set_render_target(&m_targets[1]->render_tarview(), nullptr);
+	effect_->setResource("g_source", &m_targets[0]->shader_resource_view());
+	effect_->setResource("g_average_luminance", &m_luminance->shader_resource_view());
+	effect_->technique("Bright_filter").apply(m_render_tool.get_context());
 	m_render_tool.drawFullscreenTriangle();
 	
 	m_render_tool.get_context().unbindShaderResources();
 
-	m_render_tool.get_context().set_render_target(&m_targets[0]->get_render_target_view(), nullptr);
-	effect_->setResource("g_source", &m_targets[1]->get_shader_resource_view());
-	effect_->get_technique("Blur_horizontal").apply(m_render_tool.get_context());
+	m_render_tool.get_context().set_render_target(&m_targets[0]->render_tarview(), nullptr);
+	effect_->setResource("g_source", &m_targets[1]->shader_resource_view());
+	effect_->technique("Blur_horizontal").apply(m_render_tool.get_context());
 	m_render_tool.drawFullscreenTriangle();
 
 	m_render_tool.get_context().unbindShaderResources();
 
-	m_render_tool.get_context().set_render_target(&m_targets[1]->get_render_target_view(), nullptr);
-	effect_->setResource("g_source", &m_targets[0]->get_shader_resource_view());
-	effect_->get_technique("Blur_vertical").apply(m_render_tool.get_context());
+	m_render_tool.get_context().set_render_target(&m_targets[1]->render_tarview(), nullptr);
+	effect_->setResource("g_source", &m_targets[0]->shader_resource_view());
+	effect_->technique("Blur_vertical").apply(m_render_tool.get_context());
 	m_render_tool.drawFullscreenTriangle();
 }
 
@@ -451,7 +451,7 @@ bool Standard_Hdr::create_render_states()
 	ds_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	ds_desc.StencilEnable  = false;
 
-	ds_state_ = m_render_tool.get_device().create_depth_stencil_state(ds_desc);
+	ds_state_ = m_render_tool.device().create_depth_stencil_state(ds_desc);
 	if (!ds_state_)
 	{
 		return false;
@@ -462,7 +462,7 @@ bool Standard_Hdr::create_render_states()
 
 	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	blend_state_ = m_render_tool.get_device().create_blend_state(blend_desc);
+	blend_state_ = m_render_tool.device().create_blend_state(blend_desc);
 	if (!blend_state_)
 	{
 		return false;
@@ -472,7 +472,7 @@ bool Standard_Hdr::create_render_states()
 
 	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_RED;
 
-	blend_state__luminance = m_render_tool.get_device().create_blend_state(blend_desc);
+	blend_state__luminance = m_render_tool.device().create_blend_state(blend_desc);
 	if (!blend_state__luminance)
 	{
 		return false;
@@ -482,7 +482,7 @@ bool Standard_Hdr::create_render_states()
 
 	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE;
 
-	blend_state__bloom = m_render_tool.get_device().create_blend_state(blend_desc);
+	blend_state__bloom = m_render_tool.device().create_blend_state(blend_desc);
 	if (!blend_state__bloom)
 	{
 		return false;

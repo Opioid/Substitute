@@ -14,7 +14,7 @@ bool Constant_buffer_description::load(Constant_buffer_description& description,
 		return false;
 	}
 
-	description.circular_size = json::get_uint(value, "circular_size", 1);
+	description.circular_size = json::read_uint(value, "circular_size", 1);
 
 	return true;
 }
@@ -41,7 +41,7 @@ std::string Constant_buffer_description_container::generate_constant_buffers_cod
 
 		for (auto& element : description.elements)
 		{
-			code << "\t" << Shader_data_type::get_glsl_mapping(element.type) << " " << element.name;
+			code << "\t" << Shader_data_type::glsl_mapping(element.type) << " " << element.name;
 
 			if (element.array_size)
 			{

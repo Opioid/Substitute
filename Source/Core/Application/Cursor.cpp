@@ -9,19 +9,19 @@ void Cursor::update(const float2& coords)
 	coords_ = coords;
 }
 
-const float2& Cursor::get_coord() const
+const float2& Cursor::coord() const
 {
 	return coords_;
 }
 
-const float2& Cursor::get_previous_coord() const
+const float2& Cursor::previous_coord() const
 {
 	return previous_coords_;
 }
 
 Ray3 Cursor::get_ray(const scene::Camera& camera, const uint2& screen_size) const
 {
-	const float4x4& projection = camera.get_projection();
+	const float4x4& projection = camera.projection();
 
 	// The position of the pointer on the screen in a [0, 1] range
 	float x = coords_.x / float(screen_size.x);
@@ -34,7 +34,7 @@ Ray3 Cursor::get_ray(const scene::Camera& camera, const uint2& screen_size) cons
 	v.z =  1.f;
 
 	// Get the inverse view matrix
-	float4x4 view = invert(camera.get_view());
+	float4x4 view = invert(camera.view());
 
 	// Transform the screen space pick ray into 3D space
 	Ray3 ray;

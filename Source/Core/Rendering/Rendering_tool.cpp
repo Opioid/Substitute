@@ -9,10 +9,10 @@ namespace rendering
 Rendering_tool::Rendering_tool() : render_target_cache_(device_), sampler_state_cache_(device_), vertex_layout_cache_(device_), render_state_cache_(device_)
 {}
 
-bool Rendering_tool::init(const uint2& size, const uint2& virtual_size, bool /*windowed*/, uint32_t sync_interval, const platform::Client& client)
+bool Rendering_tool::init(const uint2& dimensions, const uint2& virtual_dimensions, bool /*windowed*/, uint32_t sync_interval, const platform::Client& client)
 {
-	size_ = size;
-	virtual_size_ = virtual_size;
+	dimensions_ = dimensions;
+	virtual_dimensions_ = virtual_dimensions;
 
 	if (!device_.init(client))
 	{
@@ -26,9 +26,9 @@ bool Rendering_tool::init(const uint2& size, const uint2& virtual_size, bool /*w
 
 	swapchain_.set_sync_interval(sync_interval);
 
-	viewport_ = Viewport(float2(0.f, 0.f), float2(float(size.x), float(size.y)));
+	viewport_ = Viewport(float2(0.f, 0.f), float2(dimensions));
 
-	virtual_viewport_ = Viewport(float2(0.f, 0.f), float2(float(virtual_size.x), float(virtual_size.y)));
+	virtual_viewport_ = Viewport(float2(0.f, 0.f), float2(virtual_dimensions));
 
 	if (!init_render_buffer())
 	{
@@ -40,7 +40,7 @@ bool Rendering_tool::init(const uint2& size, const uint2& virtual_size, bool /*w
 	Texture_description texture_description;
 	texture_description.type = Texture_description::Type::Texture_2D;
 	texture_description.format = Data_format::D24_UNorm_S8_UInt;
-	texture_description.dimensions.xy = virtual_size;
+	texture_description.dimensions.xy = virtual_dimensions;
 
 	main_depth_stencil_ = device_.create_depth_stencil_shader_resource_view(texture_description);
 
@@ -62,32 +62,32 @@ void Rendering_tool::release()
 	render_state_cache_.release();
 }
 
-const uint2& Rendering_tool::get_size() const
+const uint2& Rendering_tool::dimensions() const
 {
-	return size_;
+	return dimensions_;
 }
 
-const uint2& Rendering_tool::get_virtual_size() const
+const uint2& Rendering_tool::virtual_dimensions() const
 {
-	return virtual_size_;
+	return virtual_dimensions_;
 }
 
-const Rendering_device& Rendering_tool::get_device() const
-{
-	return device_;
-}
-
-Rendering_device& Rendering_tool::get_device()
+const Rendering_device& Rendering_tool::device() const
 {
 	return device_;
 }
 
-const Viewport& Rendering_tool::get_viewport() const
+Rendering_device& Rendering_tool::device()
+{
+	return device_;
+}
+
+const Viewport& Rendering_tool::viewport() const
 {
 	return viewport_;
 }
 
-const Viewport& Rendering_tool::get_virtual_viewport() const
+const Viewport& Rendering_tool::virtual_viewport() const
 {
 	return virtual_viewport_;
 }
@@ -97,32 +97,32 @@ void Rendering_tool::present() const
 	swapchain_.present();
 }
 
-Render_target_cache& Rendering_tool::get_render_target_cache()
+Render_target_cache& Rendering_tool::render_target_cache()
 {
 	return render_target_cache_;
 }
 
-Sampler_state_cache& Rendering_tool::get_sampler_state_cache()
+Sampler_state_cache& Rendering_tool::sampler_state_cache()
 {
 	return sampler_state_cache_;
 }
 
-Vertex_layout_cache& Rendering_tool::get_vertex_layout_cache()
+Vertex_layout_cache& Rendering_tool::vertex_layout_cache()
 {
 	return vertex_layout_cache_;
 }
 
-Render_state_cache& Rendering_tool::get_render_state_cache()
+Render_state_cache& Rendering_tool::render_state_cache()
 {
 	return render_state_cache_;
 }
 
-const Handle<Framebuffer>& Rendering_tool::get_default_framebuffer() const
+const Handle<Framebuffer>& Rendering_tool::default_framebuffer() const
 {
 	return default_framebuffer_;
 }
 
-const Handle<Depth_stencil_shader_resource_view> Rendering_tool::get_main_depth_stencil() const
+const Handle<Depth_stencil_shader_resource_view> Rendering_tool::main_depth_stencil() const
 {
 	return main_depth_stencil_;
 }
@@ -147,7 +147,7 @@ bool Rendering_tool::init_render_buffer()
 
 	vertex_buffer_ = device_.create_vertex_buffer(sizeof(float) * 4 * 3, vertices);
 
-	return vertex_buffer_ != nullptr;
+	return nullptr != vertex_buffer_;
 }
 
 }

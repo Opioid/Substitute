@@ -39,11 +39,11 @@ Irradiance_volume_baker::~Irradiance_volume_baker()
 
 bool Irradiance_volume_baker::load_cached_data(scene::Scene& scene, Resource_manager& resource_manager)
 {
-	auto& file_system = resource_manager.get_virtual_file_system();
+	auto& file_system = resource_manager.virtual_file_system();
 
-	uint64_t scene_last_modified = file_system.file_last_modified(scene.get_name());
+	uint64_t scene_last_modified = file_system.file_last_modified(scene.name());
 
-	std::string cache_load_name_template = get_cache_load_name_template(scene.get_name()) + "_irradiance_volume_";
+	std::string cache_load_name_template = get_cache_load_name_template(scene.name()) + "_irradiance_volume_";
 
 	Flags flags;
 	flags.set(rendering::Texture_provider::Options::Texture_3D, true);
@@ -84,7 +84,7 @@ void Irradiance_volume_baker::bake(scene::Scene& scene, Environment_map_renderer
 {
 	environment_map_renderer.configure_for_flattened_cube_map_batch(face_dimensions_);
 
-	target_dimensions_ = environment_map_renderer.get_target_dimensions();
+	target_dimensions_ = environment_map_renderer.target_dimensions();
 
 	ambient_cube_integrator_.set_pitch(target_dimensions_.x);
 
@@ -103,7 +103,7 @@ void Irradiance_volume_baker::bake(scene::Scene& scene, Environment_map_renderer
 
 	if (cache)
 	{
-		cache_save_name_template = get_cache_save_name_template(scene.get_name(), resource_manager) + "_irradiance_volume_";
+		cache_save_name_template = get_cache_save_name_template(scene.name(), resource_manager) + "_irradiance_volume_";
 	}
 
 	uint32_t i = 0;
@@ -117,7 +117,7 @@ void Irradiance_volume_baker::bake(scene::Scene& scene, Environment_map_renderer
 void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene::Scene& scene, Environment_map_renderer& environment_map_renderer, const Rendering_context::Rendering_options& options,
 								   bool cache, const std::string& cache_template)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	std::vector<Ambient_cube> ambient_cubes(volume.get_num_probes());
 
@@ -131,7 +131,7 @@ void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene
 
 	rendering::Texture_description::Data data;
 	data.dimensions = texture_description.dimensions;
-	data.num_bytes = texture_description.dimensions.x * texture_description.dimensions.y * static_cast<uint32_t>(Data_format::size_of(texture_description.format));
+	data.num_bytes = texture_description.dimensions.x * texture_description.dimensions.y * Data_format::num_bytes_per_block(texture_description.format);
 
 //	rendering::Generic_texture_data_adapter adapter(texture_description, &data);
 
@@ -148,18 +148,18 @@ void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene
 
 		if (++batch_index == batch_size_ || i == volume.get_num_probes() - 1)
 		{
-			Handle<Framebuffer>& framebuffer = environment_map_renderer.get_framebuffer();
+			Handle<Framebuffer>& framebuffer = environment_map_renderer.framebuffer();
 
-			Handle<Render_target_view>& target_view = environment_map_renderer.get_color_target()->get_render_target_view(0);
+			Handle<Render_tarview>& tarview = environment_map_renderer.color_target()->render_tarview(0);
 
-			framebuffer->set_render_targets(target_view);
+			framebuffer->set_render_targets(tarview);
 			device.set_framebuffer(framebuffer);
 		//	glReadPixels(0, 0, dimensions.x, dimensions.y, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
 
-			device.copy(texture_transfer, target_view/*color_target->get_render_target_view()*/);
+			device.copy(texture_transfer, tarview/*color_target->render_tarview()*/);
 			device.map(&data.buffer, texture_transfer);
 
-		//	glGetTextureImageEXT(color_target->get_render_target_view(1)->get_id(), GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
+		//	glGetTextureImageEXT(color_target->render_tarview(1)->id(), GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
 		//	rendering::texture_storage::save("texture" + std::to_string(batch_count) + ".png", adapter, file::File_type::PNG);
 
 			for (uint32_t j = 0; j < batch_index; ++j)
@@ -179,7 +179,7 @@ void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene
 
 void Irradiance_volume_baker::create_volume_textures(scene::Irradiance_volume& volume, const std::vector<Ambient_cube>& ambient_cubes, bool cache, const std::string& cache_template)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	Texture_description texture_description;
 	texture_description.type = rendering::Texture_description::Type::Texture_3D;

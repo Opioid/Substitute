@@ -31,7 +31,7 @@ void Effect::create_default_constant_buffers(Rendering_device& device)
 	{
 		if (!adapter->has_constant_buffer())
 		{
-			adapter->set_constant_buffer(device.create_constant_buffer(adapter->get_num_bytes()));
+			adapter->set_constant_buffer(device.create_constant_buffer(adapter->num_bytes()));
 		}
 	}
 }
@@ -43,12 +43,12 @@ void Effect::use(Rendering_device& device) const
 	apply_sampler_states(device);
 }
 
-Effect_technique* Effect::get_technique(size_t index) const
+Effect_technique* Effect::technique(size_t index) const
 {
 	return techniques_[index];
 }
 
-Effect_technique* Effect::get_technique(const std::string& name) const
+Effect_technique* Effect::technique(const std::string& name) const
 {
 	auto t = techniques_map_.find(name);
 
@@ -60,7 +60,7 @@ Effect_technique* Effect::get_technique(const std::string& name) const
 	return t->second;
 }
 
-Constant_buffer_adapter* Effect::get_constant_buffer_adapter(const std::string& name) const
+Constant_buffer_adapter* Effect::constant_buffer_adapter(const std::string& name) const
 {
 	auto a = constant_buffer_adapters_map_.find(name);
 
@@ -72,7 +72,7 @@ Constant_buffer_adapter* Effect::get_constant_buffer_adapter(const std::string& 
 	return a->second;
 }
 
-Effect_sampler& Effect::get_sampler(const std::string& name)
+Effect_sampler& Effect::sampler(const std::string& name)
 {
 	auto s = samplers_.find(name);
 
@@ -84,7 +84,7 @@ Effect_sampler& Effect::get_sampler(const std::string& name)
 	return s->second;
 }
 
-uint32_t Effect::get_sampler_offset(const std::string& name)
+uint32_t Effect::sampler_offset(const std::string& name)
 {
 	auto s = samplers_.find(name);
 
@@ -93,7 +93,7 @@ uint32_t Effect::get_sampler_offset(const std::string& name)
 		return 0xffffffff;
 	}
 
-	return s->second.get_texture_unit();
+	return s->second.texture_unit();
 }
 
 void Effect::apply_sampler_states(Rendering_device& device) const
@@ -101,11 +101,11 @@ void Effect::apply_sampler_states(Rendering_device& device) const
 	device.set_sampler_states(num_samplers_, sampler_states_);
 }
 
-bool Effect::get_buffer_size(const std::string& name, uint32_t& num_bytes) const
+bool Effect::buffer_size(const std::string& name, uint32_t& num_bytes) const
 {
 	for (size_t i = 0; i < techniques_.size(); ++i)
 	{
-		num_bytes = techniques_[i]->get_program()->get_constant_buffer_size(name);
+		num_bytes = techniques_[i]->program()->query_constant_buffer_size(name);
 
 		if (0 == num_bytes)
 		{

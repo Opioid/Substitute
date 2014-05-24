@@ -37,7 +37,7 @@ namespace scripting
 
 	bool init_math(Script_tool& tool)
 	{
-		Script_engine const& engine = tool.get_engine();
+		Script_engine const& engine = tool.engine();
 
 		engine.set_default_namespace("");
 

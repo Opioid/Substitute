@@ -31,7 +31,7 @@ bool Test_scene_renderer0::init(Resource_manager& resource_manager, Constant_buf
 		return false;
 	}
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position3x32_tex_coord2x32_normal1010102::vertex_layout_description(), effect_->get_technique(0)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position3x32_tex_coord2x32_normal1010102::vertex_layout_description(), effect_->technique(0)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
@@ -52,16 +52,16 @@ bool Test_scene_renderer0::on_resize_targets(const uint2& /*dimensions*/, const 
 
 void Test_scene_renderer0::render(const scene::Scene& scene, const Rendering_context& context)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.set_primitive_topology(Primitive_topology::Triangle_list);
 
-	if (context.get_options().is_set(Rendering_context::Options::Render_actors)
-	||  context.get_options().is_set(Rendering_context::Options::Render_static_geometry))
+	if (context.options().is_set(Rendering_context::Options::Render_actors)
+	||  context.options().is_set(Rendering_context::Options::Render_static_geometry))
 	{
-		device.set_viewports(1, &context.get_viewport());
+		device.set_viewports(1, &context.viewport());
 
-		device.set_framebuffer(context.get_framebuffer());
+		device.set_framebuffer(context.framebuffer());
 
 		device.set_input_layout(input_layout_);
 
@@ -74,12 +74,12 @@ void Test_scene_renderer0::render(const scene::Scene& scene, const Rendering_con
 		previous_material_ = nullptr;
 		previous_technique_ = 0xFFFFFFFF;
 
-		const auto& camera = context.get_camera();
+		const auto& camera = context.camera();
 
 		surface_collector_.collect(
-			scene, camera.get_world_position(), camera.get_frustum(),
-			context.get_options().is_set(Rendering_context::Options::Render_actors),
-			context.get_options().is_set(Rendering_context::Options::Render_static_geometry));
+			scene, camera.world_position(), camera.frustum(),
+			context.options().is_set(Rendering_context::Options::Render_actors),
+			context.options().is_set(Rendering_context::Options::Render_static_geometry));
 
 		const std::vector<Render_surface>& surfaces = surface_collector_.get_surfaces();
 
@@ -88,9 +88,9 @@ void Test_scene_renderer0::render(const scene::Scene& scene, const Rendering_con
 		for (const auto& s : surfaces)
 		{
 			const float4x4& transform = *s.surface->world;
-			auto change_per_object_data = change_per_object_.get_data();
-			change_per_object_data.world_view_projection = transform * camera.get_view_projection();
-			change_per_object_data.world_view = transform * camera.get_view();
+			auto change_per_object_data = change_per_object_.data();
+			change_per_object_data.world_view_projection = transform * camera.view_projection();
+			change_per_object_data.world_view = transform * camera.view();
 			change_per_object_.update(device);
 
 			const scene::Material* material = s.surface->material;
@@ -99,7 +99,7 @@ void Test_scene_renderer0::render(const scene::Scene& scene, const Rendering_con
 
 		//	if (first_call)
 			{
-				device.set_vertex_buffers(s.surface->vd->get_num_streams(), s.surface->vertex_buffers, s.surface->vd->get_strides());
+				device.set_vertex_buffers(s.surface->vd->num_streams(), s.surface->vertex_buffers, s.surface->vd->strides());
 				device.set_index_buffer(s.surface->index_buffer);
 				first_call = false;
 			}
@@ -116,14 +116,14 @@ bool Test_scene_renderer0::prepare_material(const scene::Material* material)
 		return false;
 	}
 
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
-	device.set_shader_resources(static_cast<uint32_t>(scene::Material::Sampler::Enum_count), material->get_textures());
+	device.set_shader_resources(static_cast<uint32_t>(scene::Material::Sampler::Enum_count), material->textures());
 
 	uint32_t technique = 0;
 	if (previous_technique_ != technique)
 	{
-		effect_->get_technique(technique)->use();
+		effect_->technique(technique)->use();
 		previous_technique_ = technique;
 	}
 
@@ -136,7 +136,7 @@ bool Test_scene_renderer0::create_render_states()
 {
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_cull_back_ = rendering_tool_.get_render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_cull_back_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_back_)
 	{
 		return false;
@@ -155,7 +155,7 @@ bool Test_scene_renderer0::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Replace;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Greater_equal;
-	base_ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	base_ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!base_ds_state_)
 	{
 		return false;
@@ -166,7 +166,7 @@ bool Test_scene_renderer0::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	base_blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	base_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!base_blend_state_)
 	{
 		return false;

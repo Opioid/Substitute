@@ -21,9 +21,9 @@ public:
 
 	virtual void release();
 
-	const Vertex_layout_description* get_vertex_layout_description(uint32_t num_elements_, const Vertex_layout_description::Element elements[]);
+	const Vertex_layout_description* vertex_layout_description(uint32_t num_elements_, const Vertex_layout_description::Element elements[]);
 
-	Handle<Input_layout> get_input_layout(const Vertex_layout_description& vertex_description, const Shader_program::Signature& signature);
+	Handle<Input_layout> input_layout(const Vertex_layout_description& vertex_description, const Shader_program::Signature& signature);
 
 private:
 

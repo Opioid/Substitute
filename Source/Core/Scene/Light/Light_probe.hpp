@@ -32,11 +32,11 @@ public:
 
 	bool is_faulty() const;
 
-	const float3& get_world_position() const;
+	const float3& world_position() const;
 
-	const float4x4& get_world_transformation() const;
+	const float4x4& world_transformation() const;
 
-	const Handle<rendering::Shader_resource_view>& get_texture() const;
+	const Handle<rendering::Shader_resource_view>& texture() const;
 	void set_texture(const Handle<rendering::Shader_resource_view>& texture);
 
 private:
@@ -47,7 +47,7 @@ private:
 
 public:
 
-	static const Handle<rendering::Shader_resource_view>& get_integrated_brdf();
+	static const Handle<rendering::Shader_resource_view>& integrated_brdf();
 	static void set_intergrated_brdf(const Handle<rendering::Shader_resource_view>& texture);
 
 private:

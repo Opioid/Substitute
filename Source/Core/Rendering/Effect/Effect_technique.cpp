@@ -12,12 +12,12 @@ void Effect_technique::use() const
 	program_->use();
 }
 
-const Shader_program* Effect_technique::get_program() const
+const Shader_program* Effect_technique::program() const
 {
 	return program_;
 }
 
-Shader_program* Effect_technique::get_program()
+Shader_program* Effect_technique::program()
 {
 	return program_;
 }

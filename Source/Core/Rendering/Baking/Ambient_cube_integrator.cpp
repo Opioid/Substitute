@@ -756,7 +756,7 @@ void Ambient_cube_integrator::save(const uint2& dimensions, uint32_t offset, con
 
 	rendering::Texture_description::Data data;
 	data.dimensions = texture_description.dimensions;
-	data.num_bytes = texture_description.dimensions.x * texture_description.dimensions.y * Data_format::size_of(texture_description.format);
+	data.num_bytes = texture_description.dimensions.x * texture_description.dimensions.y * Data_format::num_bytes_per_block(texture_description.format);
 	data.buffer = new unsigned char[data.num_bytes];
 
 	Color4c* buffer = reinterpret_cast<Color4c*>(data.buffer);

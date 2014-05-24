@@ -15,7 +15,7 @@ namespace scripting
 
 	bool init_rendering(Script_tool& tool)
 	{
-		const Script_engine& engine = tool.get_engine();
+		const Script_engine& engine = tool.engine();
 
 		engine.set_default_namespace("rendering");
 
@@ -37,17 +37,17 @@ namespace scripting
 
 	std::string render_api_info()
 	{
-		return app->get_rendering_tool().get_device().get_api_info();
+		return app->rendering_tool().device().get_api_info();
 	}
 
 	void enable_analytical_lighting(bool enable)
 	{
-		app->get_renderer().set_render_analytical_lighting(enable);
+		app->renderer().set_render_analytical_lighting(enable);
 	}
 
 	void enable_image_based_lighting(bool enable)
 	{
-		app->get_renderer().set_render_image_based_lighting(enable);
+		app->renderer().set_render_image_based_lighting(enable);
 	}
 
 /*

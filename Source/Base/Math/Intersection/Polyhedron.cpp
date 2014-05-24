@@ -87,7 +87,7 @@ Polyhedron Polyhedron::create_point_shadow_caster_volume(const Frustum& frustum,
 				polyhedron.add_plane(frustum.planes_[i]);
 			}
 
-		//	std::cout << frustum.planes_[i].get_normal() << std::endl;
+		//	std::cout << frustum.planes_[i].normal() << std::endl;
 		}
 
 		Edge edges[12];
@@ -188,7 +188,7 @@ Polyhedron Polyhedron::create_directional_shadow_caster_volume(const Frustum& fr
 	// planes facing the light remain
 	for (size_t i = 0; i < 6; ++i)
 	{
-		if (dot(frustum.planes_[i].get_normal(), direction) < 0.f)
+		if (dot(frustum.planes_[i].normal(), direction) < 0.f)
 		{
 			polyhedron.add_plane(frustum.planes_[i]);
 		}
@@ -266,7 +266,7 @@ Polyhedron Polyhedron::create_directional_shadow_caster_volume(const Frustum& fr
 	for (size_t i = 0; i < 12; ++i)
 	{
 		// one plane faces the light, the other doesn't
-		if ((dot(edges[i].p0.get_normal(), direction) < 0.f) != (dot(edges[i].p1.get_normal(), direction) < 0.f))
+		if ((dot(edges[i].p0.normal(), direction) < 0.f) != (dot(edges[i].p1.normal(), direction) < 0.f))
 		{
 			Plane p(edges[i].v0, edges[i].v1, edges[i].v0 + direction);
 				

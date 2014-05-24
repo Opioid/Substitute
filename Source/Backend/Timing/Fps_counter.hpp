@@ -17,9 +17,9 @@ public:
 
 	void update();
 
-	double get_frame_time() const;
+	double frame_time() const;
 
-	size_t get_fps() const;
+	size_t fps() const;
 
 private:
 

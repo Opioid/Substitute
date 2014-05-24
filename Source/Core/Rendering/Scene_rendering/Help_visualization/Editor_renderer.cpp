@@ -26,25 +26,25 @@ bool Editor_renderer::init(Resource_manager& resource_manager, Constant_buffer_c
 		return false;
 	}
 
-	per_shape_color_technique_  = effect_->get_technique("Per_shape_color");
-	per_vertex_color_technique_ = effect_->get_technique("Per_vertex_color");
-	shape_technique_            = effect_->get_technique("Shape");
+	per_shape_color_technique_  = effect_->technique("Per_shape_color");
+	per_vertex_color_technique_ = effect_->technique("Per_vertex_color");
+	shape_technique_            = effect_->technique("Shape");
 
-	auto& vertex_layout_cache = rendering_tool_.get_vertex_layout_cache();
+	auto& vertex_layout_cache = rendering_tool_.vertex_layout_cache();
 
-	per_shape_color_input_layout_ = vertex_layout_cache.get_input_layout(*Vertex_position3x32::vertex_layout_description(), per_shape_color_technique_->get_program()->get_signature());
+	per_shape_color_input_layout_ = vertex_layout_cache.input_layout(*Vertex_position3x32::vertex_layout_description(), per_shape_color_technique_->program()->signature());
 	if (!per_shape_color_input_layout_)
 	{
 		return false;
 	}
 
-	per_vertex_color_input_layout_ = vertex_layout_cache.get_input_layout(*Vertex_position3x32_color1x32::vertex_layout_description(), per_vertex_color_technique_->get_program()->get_signature());
+	per_vertex_color_input_layout_ = vertex_layout_cache.input_layout(*Vertex_position3x32_color1x32::vertex_layout_description(), per_vertex_color_technique_->program()->signature());
 	if (!per_vertex_color_input_layout_)
 	{
 		return false;
 	}
 
-	shape_input_layout_ = vertex_layout_cache.get_input_layout(*Vertex_position3x32_normal3x32::vertex_layout_description(), shape_technique_->get_program()->get_signature());
+	shape_input_layout_ = vertex_layout_cache.input_layout(*Vertex_position3x32_normal3x32::vertex_layout_description(), shape_technique_->program()->signature());
 	if (!shape_input_layout_)
 	{
 		return false;
@@ -70,10 +70,10 @@ bool Editor_renderer::init(Resource_manager& resource_manager, Constant_buffer_c
 
 void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& editor, const Rendering_context& context)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
-	device.set_framebuffer(context.get_framebuffer());
-	device.clear_depth_stencil(context.get_framebuffer(), 1.f, 0);
+	device.set_framebuffer(context.framebuffer());
+	device.clear_depth_stencil(context.framebuffer(), 1.f, 0);
 
 	device.set_rasterizer_state(rasterizer_state_);
 	device.set_depth_stencil_state(ds_state_);
@@ -86,29 +86,29 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 
 	effect_->use(device);
 
-	const auto& camera = context.get_camera();
+	const auto& camera = context.camera();
 
-	auto& change_per_camera_data = change_per_camera_.get_data();
-	change_per_camera_data.view_projection = camera.get_view_projection();
-	change_per_camera_data.view            = camera.get_view();
+	auto& change_per_camera_data = change_per_camera_.data();
+	change_per_camera_data.view_projection = camera.view_projection();
+	change_per_camera_data.view            = camera.view();
 	change_per_camera_.update(device);
 
 	auto& entities = scene.get_entities();
 
 	per_vertex_color_technique_->use();
 
-	auto& change_per_object_data = change_per_object_.get_data();
+	auto& change_per_object_data = change_per_object_.data();
 
 	for (auto entity : entities)
 	{
-		if (entity->get_parent())
+		if (entity->parent())
 		{
 			continue;
 		}
 
 		float4x4 world = float4x4::identity;
-		set_basis(world, entity->get_world_rotation());
-		set_origin(world, entity->get_world_position());
+		set_basis(world, entity->world_rotation());
+		set_origin(world, entity->world_position());
 
 		change_per_object_data.world = world;
 		change_per_object_.update(device);
@@ -129,7 +129,7 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 		device.set_input_layout(shape_input_layout_);
 
 		float4x4 world = float4x4::identity;
-		set_origin(world, entity->get_world_position());
+		set_origin(world, entity->world_position());
 
 		scale(world, sphere_scale);
 
@@ -147,7 +147,7 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 		device.set_input_layout(shape_input_layout_);
 
 		float4x4 world = float4x4::identity;
-		set_origin(world, entity->get_world_position());
+		set_origin(world, entity->world_position());
 
 		scale(world, sphere_scale);
 
@@ -165,8 +165,8 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 		Color3 color = scene::Entity_manipulator::Axis::Z == entity_manipulator.get_translation_axis() ? Color3(0.25f, 0.25f, 1.f) : Color3(0.f, 0.f, 1.f);
 
 		set_rotation_x(rot, -0.5f * math::pi);
-		set_basis(world, rot * entity->get_world_rotation());
-		set_origin(world, entity->get_world_position() + 0.35f * entity->get_world_direction());
+		set_basis(world, rot * entity->world_rotation());
+		set_origin(world, entity->world_position() + 0.35f * entity->world_direction());
 		scale(world, cone_scale);
 
 		change_per_object_data.world = world;
@@ -177,8 +177,8 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 
 		// Dir cylinder
 		set_rotation_x(rot, -0.5f * math::pi);
-		set_basis(world, rot * entity->get_world_rotation());
-		set_origin(world, entity->get_world_position() + 0.5f * 0.35f * entity->get_world_direction());
+		set_basis(world, rot * entity->world_rotation());
+		set_origin(world, entity->world_position() + 0.5f * 0.35f * entity->world_direction());
 		scale(world, cylinder_scale);
 
 		change_per_object_data.world = world;
@@ -190,8 +190,8 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 		// Up cone
 		color = scene::Entity_manipulator::Axis::Y == entity_manipulator.get_translation_axis() ? Color3(0.25f, 1.f, 0.25f) : Color3(0.f, 1.f, 0.f);
 
-		set_basis(world, entity->get_world_rotation());
-		set_origin(world, entity->get_world_position() + 0.35f * entity->get_world_up());
+		set_basis(world, entity->world_rotation());
+		set_origin(world, entity->world_position() + 0.35f * entity->world_up());
 		scale(world, cone_scale);
 
 		change_per_object_data.world = world;
@@ -201,8 +201,8 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 		cone_.render(rendering_tool_);
 
 		// Up cylinder
-		set_basis(world, entity->get_world_rotation());
-		set_origin(world, entity->get_world_position() + 0.5f * 0.35f * entity->get_world_up());
+		set_basis(world, entity->world_rotation());
+		set_origin(world, entity->world_position() + 0.5f * 0.35f * entity->world_up());
 		scale(world, cylinder_scale);
 
 		change_per_object_data.world = world;
@@ -215,8 +215,8 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 		color = scene::Entity_manipulator::Axis::X == entity_manipulator.get_translation_axis() ? Color3(1.f, 0.25f, 0.25f) : Color3(1.f, 0.f, 0.f);
 
 		set_rotation_z(rot, 0.5f * math::pi);
-		set_basis(world, rot * entity->get_world_rotation());
-		set_origin(world, entity->get_world_position() + 0.35f * entity->get_world_right());
+		set_basis(world, rot * entity->world_rotation());
+		set_origin(world, entity->world_position() + 0.35f * entity->world_right());
 		scale(world, cone_scale);
 
 		change_per_object_data.world = world;
@@ -227,8 +227,8 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 
 		// Right cylinder
 		set_rotation_z(rot, 0.5f * math::pi);
-		set_basis(world, rot * entity->get_world_rotation());
-		set_origin(world, entity->get_world_position() + 0.5f * 0.35f * entity->get_world_right());
+		set_basis(world, rot * entity->world_rotation());
+		set_origin(world, entity->world_position() + 0.5f * 0.35f * entity->world_right());
 		scale(world, cylinder_scale);
 
 		change_per_object_data.world = world;
@@ -242,20 +242,20 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 			if (scene::Entity_manipulator::Axis::Z == entity_manipulator.get_translation_axis())
 			{
 				set_rotation_x(rot, -0.5f * math::pi);
-				set_basis(world, rot * entity->get_world_rotation());
+				set_basis(world, rot * entity->world_rotation());
 
 				change_per_object_data.color = color3::blue;
 			}
 			else if (scene::Entity_manipulator::Axis::Y == entity_manipulator.get_translation_axis())
 			{
-				set_basis(world, entity->get_world_rotation());
+				set_basis(world, entity->world_rotation());
 
 				change_per_object_data.color = color3::green;
 			}
 			else if (scene::Entity_manipulator::Axis::X == entity_manipulator.get_translation_axis())
 			{
 				set_rotation_z(rot, 0.5f * math::pi);
-				set_basis(world, rot * entity->get_world_rotation());
+				set_basis(world, rot * entity->world_rotation());
 
 				change_per_object_data.color = color3::red;
 			}
@@ -263,7 +263,7 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 			device.set_primitive_topology(Primitive_topology::Line_list);
 			device.set_input_layout(per_shape_color_input_layout_);
 
-			set_origin(world, entity->get_world_position());
+			set_origin(world, entity->world_position());
 
 			change_per_object_data.world = world;
 			change_per_object_.update(device);
@@ -304,7 +304,7 @@ bool Editor_renderer::init_buffers()
 	vertices[5].position = float3(0.f, 0.f, 0.25f);
 	vertices[5].color    = vertices[4].color;
 
-	vertex_buffer_ = rendering_tool_.get_device().create_vertex_buffer(sizeof(Vertex_position3x32_color1x32) * num_vertices, vertices);
+	vertex_buffer_ = rendering_tool_.device().create_vertex_buffer(sizeof(Vertex_position3x32_color1x32) * num_vertices, vertices);
 
 	delete [] vertices;
 
@@ -340,7 +340,7 @@ bool Editor_renderer::create_render_states()
 {
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_ = rendering_tool_.get_render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_)
 	{
 		return false;
@@ -351,7 +351,7 @@ bool Editor_renderer::create_render_states()
 	ds_description.depth_write_mask = true;
 	ds_description.comparison_func  = Depth_stencil_state::Description::Comparison::Less;
 
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -362,7 +362,7 @@ bool Editor_renderer::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;
@@ -373,7 +373,7 @@ bool Editor_renderer::create_render_states()
 
 void Editor_renderer::Shape::render(Rendering_tool& rendering_tool) const
 {
-	auto& device = rendering_tool.get_device();
+	auto& device = rendering_tool.device();
 
 	device.set_vertex_buffer(vertex_buffer_, sizeof(Vertex_position3x32_normal3x32));
 	device.set_index_buffer(index_buffer_);
@@ -410,7 +410,7 @@ bool Editor_renderer::Cone::init(Rendering_tool& rendering_tool)
 	vertices[end_vertices + 1].position  = float3(0.f,  0.f, 0.f);
 	vertices[end_vertices + 1].normal = float3(0.f, -1.f, 0.f);
 
-	vertex_buffer_ = rendering_tool.get_device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * num_vertices, vertices);
+	vertex_buffer_ = rendering_tool.device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * num_vertices, vertices);
 	if (!vertex_buffer_)
 	{
 		return false;
@@ -432,7 +432,7 @@ bool Editor_renderer::Cone::init(Rendering_tool& rendering_tool)
 		indices[i * 3 + 2 + num_segments * 3] = i + num;
 	}
 
-	index_buffer_ = rendering_tool.get_device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
+	index_buffer_ = rendering_tool.device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
 	return index_buffer_ != nullptr;
 }
 
@@ -459,7 +459,7 @@ bool Editor_renderer::Cylinder::init(Rendering_tool& rendering_tool)
 		vertices[i + detail + 1].position.y = -0.5f;
 	}
 
-	vertex_buffer_ = rendering_tool.get_device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * num_vertices, vertices);
+	vertex_buffer_ = rendering_tool.device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * num_vertices, vertices);
 	if (!vertex_buffer_)
 	{
 			return false;
@@ -494,7 +494,7 @@ bool Editor_renderer::Cylinder::init(Rendering_tool& rendering_tool)
 
 	}
 
-	index_buffer_ = rendering_tool.get_device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
+	index_buffer_ = rendering_tool.device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
 	return index_buffer_ != nullptr;
 }
 
@@ -565,7 +565,7 @@ bool Editor_renderer::Sphere::init(Rendering_tool& rendering_tool)
 		vertices[i].normal = normalize(vertices[i].position);
 	}
 
-	vertex_buffer_ = rendering_tool.get_device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * num_vertices, vertices);
+	vertex_buffer_ = rendering_tool.device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * num_vertices, vertices);
 	if (!vertex_buffer_)
 	{
 		return false;
@@ -899,7 +899,7 @@ bool Editor_renderer::Sphere::init(Rendering_tool& rendering_tool)
 	indices[322] = 45;
 	indices[323] = 55;
 
-	index_buffer_ = rendering_tool.get_device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
+	index_buffer_ = rendering_tool.device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
 	return index_buffer_ != nullptr;
 }
 
@@ -910,7 +910,7 @@ bool Editor_renderer::Line::init(Rendering_tool& rendering_tool)
 	vertices[0].position  = float3(0.f,  100.f, 0.f);
 	vertices[1].position  = float3(0.f, -100.f, 0.f);
 
-	vertex_buffer_ = rendering_tool.get_device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * 2, vertices);
+	vertex_buffer_ = rendering_tool.device().create_vertex_buffer(sizeof(Vertex_position3x32_normal3x32) * 2, vertices);
 	if (!vertex_buffer_)
 	{
 		return false;
@@ -919,7 +919,7 @@ bool Editor_renderer::Line::init(Rendering_tool& rendering_tool)
 	num_indices_ = 2;
 	unsigned short indices[2] = { 0, 1 };
 
-	index_buffer_ = rendering_tool.get_device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
+	index_buffer_ = rendering_tool.device().create_index_buffer(sizeof(unsigned short) * num_indices_, indices, Data_format::R16_UInt);
 	return index_buffer_ != nullptr;
 }
 

@@ -104,14 +104,14 @@ void Scene::compile()
     {
 		if (irradiance_volumes_.empty())
         {
-			const AABB& aabb = aabb_tree_.get_root()->get_aabb();
+			const AABB& aabb = aabb_tree_.get_root()->aabb();
 
             // make the volume slightly larger than the area to cover to avoid z-fighting when the volume is rendered
 			create_irradiance_volume(uint3(2, 2, 2), aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f), Quaternion::identity);
         }
 		else if (irradiance_volumes_[0]->is_faulty())
 		{
-			const AABB& aabb = aabb_tree_.get_root()->get_aabb();
+			const AABB& aabb = aabb_tree_.get_root()->aabb();
 
 			irradiance_volumes_[0]->adjust(aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f));
 		}
@@ -122,14 +122,14 @@ void Scene::compile()
         }
 		else if (light_probes_[0]->is_faulty())
 		{
-			const AABB& aabb = aabb_tree_.get_root()->get_aabb();
+			const AABB& aabb = aabb_tree_.get_root()->aabb();
 
 			light_probes_[0]->adjust(aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f));
 		}
     }
 }
 
-std::string Scene::get_name() const
+std::string Scene::name() const
 {
 	return name_;
 }
@@ -172,12 +172,12 @@ void Scene::update(float delta)
 	camera_.update_view();
 }
 
-const Camera& Scene::get_camera() const
+const Camera& Scene::camera() const
 {
 	return camera_;
 }
 
-Camera& Scene::get_camera()
+Camera& Scene::camera()
 {
 	return camera_;
 }
@@ -217,12 +217,12 @@ const Heap_cache<Irradiance_volume>& Scene::get_irradiance_volumes() const
 	return irradiance_volumes_;
 }
 
-const Light_probe* Scene::get_surrounding_light_probe() const
+const Light_probe* Scene::surrounding_light_probe() const
 {
 	return surrounding_light_probe_valid_ ? &surrounding_light_probe_ : nullptr;
 }
 
-Light_probe* Scene::get_surrounding_light_probe()
+Light_probe* Scene::surrounding_light_probe()
 {
 	return surrounding_light_probe_valid_ ? &surrounding_light_probe_ : nullptr;
 }
@@ -290,12 +290,12 @@ Light_probe* Scene::create_light_probe(const float3& position, const float3& sca
 	return light_probe;
 }
 
-const scene::Surrounding& Scene::get_surrounding() const
+const scene::Surrounding& Scene::surrounding() const
 {
 	return surrounding_;
 }
 
-scene::Surrounding& Scene::get_surrounding()
+scene::Surrounding& Scene::surrounding()
 {
 	return surrounding_;
 }
@@ -314,7 +314,7 @@ Complex* Scene::create_complex(const std::string& type, Resource_manager& resour
 	return complex;
 }
 
-Complex_factory_manager& Scene::get_complex_factories()
+Complex_factory_manager& Scene::complex_factories()
 {
 	return m_complex_factories;
 }

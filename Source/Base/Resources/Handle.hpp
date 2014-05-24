@@ -58,9 +58,9 @@ public:
 		return resource_;
 	}
 
-	size_t get_reference_count() const
+	size_t reference_count() const
 	{
-		return resource_->m_reference_count;
+		return resource_->reference_count_;
 	}
 
 private:
@@ -69,13 +69,13 @@ private:
 	{
 		if (resource_)
 		{
-			++resource_->m_reference_count;
+			++resource_->reference_count_;
 		}
 	}
 
 	void release()
 	{
-		if (resource_ && --resource_->m_reference_count == 0)
+		if (resource_ && --resource_->reference_count_ == 0)
 		{
 			delete resource_;
 			resource_ = nullptr;

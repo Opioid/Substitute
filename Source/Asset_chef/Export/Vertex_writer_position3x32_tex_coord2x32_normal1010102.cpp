@@ -23,7 +23,7 @@ bool Vertex_writer_position3x32_tex_coord2x32_normal1010102::write_vertices(std:
 	return true;
 }
 
-const rendering::Vertex_layout_description* Vertex_writer_position3x32_tex_coord2x32_normal1010102::get_vertex_layout_description() const
+const rendering::Vertex_layout_description* Vertex_writer_position3x32_tex_coord2x32_normal1010102::vertex_layout_description() const
 {
 	return rendering::Vertex_position3x32_tex_coord2x32_normal1010102::vertex_layout_description();
 }

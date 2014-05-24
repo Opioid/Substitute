@@ -22,7 +22,7 @@ public:
 
 	virtual void release();
 
-	Handle<Depth_stencil_view> get_depth_stencil_view(const Texture_description& description,
+	Handle<Depth_stencil_view> depth_stencil_view(const Texture_description& description,
 													  std::initializer_list<Handle<Depth_stencil_view>> must_not_match = {});
 
 	Handle<Depth_stencil_shader_resource_view> get_depth_stencil_shader_resource_view(const Texture_description& description,
@@ -44,7 +44,7 @@ private:
 
 	std::list<Resource_slot<Depth_stencil_shader_resource_view>> depth_stencil_shader_resource_views_;
 
-	std::list<Resource_slot<Render_target_shader_resource_view>> render_target_views_;
+	std::list<Resource_slot<Render_target_shader_resource_view>> render_tarviews_;
 };
 
 }

@@ -18,9 +18,9 @@ public:
 
     void clear();
 
-	const Model* get_model() const;
+	const Model* model() const;
 
-	const AABB& get_aabb() const;
+	const AABB& aabb() const;
 
 protected:
 

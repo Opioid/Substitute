@@ -42,9 +42,9 @@ void Light_baker::bake(scene::Scene& scene, Resource_manager& resource_manager)
 	timing::Stopwatch stopwatch;
 	stopwatch.start();
 
-	Main_scene_renderer& scene_renderer = environment_map_renderer_.get_scene_renderer();
+	Main_scene_renderer& scene_renderer = environment_map_renderer_.scene_renderer();
 
-	uint2 previous_dimensions = scene_renderer.get_target_dimensions();
+	uint2 previous_dimensions = scene_renderer.target_dimensions();
 	Handle<Depth_stencil_shader_resource_view> previous_depth_stencil = scene_renderer.get_depth_stencil();
 
 	environment_map_renderer_.allocate_targets(light_probe_dimensions_);

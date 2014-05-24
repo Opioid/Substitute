@@ -22,14 +22,14 @@ public:
 //	Vertex_layout_description(Vertex_layout_description const& a, Vertex_layout_description const& b);
 	~Vertex_layout_description();
 
-	uint32_t get_num_elements_() const;
+	uint32_t num_elements() const;
 	const Element& operator[](uint32_t index) const;
-	const Element* get_elements() const;
+	const Element* elements() const;
 
-	uint32_t get_vertex_size() const;
+	uint32_t vertex_size() const;
 
-	uint32_t* get_strides() const;
-	uint32_t  get_num_streams() const;
+	uint32_t* strides() const;
+	uint32_t  num_streams() const;
 
 	bool consists_of(uint32_t num_elements, const Element[]) const;
 	bool operator==(const Vertex_layout_description& description) const;
@@ -49,31 +49,28 @@ private:
 
 public:
 
-	struct Classification
+	enum class Classification
 	{
-		enum Value
-		{
-			Per_vertex_data,
-			Per_instance_data
-		};
+		Per_vertex_data,
+		Per_instance_data
 	};
 
 	struct Element
 	{
 		Element();
-		Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, uint32_t slot = 0, uint32_t byte_offset = 0xffffffff);
-		Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, Classification::Value classification, uint32_t step_rate, uint32_t slot = 0, uint32_t byte_offset = 0xffffffff);
+		Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, uint32_t slot = 0, uint32_t byte_offset = 0xFFFFFFFF);
+		Element(const char* semantic_name, uint32_t semantic_index, Data_format::Value format, Classification classification, uint32_t step_rate, uint32_t slot = 0, uint32_t byte_offset = 0xFFFFFFFF);
 
 		bool operator==(const Element& element) const;
 		bool operator!=(const Element& element) const;
 
-		std::string           semantic_name;
-		uint32_t              semantic_index;
-		Data_format::Value    format;
-		uint32_t              slot;
-		uint32_t              byte_offset;
-		Classification::Value slot_class;
-		uint32_t              instance_step_rate;
+		std::string		   semantic_name;
+		uint32_t		   semantic_index;
+		Data_format::Value format;
+		uint32_t		   slot;
+		uint32_t		   byte_offset;
+		Classification	   slot_class;
+		uint32_t		   instance_step_rate;
 	};
 };
 

@@ -10,7 +10,7 @@ public:
 	virtual ~Resource()
 	{}
 
-	virtual size_t get_num_bytes() const
+	virtual size_t num_bytes() const
 	{
 		return 0;
 	}

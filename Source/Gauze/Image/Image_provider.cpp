@@ -16,18 +16,18 @@ Cached_image::~Cached_image()
 	delete source_image_;
 }
 
-const Image<rendering::Color4c>& Cached_image::get_source_image() const
+const Image<rendering::Color4c>& Cached_image::source_image() const
 {
 	return *source_image_;
 }
 
-const Image_buffer<rendering::Color4>& Cached_image::get_float_image_buffer(bool sRGB)
+const Image_buffer<rendering::Color4>& Cached_image::float_image_buffer(bool sRGB)
 {
 	if (!float_image_buffer_)
 	{
 		const Image_buffer<rendering::Color4c>* source = source_image_->get_level(0);
 
-		float_image_buffer_ = new Image_buffer<rendering::Color4>(rendering::Data_format::R32G32B32A32_Float, source->get_dimensions());
+		float_image_buffer_ = new Image_buffer<rendering::Color4>(rendering::Data_format::R32G32B32A32_Float, source->dimensions());
 
 		RGBA_to_float to_float(sRGB);
 		to_float.filter(*float_image_buffer_, *source);

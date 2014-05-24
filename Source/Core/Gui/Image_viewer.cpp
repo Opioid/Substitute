@@ -13,7 +13,7 @@ Image_viewer::Image_viewer(const Handle<rendering::Shader_resource_view>& textur
 
 	m_container.add(&m_image);
 
-	//	set_client_size(float2(texture->get_resource().as_texture_2D().get_size()));
+	//	set_client_size(float2(texture->get_resource().as_texture_2D().dimensions()));
 }
 
 void Image_viewer::on_set_size()
@@ -28,7 +28,7 @@ void Image_viewer::render_private(rendering::Printer& printer)
 	printer.set_texture(s_transparency_checker);
 	printer.set_color(rendering::color4::white);
 	printer.set_position(get_absolute_position() + get_client_offset());
-	printer.set_texture_coordinates(float2(0.f, 0.f), float2(m_image.get_size() / 16.f));
+	printer.set_texture_coordinates(float2(0.f, 0.f), float2(m_image.dimensions() / 16.f));
 	printer.draw_quad(get_client_size());
 	printer.flush(false);
 }

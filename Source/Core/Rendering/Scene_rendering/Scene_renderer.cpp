@@ -10,7 +10,7 @@ Scene_renderer::Scene_renderer(Rendering_tool& rendering_tool) : Rendering_objec
 Scene_renderer::~Scene_renderer()
 {}
 
-const uint2& Scene_renderer::get_target_dimensions() const
+const uint2& Scene_renderer::target_dimensions() const
 {
 	return target_dimensions_;
 }

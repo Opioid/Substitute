@@ -19,7 +19,7 @@ Model* Importer::read(const std::string& name) const
 
 	if (!json::parse(root, stream))
 	{
-		std::cout << "Could not parse json string: " << json::get_error(root, stream) << std::endl;
+		std::cout << "Could not parse json string: " << json::read_error(root, stream) << std::endl;
 		return nullptr;
 	}
 	
@@ -54,9 +54,9 @@ Model* Importer::read(const std::string& name) const
 
 				Model::Group group;
 
-				group.material_index = json::get_uint(group_value, "material_index", 0);
-				group.start_index    = json::get_uint(group_value, "start_index", 0);
-				group.num_indices    = json::get_uint(group_value, "num_indices", 0);
+				group.material_index = json::read_uint(group_value, "material_index", 0);
+				group.start_index    = json::read_uint(group_value, "start_index", 0);
+				group.num_indices    = json::read_uint(group_value, "num_indices", 0);
 
 				model->groups.push_back(group);
 			}
@@ -76,7 +76,7 @@ Model* Importer::read(const std::string& name) const
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				model->positions.push_back(json::get_float3(node_value[i]));
+				model->positions.push_back(json::read_float3(node_value[i]));
 			}
 		}
 		else if (node_name == "texture_coordinates_0")
@@ -89,7 +89,7 @@ Model* Importer::read(const std::string& name) const
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				model->texture_coordinates.push_back(json::get_float2(node_value[i]));
+				model->texture_coordinates.push_back(json::read_float2(node_value[i]));
 			}
 		}
 		else if (node_name == "normals")
@@ -102,7 +102,7 @@ Model* Importer::read(const std::string& name) const
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				model->normals.push_back(json::get_float3(node_value[i]));
+				model->normals.push_back(json::read_float3(node_value[i]));
 			}
 		}
 		else if (node_name == "tangents_and_bitangent_signs")
@@ -116,7 +116,7 @@ Model* Importer::read(const std::string& name) const
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				model->m_tangents_and_bitangent_signs.push_back(json::get_float4(node_value[i]));
+				model->m_tangents_and_bitangent_signs.push_back(json::read_float4(node_value[i]));
 			}
 			*/
 		}		

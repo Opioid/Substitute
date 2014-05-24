@@ -25,7 +25,7 @@ bool Cubemap_surrounding_renderer::init(Resource_manager& resource_manager)
 		return false;
 	}
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->get_technique(0)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->technique(0)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
@@ -46,18 +46,18 @@ bool Cubemap_surrounding_renderer::init(Resource_manager& resource_manager)
 
 void Cubemap_surrounding_renderer::render(const scene::Scene& scene, const Rendering_context& context)
 {
-	const Handle<Shader_resource_view>& cubemap = scene.get_surrounding().get_texture();
+	const Handle<Shader_resource_view>& cubemap = scene.surrounding().texture();
 
     if (!cubemap)
     {
-        clear(scene.get_surrounding().get_color(), context);
+		clear(scene.surrounding().color(), context);
         return;
     }
 
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
-	device.set_viewports(1, &context.get_viewport());
-	device.set_framebuffer(context.get_framebuffer());
+	device.set_viewports(1, &context.viewport());
+	device.set_framebuffer(context.framebuffer());
 
 	device.set_depth_stencil_state(ds_state_);
 	device.set_blend_state(blend_state_);
@@ -66,10 +66,10 @@ void Cubemap_surrounding_renderer::render(const scene::Scene& scene, const Rende
 
 	effect_->use(device);
 
-	const scene::Camera& camera = context.get_camera();
+	const scene::Camera& camera = context.camera();
 
-	const float3* rays = camera.get_view_rays_ws();
-	auto& change_per_camera_data = change_per_camera_.get_data();
+	const float3* rays = camera.view_rays_ws();
+	auto& change_per_camera_data = change_per_camera_.data();
 	change_per_camera_data.rays[0] = float4(rays[0], 1.f);
 	change_per_camera_data.rays[1] = float4(rays[1], 1.f);
 	change_per_camera_data.rays[2] = float4(rays[2], 1.f);
@@ -77,17 +77,17 @@ void Cubemap_surrounding_renderer::render(const scene::Scene& scene, const Rende
 
 	device.set_shader_resources(1, &cubemap);
 
-	effect_->get_technique(0)->use();
+	effect_->technique(0)->use();
 
 	rendering_tool_.render_fullscreen_effect();
 }
 
 void Cubemap_surrounding_renderer::clear(const Color3& color, const Rendering_context& context)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
-	device.set_viewports(1, &context.get_viewport());
-	device.set_framebuffer(context.get_framebuffer());
+	device.set_viewports(1, &context.viewport());
+	device.set_framebuffer(context.framebuffer());
 
 	device.set_depth_stencil_state(ds_state_);
 	device.set_blend_state(blend_state_);
@@ -96,10 +96,10 @@ void Cubemap_surrounding_renderer::clear(const Color3& color, const Rendering_co
 
 	effect_->use(device);
 
-	clear_buffer_.get_data().clear_color = color;
+	clear_buffer_.data().clear_color = color;
 	clear_buffer_.update(device);
 
-	effect_->get_technique(1)->use();
+	effect_->technique(1)->use();
 
 	rendering_tool_.render_fullscreen_effect();
 }
@@ -119,7 +119,7 @@ bool Cubemap_surrounding_renderer::create_render_states()
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
 
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -129,7 +129,7 @@ bool Cubemap_surrounding_renderer::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;

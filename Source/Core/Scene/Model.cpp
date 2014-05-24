@@ -23,27 +23,27 @@ const Model::Group* Model::get_groups() const
 	return groups_;
 }
 
-const rendering::Vertex_layout_description* Model::get_vertex_layout_description() const
+const rendering::Vertex_layout_description* Model::vertex_layout_description() const
 {
 	return m_vd;
 }
 
-const Handle<rendering::Vertex_buffer>* Model::get_vertex_buffers() const
+const Handle<rendering::Vertex_buffer>* Model::vertex_buffers() const
 {
 	return vertex_buffers_;
 }
 
-const Handle<rendering::Index_buffer>& Model::get_index_buffer() const
+const Handle<rendering::Index_buffer>& Model::index_buffer() const
 {
 	return index_buffer_;
 }
 
-uint32_t Model::get_num_indices() const
+uint32_t Model::num_indices() const
 {
 	return num_indices_;
 }
 
-size_t Model::get_num_bytes() const
+size_t Model::num_bytes() const
 {
 	return 0;
 }

@@ -10,9 +10,9 @@ class Point_sampler
 public:
 
 	Point_sampler(const Image_buffer<T>& image_buffer) :
-		data_(image_buffer.get_data()),
-		dimensions_int_(image_buffer.get_dimensions()),
-		dimensions_float_(image_buffer.get_dimensions())
+		data_(image_buffer.data()),
+		dimensions_int_(image_buffer.dimensions()),
+		dimensions_float_(image_buffer.dimensions())
 	{}
 
 	T sample(const float2& coord) const

@@ -20,7 +20,7 @@ bool Framebuffer::is_valid() const
 	return GL_FRAMEBUFFER_COMPLETE == glCheckNamedFramebufferStatusEXT(id_, GL_FRAMEBUFFER);
 }
 
-void Framebuffer::set_render_targets(const Handle<Render_target_view>& target)
+void Framebuffer::set_render_targets(const Handle<Render_tarview>& target)
 {
 	set_draw_buffers(1);
 
@@ -32,7 +32,7 @@ void Framebuffer::set_render_targets(const Handle<Depth_stencil_view>& depth_ste
 	set_depth_stencil(depth_stencil);
 }
 
-void Framebuffer::set_render_targets(const Handle<Render_target_view>& target, const Handle<Depth_stencil_view>& depth_stencil)
+void Framebuffer::set_render_targets(const Handle<Render_tarview>& target, const Handle<Depth_stencil_view>& depth_stencil)
 {
 	set_draw_buffers(1);
 
@@ -41,7 +41,7 @@ void Framebuffer::set_render_targets(const Handle<Render_target_view>& target, c
 	set_depth_stencil(depth_stencil);
 }
 
-void Framebuffer::set_render_targets(std::initializer_list<Handle<Render_target_view>> targets, const Handle<Depth_stencil_view>& depth_stencil)
+void Framebuffer::set_render_targets(std::initializer_list<Handle<Render_tarview>> targets, const Handle<Depth_stencil_view>& depth_stencil)
 {
 	set_draw_buffers(static_cast<uint32_t>(targets.size()));
 
@@ -61,7 +61,7 @@ void Framebuffer::set_draw_buffers(uint32_t num_targets) const
 	glFramebufferDrawBuffersEXT(id_, num_targets, attachments);
 }
 
-void Framebuffer::set_target(const Handle<Render_target_view>& target, uint32_t slot) const
+void Framebuffer::set_target(const Handle<Render_tarview>& target, uint32_t slot) const
 {
 	glNamedFramebufferTextureEXT(id_, GL_COLOR_ATTACHMENT0 + slot, target->id_, 0);
 }

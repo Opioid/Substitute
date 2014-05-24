@@ -22,7 +22,7 @@ Light::Type Light::get_type() const
 	return type_;
 }
 
-const rendering::Color3& Light::get_color() const
+const rendering::Color3& Light::color() const
 {
 	return color_;
 }
@@ -77,7 +77,7 @@ void Light::set_casts_shadow(bool shadow)
 	casts_shadow_ = shadow;
 }
 
-float Light::get_fov() const
+float Light::FOV() const
 {
 	return fov_;
 }
@@ -87,7 +87,7 @@ void Light::set_fov(float fov)
 	fov_ = fov;
 }
 
-const Handle<rendering::Shader_resource_view>& Light::get_texture() const
+const Handle<rendering::Shader_resource_view>& Light::texture() const
 {
 	return texture_;
 }
@@ -106,10 +106,10 @@ float4x4 Light::calculate_view_projection() const
 
 float4x4 Light::calculate_view_projection(float z_near, float z_far) const
 {
-	const float3 position = get_world_position();
+	const float3 position = world_position();
 
 	float4x4 view;
-	set_look_at(view, position, position + get_world_direction(), get_world_up());
+	set_look_at(view, position, position + world_direction(), world_up());
 
 	float4x4 projection;
 	set_perspective(projection, fov_, 1.f, z_near, z_far);

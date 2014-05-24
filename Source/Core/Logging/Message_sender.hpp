@@ -1,25 +1,25 @@
 #pragma once
 
-
 #include "Message.hpp"
-
 
 namespace logging
 {
-	class Message_server;
 
-	class Message_sender
-	{
+class Message_server;
 
-	public:
+class Message_sender
+{
 
-		Message_sender(Message_server& server);
+public:
 
-		void send(const std::string& text, Message::Type::Value type) const;
-		void send(Message const& message) const;
+	Message_sender(Message_server& server);
 
-	private:
+	void send(const std::string& text, Message::Type type) const;
+	void send(const Message& message) const;
 
-		Message_server& m_server;
-	};
+private:
+
+	Message_server& server_;
+};
+
 }

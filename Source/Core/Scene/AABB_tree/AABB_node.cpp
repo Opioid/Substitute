@@ -70,7 +70,7 @@ bool AABB_node::Geometry::create_surfaces(uint32_t num_groups, Group* groups, co
 
 void AABB_node::Geometry::clear()
 {
-	for (uint32_t i = 0; i < unified_surface_.vd->get_num_streams(); ++i)
+	for (uint32_t i = 0; i < unified_surface_.vd->num_streams(); ++i)
 	{
 		vertex_buffers_[i] = nullptr;
 	}
@@ -112,7 +112,7 @@ AABB_node* AABB_node::get_skip_node()
 	return o ? this + o : nullptr; 
 }
 
-const AABB& AABB_node::get_aabb() const
+const AABB& AABB_node::aabb() const
 {
 	return aabb_;
 }

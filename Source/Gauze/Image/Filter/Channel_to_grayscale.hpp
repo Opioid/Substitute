@@ -15,7 +15,7 @@ public:
 
 	bool filter(Image_buffer<T>& destination, const Image_buffer<T>& source) const
 	{
-		uint32_t num_pixels = std::min(destination.get_num_pixels(), source.get_num_pixels());
+		uint32_t num_pixels = std::min(destination.num_pixels(), source.num_pixels());
 
 		for (uint32_t i = 0; i < num_pixels; ++i)
 		{

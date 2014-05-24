@@ -14,7 +14,7 @@ bool Swapchain::init(const platform::Client& client)
 
 void Swapchain::present() const
 {
-    SDL_GL_SwapWindow(client_->get_handle());
+	SDL_GL_SwapWindow(client_->handle());
 }
 
 void Swapchain::set_sync_interval(uint32_t interval)

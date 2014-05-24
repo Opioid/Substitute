@@ -36,18 +36,18 @@ public:
 
 	Rendering_context();
 
-	const scene::Camera& get_camera() const;
+	const scene::Camera& camera() const;
 	void set_camera(const scene::Camera& camera);
 
-	const Viewport& get_viewport() const;
+	const Viewport& viewport() const;
 	void set_viewport(const Viewport& viewport);
 
-	const Handle<Framebuffer>& get_framebuffer() const;
-	Handle<Framebuffer>& get_framebuffer();
+	const Handle<Framebuffer>& framebuffer() const;
+	Handle<Framebuffer>& framebuffer();
 	void set_framebuffer(const Handle<Framebuffer>& framebuffer);
 
-	const Rendering_options& get_options() const;
-	Rendering_options& get_options();
+	const Rendering_options& options() const;
+	Rendering_options& options();
 	void set_options(const Rendering_options& options);
 
 private:

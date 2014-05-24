@@ -19,9 +19,9 @@ public:
 	bool has_constant_buffer() const;
 	void set_constant_buffer(const Handle<Constant_buffer>& constant_buffer);
 
-	uint32_t get_binding_point() const;
+	uint32_t binding_point() const;
 
-	uint32_t get_num_bytes() const;
+	uint32_t num_bytes() const;
 
 //	bool is_circular() const;
 

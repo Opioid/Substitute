@@ -11,7 +11,7 @@ OpenGL_object::~OpenGL_object()
 {}
 */
 
-uint32_t OpenGL_object::get_id() const
+uint32_t OpenGL_object::id() const
 {
 	return id_;
 }

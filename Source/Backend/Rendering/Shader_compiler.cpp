@@ -12,7 +12,7 @@ Handle<Shader> Shader_compiler::compile(Shader::Type type, const std::string& so
 {
 	Handle<Shader> shader = device_.create_shader(type);
 
-	uint32_t id = shader->get_id();
+	uint32_t id = shader->id();
 
 	const char* buffer = source.c_str();
 	glShaderSource(id, 1, (const GLchar**)&buffer, nullptr);

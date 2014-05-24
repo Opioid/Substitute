@@ -19,7 +19,7 @@ bool Data_format::is_sRGB(Value format)
 	}
 }
 
-Data_format::Value Data_format::get_sRGB(Value format)
+Data_format::Value Data_format::to_sRGB(Value format)
 {
 	switch (format)
 	{
@@ -48,7 +48,38 @@ Data_format::Value Data_format::get_sRGB(Value format)
 	}
 }
 
-size_t Data_format::size_of(Value format)
+uint32_t Data_format::num_elements_per_block(Value format)
+{
+	switch (format)
+	{
+	case BC1_Typeless:
+	case BC1_UNorm:
+	case BC1_UNorm_sRGB:
+	case BC2_Typeless:
+	case BC2_UNorm:
+	case BC2_UNorm_sRGB:
+	case BC3_Typeless:
+	case BC3_UNorm:
+	case BC3_UNorm_sRGB:
+	case BC4_Typeless:
+	case BC4_UNorm:
+	case BC4_SNorm:
+	case BC5_Typeless:
+	case BC5_UNorm:
+	case BC5_SNorm:
+	case BC6H_Typeless:
+	case BC6H_Uf16:
+	case BC6H_Sf16:
+	case BC7_Typeless:
+	case BC7_UNorm:
+	case BC7_UNorm_sRGB:
+		return 16;
+	default:
+		return 1;
+	}
+}
+
+uint32_t Data_format::num_bytes_per_block(Value format)
 {
 	switch (format)
 	{

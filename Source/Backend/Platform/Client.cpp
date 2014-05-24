@@ -15,7 +15,7 @@ Client::~Client()
     SDL_Quit();
 }
 
-bool Client::create(const std::string& title, const uint2& size, Input_sink& input_sink)
+bool Client::create(const std::string& title, const uint2& dimensions, Input_sink& input_sink)
 {
 	if (!valid_)
 	{
@@ -27,7 +27,7 @@ bool Client::create(const std::string& title, const uint2& size, Input_sink& inp
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
  //   SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
 
-	window_ = SDL_CreateWindow(title.c_str(), 0, 0, size.x, size.y, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	window_ = SDL_CreateWindow(title.c_str(), 0, 0, dimensions.x, dimensions.y, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (!window_)
     {
         return false;
@@ -39,14 +39,14 @@ bool Client::create(const std::string& title, const uint2& size, Input_sink& inp
 
     show_system_cursor(false);
 
-	size_ = size;
+	dimensions_ = dimensions;
 
 	input_sink_ = &input_sink;
 
 	return true;
 }
 
-SDL_Window* Client::get_handle() const
+SDL_Window* Client::handle() const
 {
 	return window_;
 }
@@ -103,7 +103,7 @@ void Client::update()
     }
 }
 
-Message Client::get_message()
+Message Client::query_message()
 {
 	if (!messages_.empty())
     {
@@ -119,9 +119,9 @@ Message Client::get_message()
     }
 }
 
-const uint2& Client::get_size() const
+const uint2& Client::dimensions() const
 {
-	return size_;
+	return dimensions_;
 }
 
 void Client::show_system_cursor(bool show)
@@ -129,7 +129,7 @@ void Client::show_system_cursor(bool show)
     SDL_SetRelativeMouseMode(show ? SDL_FALSE : SDL_TRUE);
 }
 
-float2 Client::get_relative_cursor_position() const
+float2 Client::relative_cursor_position() const
 {
     int x;
     int y;
@@ -149,24 +149,4 @@ void Client::on_input_signal(const Input_signal& signal)
 	input_sink_->on_input_signal(signal);
 }
 
-void Client::add_message(Message message)
-{
-	messages_.push(message);
-}
-/*
-void close_callback(GLFWwindow* window)
-{
-	reinterpret_cast<Client*>(glfwGetWindowUserPointer(window))->add_message(Message::Quit);
-}
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	reinterpret_cast<Client*>(glfwGetWindowUserPointer(window))->on_input_signal(Input_signal(key, action));
-}
-
-void character_callback(GLFWwindow* window, unsigned int character)
-{
-	reinterpret_cast<Client*>(glfwGetWindowUserPointer(window))->on_input_signal(Input_signal(character));
-}
-*/
 }

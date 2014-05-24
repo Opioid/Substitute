@@ -24,9 +24,9 @@ bool Image_writer::write(const std::string& file_name, const Image<rendering::Co
 bool Image_writer::write_DDS(const std::string& file_name, const Image<rendering::Color4>& image, const Storage_options& options)
 {
 	const Image_buffer<rendering::Color4>* source = image.get_level(0);
-	const uint2& dimensions = source->get_dimensions();
+	const uint2& dimensions = source->dimensions();
 
-	bool sRGB = rendering::Data_format::is_sRGB(options.get_format());
+	bool sRGB = rendering::Data_format::is_sRGB(options.format());
 
 	To_BGRA to_BGRA(sRGB);
 
@@ -42,7 +42,7 @@ bool Image_writer::write_DDS(const std::string& file_name, const Image<rendering
 	}
 
 	input_options.setTextureLayout(nvtt::TextureType_2D, dimensions.x, dimensions.y);
-	input_options.setMipmapData(buffer_.get_data(), dimensions.x, dimensions.y);
+	input_options.setMipmapData(buffer_.data(), dimensions.x, dimensions.y);
 	input_options.setMipmapGeneration(true);
 
 	nvtt::OutputOptions output_options;
@@ -51,7 +51,7 @@ bool Image_writer::write_DDS(const std::string& file_name, const Image<rendering
 	nvtt::Compressor compressor;
 
 	nvtt::CompressionOptions compression_options;
-	compression_options.setFormat(get_NVTT_format(options.get_format(), options.has_alpha()));
+	compression_options.setFormat(get_NVTT_format(options.format(), options.has_alpha()));
 	compressor.process(input_options, compression_options, output_options);
 
 	return false;
@@ -59,21 +59,21 @@ bool Image_writer::write_DDS(const std::string& file_name, const Image<rendering
 
 bool Image_writer::write_PNG(const std::string& file_name, const Image<rendering::Color4>& image, const Storage_options& options)
 {
-	bool sRGB = rendering::Data_format::is_sRGB(options.get_format());
+	bool sRGB = rendering::Data_format::is_sRGB(options.format());
 
 	To_BGRA to_BGRA(sRGB);
 
-	for (uint32_t i = 0; i < image.get_num_levels(); ++i)
+	for (uint32_t i = 0; i < image.num_levels(); ++i)
 	{
 		const Image_buffer<rendering::Color4>* source = image.get_level(i);
 
-		const uint2& dimensions = source->get_dimensions();
+		const uint2& dimensions = source->dimensions();
 
 		allocate_buffer(dimensions);
 
 		to_BGRA.filter_uncentered(buffer_, *source);
 
-		QImage qimage(reinterpret_cast<const uchar*>(buffer_.get_data()), dimensions.x, dimensions.y, QImage::Format_ARGB32);
+		QImage qimage(reinterpret_cast<const uchar*>(buffer_.data()), dimensions.x, dimensions.y, QImage::Format_ARGB32);
 
 		qimage.save((file_name + std::to_string(i) + "." + options.get_file_extension()).c_str());
 	}
@@ -83,7 +83,7 @@ bool Image_writer::write_PNG(const std::string& file_name, const Image<rendering
 
 void Image_writer::allocate_buffer(const uint2& dimensions)
 {
-	const uint2& current_dimensions = buffer_.get_dimensions();
+	const uint2& current_dimensions = buffer_.dimensions();
 
 	if (current_dimensions.x < dimensions.x || current_dimensions.y < dimensions.y)
 	{

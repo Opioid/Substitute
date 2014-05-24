@@ -6,7 +6,7 @@ namespace rendering
 
 Texture_description::Texture_description() :
 	type(Type::Texture_2D), format(Data_format::Unknown),
-	dimensions(uint3(1, 1, 0)), num_layers(1), num_mip_levels(1), num_samples(0),
+	dimensions(uint3(1, 1, 1)), num_layers(1), num_mip_levels(1), num_samples(0),
 	shader_resource(true)
 {}
 

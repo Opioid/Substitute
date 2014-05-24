@@ -13,17 +13,17 @@ public:
 
 	Controls();
 
-	Control_mappings& get_mappings();
+	Control_mappings& mappings();
 
 	void on_input_signal(const platform::Input_signal& signal);
 
 	void update(float speed);
 	void cleanup_update();
 
-	const Input_state& get_mouse_state() const;
-	const Input_state& get_keyboard_state() const;
+	const Input_state& mouse_state() const;
+	const Input_state& keyboard_state() const;
 
-	const Signal_stream& get_signal_stream() const;
+	const Signal_stream& signal_stream() const;
 
 private:
 	

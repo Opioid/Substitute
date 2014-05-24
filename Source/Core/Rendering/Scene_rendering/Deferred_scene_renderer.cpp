@@ -36,7 +36,7 @@ Deferred_scene_renderer::Deferred_scene_renderer(Rendering_tool& rendering_tool,
 
 bool Deferred_scene_renderer::init(Resource_manager& resource_manager, Constant_buffer_cache& /*constant_buffer_cache*/)
 {
-	framebuffer_ = rendering_tool_.get_device().create_framebuffer();
+	framebuffer_ = rendering_tool_.device().create_framebuffer();
 
 	if (!framebuffer_)
 	{
@@ -52,21 +52,21 @@ bool Deferred_scene_renderer::init(Resource_manager& resource_manager, Constant_
 		return false;
 	}
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position3x32_tex_coord2x32_normal1010102::vertex_layout_description(), effect_->get_technique(3)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position3x32_tex_coord2x32_normal1010102::vertex_layout_description(), effect_->technique(3)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
 	}
 
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	if (!change_per_camera_.init(effect_, "Change_per_camera"))
 	{
 		return false;
 	}
 
-	Constant_buffer_adapter* change_per_camera_adapter = change_per_camera_.get_adapter();
-	Handle<Constant_buffer> change_per_camera_buffer = device.create_constant_buffer(change_per_camera_adapter->get_num_bytes());
+	Constant_buffer_adapter* change_per_camera_adapter = change_per_camera_.adapter();
+	Handle<Constant_buffer> change_per_camera_buffer = device.create_constant_buffer(change_per_camera_adapter->num_bytes());
 	change_per_camera_adapter->set_constant_buffer(change_per_camera_buffer);
 
 	constant_buffer_cache_.set_constant_buffer("Change_per_camera", change_per_camera_buffer);
@@ -93,7 +93,7 @@ bool Deferred_scene_renderer::init(Resource_manager& resource_manager, Constant_
 
 bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<Depth_stencil_shader_resource_view>& depth_stencil)
 {
-	auto& cache = rendering_tool_.get_render_target_cache();
+	auto& cache = rendering_tool_.render_target_cache();
 
 	Texture_description texture_description;
 	texture_description.type = Texture_description::Type::Texture_2D;
@@ -123,8 +123,8 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 		return false;
 	}
 
-	framebuffer_->set_render_targets({ normal_target_->get_render_target_view(), color_target_->get_render_target_view(), surface_target_->get_render_target_view() },
-									 depth_stencil->get_depth_stencil_view());
+	framebuffer_->set_render_targets({ normal_target_->render_tarview(), color_target_->render_tarview(), surface_target_->render_tarview() },
+									 depth_stencil->depth_stencil_view());
 
 	if (!framebuffer_->is_valid())
 	{
@@ -136,31 +136,31 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 		return false;
 	}
 
-	lighting_renderer_.set_deferred_textures(depth_stencil->get_shader_resource_view(),
-											 normal_target_->get_shader_resource_view(),
-											 color_target_->get_shader_resource_view(),
-											 surface_target_->get_shader_resource_view());
+	lighting_renderer_.set_deferred_textures(depth_stencil->shader_resource_view(),
+											 normal_target_->shader_resource_view(),
+											 color_target_->shader_resource_view(),
+											 surface_target_->shader_resource_view());
 
 	return true;
 }
 
 void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_context& context)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.set_primitive_topology(Primitive_topology::Triangle_list);
 
-	auto& options = context.get_options();
+	auto& options = context.options();
 
 	if (options.is_set(Rendering_context::Options::Render_actors)
 	||  options.is_set(Rendering_context::Options::Render_static_geometry))
 	{
-		device.set_viewports(1, &context.get_viewport());
+		device.set_viewports(1, &context.viewport());
 		device.set_framebuffer(framebuffer_);
 
 		device.set_input_layout(input_layout_);
 
-		const auto& camera = context.get_camera();
+		const auto& camera = context.camera();
 
 		if (options.is_set(Rendering_context::Options::Face_culling))
 		{
@@ -179,15 +179,15 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_
 
 		effect_->use(device);
 
-		const float3* rays = camera.get_view_rays_vs();
-		const float2& linear_depth_projection = camera.get_linear_depth_projection();
-		auto& change_per_camera_data = change_per_camera_.get_data();
+		const float3* rays = camera.view_rays_vs();
+		const float2& linear_depth_projection = camera.linear_depth_projection();
+		auto& change_per_camera_data = change_per_camera_.data();
 		change_per_camera_data.rays[0] = float4(rays[0], linear_depth_projection.x);
 		change_per_camera_data.rays[1] = float4(rays[1], linear_depth_projection.y);
 		change_per_camera_data.rays[2] = float4(rays[2], 1.f);
-		change_per_camera_data.view_projection = camera.get_view_projection();
-		change_per_camera_data.view = camera.get_view();
-		change_per_camera_data.inverse_view = invert(camera.get_view());
+		change_per_camera_data.view_projection = camera.view_projection();
+		change_per_camera_data.view = camera.view();
+		change_per_camera_data.inverse_view = invert(camera.view());
 		change_per_camera_.update(device);
 
 		previous_material_ = nullptr;
@@ -198,7 +198,7 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_
 		const float4x4* previous_world_transformation = nullptr;
 
 		surface_collector_.collect(
-			scene, camera.get_world_position(), camera.get_frustum(),
+			scene, camera.world_position(), camera.frustum(),
 			options.is_set(Rendering_context::Options::Render_actors),
 			options.is_set(Rendering_context::Options::Render_static_geometry));
 
@@ -209,7 +209,7 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_
 			if (s.surface->world != previous_world_transformation)
 			{
 				const float4x4& transform = *s.surface->world;
-				change_per_object_.get_data().world = transform;
+				change_per_object_.data().world = transform;
 				change_per_object_.update(device);
 
 				previous_world_transformation = s.surface->world;
@@ -221,7 +221,7 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_
 
 			if (s.surface->index_buffer != previous_ib)
 			{
-				device.set_vertex_buffers(s.surface->vd->get_num_streams(), s.surface->vertex_buffers, s.surface->vd->get_strides());
+				device.set_vertex_buffers(s.surface->vd->num_streams(), s.surface->vertex_buffers, s.surface->vd->strides());
 				device.set_index_buffer(s.surface->index_buffer);
 				previous_ib = s.surface->index_buffer;
 			}
@@ -256,7 +256,7 @@ void Deferred_scene_renderer::prepare_material(const scene::Material* material)
 		return;
 	}
 
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	uint32_t rasterizer_state = material->is_two_sided() ? 1 : 0;
 	if (previous_rasterizer_state_ != rasterizer_state)
@@ -265,18 +265,18 @@ void Deferred_scene_renderer::prepare_material(const scene::Material* material)
 		previous_rasterizer_state_ = rasterizer_state;
 	}
 
-	auto& change_per_mater_data = change_per_material_.get_data();
-	change_per_mater_data.color_and_emissive_factor = material->get_color_and_emissive_factor();
-	change_per_mater_data.metallic_and_roughness = material->get_metallic_and_roughness();
-	change_per_mater_data.height_scale = material->get_height_scale();
+	auto& change_per_mater_data = change_per_material_.data();
+	change_per_mater_data.color_and_emissive_factor = material->color_and_emissive_factor();
+	change_per_mater_data.metallic_and_roughness = material->metallic_and_roughness();
+	change_per_mater_data.height_scale = material->height_scale();
 	change_per_material_.update(device);
 
-	device.set_shader_resources(static_cast<uint32_t>(scene::Material::Sampler::Enum_count), material->get_textures());
+	device.set_shader_resources(static_cast<uint32_t>(scene::Material::Sampler::Enum_count), material->textures());
 
-	uint32_t technique = static_cast<uint32_t>(material->get_technique());
+	uint32_t technique = static_cast<uint32_t>(material->technique());
 	if (previous_technique_ != technique)
 	{
-		effect_->get_technique(technique)->use();
+		effect_->technique(technique)->use();
 		previous_technique_ = technique;
 	}
 
@@ -288,7 +288,7 @@ bool Deferred_scene_renderer::create_render_states()
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.front_ccw = false;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_cull_back_ = rendering_tool_.get_render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_cull_back_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_back_)
 	{
 		return false;
@@ -296,7 +296,7 @@ bool Deferred_scene_renderer::create_render_states()
 
 	rasterizer_description.front_ccw = true;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_cull_front_ = rendering_tool_.get_render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_cull_front_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_front_)
 	{
 		return false;
@@ -304,7 +304,7 @@ bool Deferred_scene_renderer::create_render_states()
 
 	rasterizer_description.front_ccw = false;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::None;
-	rasterizer_state_cull_none_ = rendering_tool_.get_render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_cull_none_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_none_)
 	{
 		return false;
@@ -323,7 +323,7 @@ bool Deferred_scene_renderer::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Replace;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Greater_equal;
-	base_ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	base_ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!base_ds_state_)
 	{
 		return false;
@@ -338,7 +338,7 @@ bool Deferred_scene_renderer::create_render_states()
 	blend_description.render_targets[2].blend_enable     = false;
 	blend_description.render_targets[2].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	base_blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	base_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!base_blend_state_)
 	{
 		return false;

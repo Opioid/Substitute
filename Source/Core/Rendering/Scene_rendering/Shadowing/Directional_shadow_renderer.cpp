@@ -33,33 +33,33 @@ void Directional_shadow_renderer::render(const scene::Light& light, const scene:
 {
 	prepare_rendering(context);
 
-	const auto& camera = context.get_camera();
+	const auto& camera = context.camera();
 
-	cascade_data_[0].near_far = float2(camera.get_z_near(), 4.f);
+	cascade_data_[0].near_far = float2(camera.z_near(), 4.f);
 	cascade_data_[1].near_far = float2(4.f, 10.f);
 	cascade_data_[2].near_far = float2(10.f, 24.f);
-	cascade_data_[3].near_far = float2(camera.get_z_near(), camera.get_z_far());
+	cascade_data_[3].near_far = float2(camera.z_near(), camera.z_far());
 
-	Polyhedron shadow_volume = Polyhedron::create_directional_shadow_caster_volume(camera.get_frustum(), light.get_world_direction());
+	Polyhedron shadow_volume = Polyhedron::create_directional_shadow_caster_volume(camera.frustum(), light.world_direction());
 
-	AABB shadow_caster_aabb = calculate_shadow_caster_AABB(scene, context.get_options().is_set(Rendering_context::Options::Render_actors), shadow_volume);
+	AABB shadow_caster_aabb = calculate_shadow_caster_AABB(scene, context.options().is_set(Rendering_context::Options::Render_actors), shadow_volume);
 
 	for (uint32_t i = 0; i < num_cascades_; ++i)
 	{
 		Cascade_data& cascade_data = cascade_data_[i];
 
 		scene::Camera cascade_camera = camera;
-		cascade_camera.set_projection(camera.get_fov(), camera.get_ratio(), cascade_data.near_far.x, cascade_data.near_far.y);
+		cascade_camera.set_projection(camera.FOV(), camera.ratio(), cascade_data.near_far.x, cascade_data.near_far.y);
 		cascade_camera.update_frustum();
 
 		calculate_optimized_light_view_projection(cascade_data.shadow_view_projection, cascade_data.depth_clamp, cascade_data.cascade_world, cascade_data.eye,
-												  light, shadow_caster_aabb, cascade_camera.get_frustum(), !cascade_data.last_cascade, i);
+												  light, shadow_caster_aabb, cascade_camera.frustum(), !cascade_data.last_cascade, i);
 
 		Frustum shadow_frustum(cascade_data.shadow_view_projection);
 
 		surface_collector_.collect_unified(scene, cascade_data.eye, shadow_frustum,
-										   context.get_options().is_set(Rendering_context::Options::Render_actors),
-										   context.get_options().is_set(Rendering_context::Options::Render_static_geometry));
+										   context.options().is_set(Rendering_context::Options::Render_actors),
+										   context.options().is_set(Rendering_context::Options::Render_static_geometry));
 
 		render_cascade(context, cascade_data);
 	}
@@ -87,7 +87,7 @@ void Directional_shadow_renderer::calculate_optimized_light_view_projection(floa
 		shadowReceiverAABB.halfsize = float3(size, size, size);
 	}
 
-	const float3 light_direction = light.get_world_direction();
+	const float3 light_direction = light.world_direction();
 
 	// We still need to compute a pos that is just outside the shadow_caster_aabb, but centering on the shadowReceiverAABB center with light dir
 	float center = dot(shadow_caster_aabb.position - shadowReceiverAABB.position, light_direction);
@@ -97,7 +97,7 @@ void Directional_shadow_renderer::calculate_optimized_light_view_projection(floa
 
 	virtual_eye = shadowReceiverAABB.position + znear * light_direction;
 	float4x4 view;
-	set_look_at(view, virtual_eye, virtual_eye + light_direction, light.get_world_up());
+	set_look_at(view, virtual_eye, virtual_eye + light_direction, light.world_up());
 
 	center = dot(tightShadowReceiverAABB.position - virtual_eye, light_direction);
 	radius = dot(tightShadowReceiverAABB.halfsize, absolute(light_direction));
@@ -105,7 +105,7 @@ void Directional_shadow_renderer::calculate_optimized_light_view_projection(floa
 	float shadowRecieverNear = center - radius;
 
 	center = dot(shadowReceiverAABB.position - virtual_eye, light_direction);
-	radius = dot(shadowReceiverAABB.halfsize, absolute(light.get_world_direction()));
+	radius = dot(shadowReceiverAABB.halfsize, absolute(light.world_direction()));
 
 	float z_far = center + radius;
 
@@ -151,9 +151,9 @@ void Directional_shadow_renderer::calculate_optimized_light_view_projection(floa
 
 		cascade_world = float4x4::identity;
 
-		set_basis(cascade_world, light.get_world_rotation());
+		set_basis(cascade_world, light.world_rotation());
 		scale(cascade_world, vscale);
-		set_origin(cascade_world, virtual_eye + (shadowRecieverNear + 0.5f * shrink.z) * light.get_world_direction());
+		set_origin(cascade_world, virtual_eye + (shadowRecieverNear + 0.5f * shrink.z) * light.world_direction());
 	}
 }
 
@@ -167,7 +167,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 
 		for (auto a : actors)
 		{
-			auto& aabb = a->get_aabb();
+			auto& aabb = a->aabb();
 			if (shadow_volume.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
@@ -183,7 +183,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 
 		for (auto p : props)
 		{
-			auto& aabb = p->get_aabb();
+			auto& aabb = p->aabb();
 			if (shadow_volume.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
@@ -197,7 +197,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 
 	while (node)
 	{
-		auto& node_AABB = node->get_aabb();
+		auto& node_AABB = node->aabb();
 
 		const Intersection_type::Value intersection = shadow_volume.intersect(node_AABB);
 
@@ -220,7 +220,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 
 		for (auto p : props)
 		{
-			auto& aabb = p->get_aabb();
+			auto& aabb = p->aabb();
 			if (shadow_volume.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);

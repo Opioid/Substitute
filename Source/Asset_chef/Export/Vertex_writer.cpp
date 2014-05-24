@@ -5,7 +5,7 @@
 
 bool Vertex_writer::write(std::ostream &stream, const Model&  model) const
 {
-	if (!write_vertex_layout_description(stream, get_vertex_layout_description()))
+	if (!write_vertex_layout_description(stream, vertex_layout_description()))
 	{
 		return false;
 	}
@@ -28,7 +28,7 @@ bool Vertex_writer::write_vertex_layout_description(std::ostream &stream, const 
 		return false;
 	}
 
-	uint32_t num_elements_ = vertex_layout_description->get_num_elements_();
+	uint32_t num_elements_ = vertex_layout_description->num_elements();
 	stream.write((char*)&num_elements_, sizeof(uint32_t));
 
 	for (uint32_t i = 0; i < num_elements_; ++i)

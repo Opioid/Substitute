@@ -24,7 +24,7 @@ bool init(Application& application)
 {
 	app = &application;
 
-	Script_tool& tool = app->get_script_tool();
+	Script_tool& tool = app->script_tool();
 
 	if (!init_print(tool))
 	{
@@ -56,7 +56,7 @@ bool init(Application& application)
 		return false;
 	}
 
-	const Script_engine& engine = tool.get_engine();
+	const Script_engine& engine = tool.engine();
 
 	engine.set_default_namespace("");
 
@@ -89,7 +89,7 @@ bool load_console_script(std::istream& stream, const std::string& name)
 
 	logging::post("Loading console script \"" + name + "\":");
 
-	const Script_engine& engine = app->get_script_tool().get_engine();
+	const Script_engine& engine = app->script_tool().engine();
 
 	std::string line;
 
@@ -112,7 +112,7 @@ void exit()
 
 void build_info()
 {
-	logging::post(app->get_build_info());
+	logging::post(app->build_info());
 }
 
 void resource_info()
@@ -124,7 +124,7 @@ void resource_info(const std::string& type)
 {
 	std::vector<std::string> info;
 
-	app->get_resource_manager().get_resource_info(info, type);
+	app->resource_manager().get_resource_info(info, type);
 
 	for (auto& i : info)
 	{
@@ -134,7 +134,7 @@ void resource_info(const std::string& type)
 
 void mount(const std::string& path)
 {
-	app->get_resource_manager().get_virtual_file_system().mount(path);
+	app->resource_manager().virtual_file_system().mount(path);
 }
 
 }

@@ -76,14 +76,14 @@ public:
         image_buffers_.push_back(buffer);
     }
 
-    uint32_t get_num_levels() const
+	uint32_t num_levels() const
     {
         return static_cast<uint32_t>(image_buffers_.size());
     }
 
     const Image_buffer<T>* get_level(uint32_t index) const
     {
-        if (index < get_num_levels())
+		if (index < num_levels())
         {
             return image_buffers_[index];
         }
@@ -95,7 +95,7 @@ public:
 
     Image_buffer<T>* get_level(uint32_t index)
     {
-        if (index < get_num_levels())
+		if (index < num_levels())
         {
             return image_buffers_[index];
         }
@@ -107,9 +107,9 @@ public:
 
     void allocate_mip_chain()
     {
-        rendering::Data_format::Value format = image_buffers_[0]->get_format();
+        rendering::Data_format::Value format = image_buffers_[0]->format();
 
-        uint2 dimensions = image_buffers_[0]->get_dimensions();
+        uint2 dimensions = image_buffers_[0]->dimensions();
 
         while (dimensions.x > 1 || dimensions.y > 1)
         {

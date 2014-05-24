@@ -15,11 +15,11 @@ bool parse(rapidjson::Document& document, std::istream& stream)
 	return document.HasParseError() == false;
 }
 
-size_t get_line_number(std::istream& stream, size_t offset);
+size_t calculate_line_number(std::istream& stream, size_t offset);
 
-std::string get_error(rapidjson::Document& document, std::istream& stream)
+std::string read_error(rapidjson::Document& document, std::istream& stream)
 {
-	size_t line = get_line_number(stream, document.GetErrorOffset());
+	size_t line = calculate_line_number(stream, document.GetErrorOffset());
 
 	std::stringstream sstream;
 
@@ -31,7 +31,7 @@ std::string get_error(rapidjson::Document& document, std::istream& stream)
 }
 
 // get the 0-based line number
-size_t get_line_number(std::istream& stream, size_t offset)
+size_t calculate_line_number(std::istream& stream, size_t offset)
 {
 	size_t line = 0;
 	size_t count = 0;
@@ -56,34 +56,34 @@ size_t get_line_number(std::istream& stream, size_t offset)
 	return line;
 }
 
-float2 get_float2(const rapidjson::Value& value)
+float2 read_float2(const rapidjson::Value& value)
 {
 	return float2(float(value[0u].GetDouble()), float(value[1].GetDouble()));
 }
 
-float3 get_float3(const rapidjson::Value& value)
+float3 read_float3(const rapidjson::Value& value)
 {
 	return float3(float(value[0u].GetDouble()), float(value[1].GetDouble()), float(value[2].GetDouble()));
 }
 
-float4 get_float4(const rapidjson::Value& value)
+float4 read_float4(const rapidjson::Value& value)
 {
 	return float4(float(value[0u].GetDouble()), float(value[1].GetDouble()), float(value[2].GetDouble()), float(value[3].GetDouble()));
 }
 
-uint3 get_uint3(const rapidjson::Value& value)
+uint3 read_uint3(const rapidjson::Value& value)
 {
     return uint3(value[0u].GetUint(), value[1].GetUint(), value[2].GetUint());
 }
 
-Quaternion get_quaternion(const rapidjson::Value& value)
+Quaternion read_quaternion(const rapidjson::Value& value)
 {
 	 return Quaternion(float(value[0u].GetDouble()), float(value[1].GetDouble()), float(value[2].GetDouble()), float(value[3].GetDouble()));
 }
 
-float3x3 get_rotation_matrix(const rapidjson::Value& value)
+float3x3 read_rotation_matrix(const rapidjson::Value& value)
 {
-    float3 rot = get_float3(value);
+	float3 rot = read_float3(value);
 
     float3x3 rot_x;
     set_rotation_x(rot_x, math::to_radians(rot.x));
@@ -97,12 +97,12 @@ float3x3 get_rotation_matrix(const rapidjson::Value& value)
     return rot_z * rot_x * rot_y;
 }
 
-Quaternion get_local_rotation(const rapidjson::Value& value)
+Quaternion read_local_rotation(const rapidjson::Value& value)
 {
-    return Quaternion(get_rotation_matrix(value));
+	return Quaternion(read_rotation_matrix(value));
 }
 
-bool get_bool(const rapidjson::Value& value, const std::string& name, bool default_value)
+bool read_bool(const rapidjson::Value& value, const std::string& name, bool default_value)
 {
 	const rapidjson::Value::Member* node = value.FindMember(name.c_str());
 
@@ -114,7 +114,7 @@ bool get_bool(const rapidjson::Value& value, const std::string& name, bool defau
 	return node->value.GetBool();
 }
 
-std::string get_string(const rapidjson::Value& value, const std::string& name, const std::string& default_value)
+std::string read_string(const rapidjson::Value& value, const std::string& name, const std::string& default_value)
 {
 	const rapidjson::Value::Member* node = value.FindMember(name.c_str());
 
@@ -126,7 +126,7 @@ std::string get_string(const rapidjson::Value& value, const std::string& name, c
 	return node->value.GetString();
 }
 
-uint32_t get_uint(const rapidjson::Value& value, const std::string& name, uint32_t default_value)
+uint32_t read_uint(const rapidjson::Value& value, const std::string& name, uint32_t default_value)
 {
 	const rapidjson::Value::Member* node = value.FindMember(name.c_str());
 

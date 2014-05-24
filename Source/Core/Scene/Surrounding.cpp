@@ -11,7 +11,7 @@ void Surrounding::clear()
     texture_ = nullptr;
 }
 
-const rendering::Color3& Surrounding::get_color() const
+const rendering::Color3& Surrounding::color() const
 {
 	return color_;
 }
@@ -21,7 +21,7 @@ void Surrounding::set_color(const rendering::Color3& color)
 	color_ = color;
 }
 
-const Handle<rendering::Shader_resource_view> Surrounding::get_texture() const
+const Handle<rendering::Shader_resource_view> Surrounding::texture() const
 {
 	return texture_;
 }

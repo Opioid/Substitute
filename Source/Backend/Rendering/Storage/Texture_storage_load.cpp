@@ -13,7 +13,7 @@ namespace rendering
 
 std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_2D(file::Input_stream& stream, bool treat_as_linear, std::string& error_message)
 {
-	file::File_type file_type = get_file_type(stream);
+	file::File_type file_type = query_file_type(stream);
 
 	if (file::File_type::DDS == file_type)
 	{
@@ -42,7 +42,7 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_2D(file::Inp
 	if (!image)
 	{
 		FreeImage_SetOutputMessage(fi::error_handler);
-		error_message = fi::get_error_message();
+		error_message = fi::error_message();
 		return nullptr;
 	}
 
@@ -109,7 +109,7 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_3D(file::Inp
 
 std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_cube(file::Input_stream& stream, bool treat_as_linear, std::string& error_message)
 {
-	file::File_type file_type = get_file_type(stream);
+	file::File_type file_type = query_file_type(stream);
 
 	if (file::File_type::DDS == file_type)
 	{
@@ -123,7 +123,7 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_cube(file::I
 	rapidjson::Document root;
 	if (!json::parse(root, stream))
 	{
-		error_message = "Texture_storage::load_texture_cube(): \"" + stream.get_name() + "\" could not be loaded: failed to parse the file: " + json::get_error(root, stream);
+		error_message = "Texture_storage::load_texture_cube(): \"" + stream.name() + "\" could not be loaded: failed to parse the file: " + json::read_error(root, stream);
 
 		return nullptr;
 	}
@@ -171,7 +171,7 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_cube(file::I
 		}
 	}
 
-	Texture_description description = texture_data[0]->get_description();
+	Texture_description description = texture_data[0]->description();
 
 	return std::make_shared<Texture_data_adapter_cube>(description, texture_data);
 }

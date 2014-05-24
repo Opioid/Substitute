@@ -18,13 +18,13 @@ public:
 
 	void render(const scene::Light& light, const Frustum& light_frustum, const scene::Scene& scene, const Rendering_context& context);
 
-	const float4x4& get_view_projection() const;
+	const float4x4& view_projection() const;
 
-	const float2& get_linear_depth_projection() const;
+	const float2& linear_depth_projection() const;
 
-	virtual uint32_t get_filter_kernel_size() const = 0;
+	virtual uint32_t filter_kernel_size() const = 0;
 
-	virtual const float4* get_filter_kernel() const = 0;
+	virtual const float4* filter_kernel() const = 0;
 
 protected:
 

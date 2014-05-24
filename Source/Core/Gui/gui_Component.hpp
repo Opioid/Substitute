@@ -38,7 +38,7 @@ public:
 	float2 get_absolute_position() const;
 	void set_position(const float2& pos);
 
-	const float2& get_size() const;
+	const float2& dimensions() const;
 	void set_size(const float2& size);
 
 	bool has_focus() const;

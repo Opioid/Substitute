@@ -22,12 +22,12 @@ void Effect_sampler::set_sampler_state(const Handle<Sampler_state>& sampler_stat
 	effect_->set_sampler_state(texture_unit_, sampler_state);
 }
 
-uint32_t Effect_sampler::get_texture_unit() const
+uint32_t Effect_sampler::texture_unit() const
 {
 	return texture_unit_;
 }
 
-std::string Effect_sampler::Description::get_glsl_mapping(const std::string& type)
+std::string Effect_sampler::Description::glsl_mapping(const std::string& type)
 {
 	static std::map<std::string, std::string> mapping;
 

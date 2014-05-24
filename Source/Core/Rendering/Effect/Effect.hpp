@@ -27,19 +27,19 @@ public:
 
 	void use(Rendering_device& device) const;
 
-	Effect_technique* get_technique(size_t index) const;
-	Effect_technique* get_technique(const std::string& name) const;
+	Effect_technique* technique(size_t index) const;
+	Effect_technique* technique(const std::string& name) const;
 
-	Constant_buffer_adapter* get_constant_buffer_adapter(const std::string& name) const;
+	Constant_buffer_adapter* constant_buffer_adapter(const std::string& name) const;
 
-	Effect_sampler& get_sampler(const std::string& name);
-	uint32_t get_sampler_offset(const std::string& name);
+	Effect_sampler& sampler(const std::string& name);
+	uint32_t sampler_offset(const std::string& name);
 
 	void apply_sampler_states(Rendering_device& device) const;
 
 private:
 
-	bool get_buffer_size(const std::string& name, uint32_t& num_bytes) const;
+	bool buffer_size(const std::string& name, uint32_t& num_bytes) const;
 
 	void set_shader_resource(uint32_t texture_unit, const Handle<Shader_resource_view>& shader_resource);
 	void set_sampler_state(uint32_t texture_unit, const Handle<Sampler_state>& sampler_state);

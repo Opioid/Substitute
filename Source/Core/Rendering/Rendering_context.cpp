@@ -1,6 +1,6 @@
 #include "Rendering_context.hpp"
 #include "Rendering/Framebuffer.hpp"
-#include "../Scene/Camera.hpp"
+#include "Scene/Camera.hpp"
 
 namespace rendering
 {
@@ -16,7 +16,7 @@ Rendering_context::Rendering_context() : camera_(nullptr)
 	options_.set(Options::Face_culling, true);
 }
 
-const scene::Camera& Rendering_context::get_camera() const
+const scene::Camera& Rendering_context::camera() const
 {
 	return *camera_;
 }
@@ -26,7 +26,7 @@ void Rendering_context::set_camera(const scene::Camera& camera)
 	camera_ = &camera;
 }
 
-const Viewport& Rendering_context::get_viewport() const
+const Viewport& Rendering_context::viewport() const
 {
 	return viewport_;
 }
@@ -36,12 +36,12 @@ void Rendering_context::set_viewport(const Viewport& viewport)
 	viewport_ = viewport;
 }
 
-const Handle<Framebuffer>& Rendering_context::get_framebuffer() const
+const Handle<Framebuffer>& Rendering_context::framebuffer() const
 {
 	return framebuffer_;
 }
 
-Handle<Framebuffer>& Rendering_context::get_framebuffer()
+Handle<Framebuffer>& Rendering_context::framebuffer()
 {
 	return framebuffer_;
 }
@@ -51,12 +51,12 @@ void Rendering_context::set_framebuffer(const Handle<Framebuffer>& framebuffer)
 	framebuffer_ = framebuffer;
 }
 
-const Rendering_context::Rendering_options& Rendering_context::get_options() const
+const Rendering_context::Rendering_options& Rendering_context::options() const
 {
 	return options_;
 }
 
-Rendering_context::Rendering_options& Rendering_context::get_options()
+Rendering_context::Rendering_options& Rendering_context::options()
 {
 	return options_;
 }

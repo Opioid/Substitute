@@ -22,9 +22,9 @@ bool Static_hdr::init(Resource_manager& resource_manager)
 		return false;
 	}
 
-	compose_technique_ = effect_->get_technique("Compose");
+	compose_technique_ = effect_->technique("Compose");
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position2x32::vertex_layout_description(), effect_->get_technique(0)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position2x32::vertex_layout_description(), effect_->technique(0)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
@@ -40,7 +40,7 @@ bool Static_hdr::init(Resource_manager& resource_manager)
 
 void Static_hdr::render(const Handle<Shader_resource_view>& source, const Viewport& /*source_viewport*/, const Rendering_context& context)
 {
-	Rendering_device& device = rendering_tool_.get_device();
+	Rendering_device& device = rendering_tool_.device();
 
 	device.set_input_layout(input_layout_);
 
@@ -49,12 +49,12 @@ void Static_hdr::render(const Handle<Shader_resource_view>& source, const Viewpo
 
 	device.set_depth_stencil_state(ds_state_);
 
-	device.set_framebuffer(context.get_framebuffer());
-	device.set_viewports(1, &context.get_viewport());
+	device.set_framebuffer(context.framebuffer());
+	device.set_viewports(1, &context.viewport());
 
 	device.set_blend_state(compose_blend_state_);
 
-	change_per_setting_.get_data().linear_white_and_exposure = float4(linear_white_, exposure_);
+	change_per_setting_.data().linear_white_and_exposure = float4(linear_white_, exposure_);
 	change_per_setting_.update(device);
 
 	compose_technique_->use();
@@ -74,7 +74,7 @@ bool Static_hdr::create_render_states()
 	ds_description.depth_write_mask = false;
 	ds_description.stencil_enable = false;
 
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -85,7 +85,7 @@ bool Static_hdr::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	compose_blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	compose_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!compose_blend_state_)
 	{
 		return false;

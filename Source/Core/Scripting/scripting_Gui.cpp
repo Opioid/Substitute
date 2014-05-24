@@ -10,7 +10,7 @@ namespace scripting
 
     bool init_gui(Script_tool& /*tool*/)
 	{
-	//	Script_engine const& engine = tool.get_engine();
+	//	Script_engine const& engine = tool.engine();
 
 	//	engine.register_function("void image_viewer(const string &in)", asFUNCTION(image_viewer));
 
@@ -19,7 +19,7 @@ namespace scripting
 /*
 	void image_viewer(const std::string& image_name)
 	{
-		Handle<Shader_resource_view> texture = app->get_resource_manager().load<Shader_resource_view>(image_name);
+		Handle<Shader_resource_view> texture = app->resource_manager().load<Shader_resource_view>(image_name);
 
 		if (texture)
 		{

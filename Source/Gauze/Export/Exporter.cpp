@@ -59,7 +59,7 @@ bool Exporter::write_color(const std::string& name, const Export_set& export_set
 
 	if (Export_item::Selection::Constant != export_set.color.selection)
 	{
-		const Image_buffer<rendering::Color4>& source_buffer = export_set.color.cached_image->get_float_image_buffer();
+		const Image_buffer<rendering::Color4>& source_buffer = export_set.color.cached_image->float_image_buffer();
 
 		color_image.init(source_buffer);
 	}
@@ -70,13 +70,13 @@ bool Exporter::write_color(const std::string& name, const Export_set& export_set
 
 	if (transparent)
 	{
-		const Image_buffer<rendering::Color4>& opacity_buffer = export_set.opacity.cached_image->get_float_image_buffer();
+		const Image_buffer<rendering::Color4>& opacity_buffer = export_set.opacity.cached_image->float_image_buffer();
 
 		if (color_image.empty())
 		{
-			color_image.init(opacity_buffer.get_format(), opacity_buffer.get_dimensions(), rendering::Color4(export_set.color.constant));
+			color_image.init(opacity_buffer.format(), opacity_buffer.dimensions(), rendering::Color4(export_set.color.constant));
 		}
-		else if (color_image.get_level(0)->get_dimensions() != opacity_buffer.get_dimensions())
+		else if (color_image.get_level(0)->dimensions() != opacity_buffer.dimensions())
 		{
 			return false;
 		}
@@ -110,7 +110,7 @@ bool Exporter::write_normals(const std::string& name, const Export_item& export_
 
 	Storage_options options(rendering::Data_format::BC5_UNorm, transparent, normal_map, container_);
 
-	image_writer_.write(name + "_normals", export_item.cached_image->get_float_image_buffer(false), options);
+	image_writer_.write(name + "_normals", export_item.cached_image->float_image_buffer(false), options);
 
 	return true;
 }
@@ -171,7 +171,7 @@ void Exporter::bake_channel(Image_buffer<rendering::Color4>& destination, uint32
 {
 	Select_channel<rendering::Color4> select_channel(channel, static_cast<uint32_t>(source.selection));
 
-	select_channel.filter(destination, source.cached_image->get_float_image_buffer());
+	select_channel.filter(destination, source.cached_image->float_image_buffer());
 
 	if (source.inverted)
 	{
@@ -191,10 +191,10 @@ void Exporter::bake_channel(Image_buffer<rendering::Color4>& destination, uint32
 uint2 Exporter::calculate_common_dimensions(const Cached_image* a, const Cached_image* b,
 											const Cached_image* c/*, const Image_buffer<rendering::Color4c>* d*/)
 {
-	uint2 a_dimensions = a ? a->get_source_image().get_level(0)->get_dimensions() : uint2::identity;
-	uint2 b_dimensions = b ? b->get_source_image().get_level(0)->get_dimensions() : uint2::identity;
-	uint2 c_dimensions = c ? c->get_source_image().get_level(0)->get_dimensions() : uint2::identity;
-//	uint2 d_dimensions = d ? d->get_dimensions() : uint2::identity;
+	uint2 a_dimensions = a ? a->source_image().get_level(0)->dimensions() : uint2::identity;
+	uint2 b_dimensions = b ? b->source_image().get_level(0)->dimensions() : uint2::identity;
+	uint2 c_dimensions = c ? c->source_image().get_level(0)->dimensions() : uint2::identity;
+//	uint2 d_dimensions = d ? d->dimensions() : uint2::identity;
 
 	if (a)
 	{

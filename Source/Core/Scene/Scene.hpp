@@ -32,14 +32,14 @@ public:
 
     void compile();
 
-	std::string get_name() const;
+	std::string name() const;
 	void set_name(const std::string& name);
 
 	void on_tick();
 	void update(float delta);
 
-	const Camera& get_camera() const;
-	Camera& get_camera();
+	const Camera& camera() const;
+	Camera& camera();
 
 	const AABB_tree& get_aabb_tree() const;
 	AABB_tree& get_aabb_tree();
@@ -54,8 +54,8 @@ public:
 
 	const Heap_cache<Irradiance_volume>& get_irradiance_volumes() const;
 
-	const Light_probe* get_surrounding_light_probe() const;
-	Light_probe* get_surrounding_light_probe();
+	const Light_probe* surrounding_light_probe() const;
+	Light_probe* surrounding_light_probe();
 
     const Heap_cache<Light_probe>& get_light_probes() const;
 
@@ -67,12 +67,12 @@ public:
 	Light_probe* create_light_probe();
 	Light_probe* create_light_probe(const float3& position, const float3& scale, const Quaternion& rotation);
 
-	const Surrounding& get_surrounding() const;
-	Surrounding& get_surrounding();
+	const Surrounding& surrounding() const;
+	Surrounding& surrounding();
 
 	Complex* create_complex(const std::string& type, Resource_manager& resource_manager);
 
-	Complex_factory_manager& get_complex_factories();
+	Complex_factory_manager& complex_factories();
 
 private:
 

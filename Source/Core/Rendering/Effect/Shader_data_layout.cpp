@@ -5,7 +5,7 @@
 namespace rendering
 {
 
-const Shader_data_layout::Data_structs& Shader_data_layout::get_descriptions() const
+const Shader_data_layout::Data_structs& Shader_data_layout::descriptions() const
 {
 	return data_structs_;
 }
@@ -40,7 +40,7 @@ std::string Shader_data_layout::generate_constant_buffer_code() const
 
 		for (size_t i = 0; i < constants.elements.size(); ++i)
 		{
-			code << "\t" << Shader_data_type::get_glsl_mapping(constants.elements[i].type) << " " << constants.elements[i].name;
+			code << "\t" << Shader_data_type::glsl_mapping(constants.elements[i].type) << " " << constants.elements[i].name;
 
 			if (constants.elements[i].array_size)
 			{

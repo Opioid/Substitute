@@ -11,11 +11,11 @@ Image<rendering::Color4>* Mip_map_generator::create_mip_mapped_image(const Image
 
 	// Start at mip level 1, as level 0 is the unmodified source buffer that we just initialized the image with
 
-	for (uint32_t i = 1; i < image->get_num_levels(); ++i)
+	for (uint32_t i = 1; i < image->num_levels(); ++i)
 	{
 		Image_buffer<rendering::Color4>* mip = image->get_level(i);
 
-		const uint2& dimensions = mip->get_dimensions();
+		const uint2& dimensions = mip->dimensions();
 
 		float2 texel_size = float2(1.f / float(dimensions.x), 1.f / float(dimensions.y));
 

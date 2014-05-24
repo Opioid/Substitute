@@ -22,28 +22,28 @@ public:
 
 	Rendering_tool();
 
-	bool init(const uint2& size, const uint2& virtual_size, bool windowed, uint32_t sync_interval, const platform::Client& client);
+	bool init(const uint2& dimensions, const uint2& virtual_dimensions, bool windowed, uint32_t sync_interval, const platform::Client& client);
 	void release();
 
-	const uint2& get_size() const;
-	const uint2& get_virtual_size() const;
+	const uint2& dimensions() const;
+	const uint2& virtual_dimensions() const;
 
-	const Rendering_device& get_device() const;
-	Rendering_device& get_device();
+	const Rendering_device& device() const;
+	Rendering_device& device();
 
-	const Viewport& get_viewport() const;
-	const Viewport& get_virtual_viewport() const;
+	const Viewport& viewport() const;
+	const Viewport& virtual_viewport() const;
 
 	void present() const;
 
-	Render_target_cache& get_render_target_cache();
-	Sampler_state_cache& get_sampler_state_cache();
-	Vertex_layout_cache& get_vertex_layout_cache();
-	Render_state_cache&  get_render_state_cache();
+	Render_target_cache& render_target_cache();
+	Sampler_state_cache& sampler_state_cache();
+	Vertex_layout_cache& vertex_layout_cache();
+	Render_state_cache&  render_state_cache();
 
-	const Handle<Framebuffer>& get_default_framebuffer() const;
+	const Handle<Framebuffer>& default_framebuffer() const;
 
-	const Handle<Depth_stencil_shader_resource_view> get_main_depth_stencil() const;
+	const Handle<Depth_stencil_shader_resource_view> main_depth_stencil() const;
 
 	void render_fullscreen_effect();
 
@@ -51,8 +51,8 @@ private:
 
 	bool init_render_buffer();
 
-	uint2 size_;
-	uint2 virtual_size_;
+	uint2 dimensions_;
+	uint2 virtual_dimensions_;
 
 	Swapchain swapchain_;
 

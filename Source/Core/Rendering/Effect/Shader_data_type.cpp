@@ -5,7 +5,7 @@
 namespace rendering
 {
 
-std::string Shader_data_type::get_glsl_mapping(const std::string& type)
+std::string Shader_data_type::glsl_mapping(const std::string& type)
 {
 	static std::map<std::string, std::string> mapping;
 

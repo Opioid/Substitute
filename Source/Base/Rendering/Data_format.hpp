@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>
+#include <cstdint>
 
 namespace rendering
 {
@@ -114,9 +114,11 @@ struct Data_format
 
 	static bool  is_sRGB(Value format);
 
-	static Value get_sRGB(Value format);
+	static Value to_sRGB(Value format);
 
-	static size_t size_of(Value format);
+	static uint32_t num_elements_per_block(Value format);
+
+	static uint32_t num_bytes_per_block(Value format);
 
 	static bool is_compressed(Value format);
 };

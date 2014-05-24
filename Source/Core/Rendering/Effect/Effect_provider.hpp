@@ -55,7 +55,7 @@ private:
 								  const std::vector<std::string>& sources, const std::string& constant_buffer_code, const std::string& sampler_code,
 								  Shader_passthrough_layout& passthrough_layout) const;
 
-	static bool get_shader_source(std::string& source, const std::string& name);
+	static bool load_shader_source(std::string& source, const std::string& name);
 
 	static std::string generate_sampler_code(const std::vector<Effect_sampler::Description>& description);
 	static std::string get_defines_source(const rapidjson::Value& defines);

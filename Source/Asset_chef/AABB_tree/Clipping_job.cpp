@@ -13,7 +13,7 @@ void Clipping_job::clip(std::vector<Triangle>& destination, const std::vector<Tr
 {
 	/*
 	m_splittingPlane = &splittingPlane;
-	m_source = &source;
+	source_ = &source;
 
 	const size_t numWorkers = m_worker_pool.process(this, true);
 
@@ -61,7 +61,7 @@ void Clipping_job::clip(std::vector<Triangle>& destination, const std::vector<Tr
 		{
 			Plane newPlane(result[j].v[0].position, result[j].v[1].position, result[j].v[2].position);
 
-			if (dot(newPlane.get_normal(), oldPlane.get_normal()) > 0.f)
+			if (dot(newPlane.normal(), oldPlane.normal()) > 0.f)
 			{
 				triangles.push_back(result[j]);
 			}

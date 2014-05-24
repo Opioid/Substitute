@@ -33,7 +33,7 @@ public:
 
 private:
 
-	uint32_t get_gl_type() const;
+	uint32_t gl_type() const;
 
 	Type type_;
 
@@ -41,7 +41,7 @@ private:
 
 	uint32_t size_;
 
-	static uint32_t get_gl_type(Type type);
+	static uint32_t gl_type(Type type);
 
 	friend Rendering_device;
 };

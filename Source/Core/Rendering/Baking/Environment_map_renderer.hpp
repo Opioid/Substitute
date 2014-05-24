@@ -40,10 +40,10 @@ public:
 
 	void configure_for_flattened_cube_map_batch(const uint2& face_dimensions);
 
-	const uint2& get_target_dimensions() const;
+	const uint2& target_dimensions() const;
 
-	Handle<Framebuffer>& get_framebuffer();
-	Handle<Cube_render_target_shader_resource_view>& get_color_target();
+	Handle<Framebuffer>& framebuffer();
+	Handle<Cube_render_target_shader_resource_view>& color_target();
 
 	void render(const scene::Scene& scene, const float3& position, const Rendering_context::Rendering_options& options);
 
@@ -51,7 +51,7 @@ public:
 
 	void render(const scene::Scene& scene, const float3& position, uint32_t batch_index);
 
-	Main_scene_renderer& get_scene_renderer() const;
+	Main_scene_renderer& scene_renderer() const;
 
 private:
 

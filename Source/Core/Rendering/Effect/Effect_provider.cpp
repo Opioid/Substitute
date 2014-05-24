@@ -18,7 +18,7 @@
 namespace rendering
 {
 
-Effect_provider::Effect_provider(Rendering_tool& rendering_tool) : Resource_provider("Effect"), shader_compiler_(rendering_tool.get_device()), rendering_tool_(rendering_tool)
+Effect_provider::Effect_provider(Rendering_tool& rendering_tool) : Resource_provider("Effect"), shader_compiler_(rendering_tool.device()), rendering_tool_(rendering_tool)
 {}
 
 bool Effect_provider::load_constant_buffer_classes(const std::string& file_name)
@@ -39,7 +39,7 @@ Handle<Effect> Effect_provider::load(file::Input_stream& stream, Resource_manage
 
 	if (!json::parse(root, stream))
 	{
-		logging::error("Effect_provider::load(): \"" + stream.get_name() + "\" could not be loaded: failed to parse the file: " + json::get_error(root, stream));
+		logging::error("Effect_provider::load(): \"" + stream.name() + "\" could not be loaded: failed to parse the file: " + json::read_error(root, stream));
 
 		return nullptr;
 	}
@@ -86,7 +86,7 @@ Handle<Effect> Effect_provider::load(file::Input_stream& stream, Resource_manage
 		return nullptr;
 	}
 
-	Handle<Effect> effect(new Effect(stream.get_name()));
+	Handle<Effect> effect(new Effect(stream.name()));
 
 	if (!load_techniques(*effect, *techniques_node, constant_buffer_descriptions, sampler_descriptions, data_layout_descriptions))
 	{
@@ -98,7 +98,7 @@ Handle<Effect> Effect_provider::load(file::Input_stream& stream, Resource_manage
 
 	if (!flags.is_set(Options::Use_custom_constant_buffers))
 	{
-		effect->create_default_constant_buffers(rendering_tool_.get_device());
+		effect->create_default_constant_buffers(rendering_tool_.device());
 	}
 
 	return effect;
@@ -146,7 +146,7 @@ bool Effect_provider::load_techniques(Effect& effect, const rapidjson::Value& te
 Effect_technique* Effect_provider::load_technique(const rapidjson::Value& technique_node, const std::string& constant_buffer_code,
 												  const std::string& sampler_code, const Shader_data_layout& data_layout_descriptions) const
 {
-	Effect_technique* technique = new Effect_technique(rendering_tool_.get_device().create_shader_program());
+	Effect_technique* technique = new Effect_technique(rendering_tool_.device().create_shader_program());
 
 	std::string vertex_input_name;
 
@@ -179,7 +179,7 @@ Effect_technique* Effect_provider::load_technique(const rapidjson::Value& techni
 	std::map<std::string, std::string> semantic_mapping;
 
 	// Vertex input layout
-	const auto& descriptions = data_layout_descriptions.get_descriptions();
+	const auto& descriptions = data_layout_descriptions.descriptions();
 	auto vi = descriptions.find(vertex_input_name);
 
 	if (descriptions.end() != vi)
@@ -189,7 +189,7 @@ Effect_technique* Effect_provider::load_technique(const rapidjson::Value& techni
 
 	std::string error_message;
 
-	if (!technique->get_program()->link(shaders, error_message, &semantic_mapping))
+	if (!technique->program()->link(shaders, error_message, &semantic_mapping))
 	{
 		logging::error("Effect_provider::load_technique(): " + error_message);
 		delete technique;
@@ -302,7 +302,7 @@ void Effect_provider::create_constant_buffers(Effect& effect, const Constant_buf
 	for (auto& buffer : constant_buffer_descriptions.descriptions)
 	{
 		uint32_t num_bytes;
-		if (!effect.get_buffer_size(buffer.name, num_bytes))
+		if (!effect.buffer_size(buffer.name, num_bytes))
 		{
 			continue;
 		}
@@ -328,7 +328,7 @@ void Effect_provider::create_samplers(Effect& effect, const std::vector<Effect_s
 	{
 		effect.samplers_[descriptions[i].name] = Effect_sampler(&effect, uint32_t(i));
 
-		effect.sampler_states_[i] = rendering_tool_.get_sampler_state_cache().get_sampler_state(descriptions[i].state_description);
+		effect.sampler_states_[i] = rendering_tool_.sampler_state_cache().get_sampler_state(descriptions[i].state_description);
 	}
 }
 
@@ -414,7 +414,7 @@ bool Effect_provider::load_shaders(std::vector<Handle<Shader>>& shaders, const r
 
 			std::string source_name = source_node.GetString();
 			std::string source;
-			bool result = get_shader_source(source, source_name);
+			bool result = load_shader_source(source, source_name);
 
 			if (!result)
 			{
@@ -436,7 +436,7 @@ bool Effect_provider::load_shaders(std::vector<Handle<Shader>>& shaders, const r
 
 		passthrough_layout.set_input_name(i == 0 ? vertex_input_name : previous_output_name);
 
-		std::string output_name = json::get_string(*s.node, "output", "");
+		std::string output_name = json::read_string(*s.node, "output", "");
 
 		passthrough_layout.set_output_name(output_name);
 
@@ -444,9 +444,9 @@ bool Effect_provider::load_shaders(std::vector<Handle<Shader>>& shaders, const r
 
 		if (Shader::Type::Geometry == s.type)
 		{
-			passthrough_layout.set_input_primitive_topology(json::get_string(*s.node, "input_primitive_topology", ""));
-			passthrough_layout.set_output_primitive_topology(json::get_string(*s.node, "output_primitive_topology", ""));
-			passthrough_layout.set_max_vertex_count(json::get_uint(*s.node, "max_vertex_count", 0));
+			passthrough_layout.set_input_primitive_topology(json::read_string(*s.node, "input_primitive_topology", ""));
+			passthrough_layout.set_output_primitive_topology(json::read_string(*s.node, "output_primitive_topology", ""));
+			passthrough_layout.set_max_vertex_count(json::read_uint(*s.node, "max_vertex_count", 0));
 		}
 
 		const rapidjson::Value::Member* defines_node = s.node->FindMember("defines");
@@ -507,7 +507,7 @@ Handle<Shader> Effect_provider::compile_shader(Shader::Type type, const std::str
 	return shader;
 }
 
-bool Effect_provider::get_shader_source(std::string& source, const std::string& name)
+bool Effect_provider::load_shader_source(std::string& source, const std::string& name)
 {
 	file::Input_stream stream(name);
 
@@ -539,7 +539,7 @@ std::string Effect_provider::generate_sampler_code(const std::vector<Effect_samp
 
 	for (size_t i = 0; i < description.size(); ++i)
 	{
-		code << "layout(binding = " << i << ") uniform " << Effect_sampler::Description::get_glsl_mapping(description[i].type) << " " << description[i].name << ";" << std::endl;
+		code << "layout(binding = " << i << ") uniform " << Effect_sampler::Description::glsl_mapping(description[i].type) << " " << description[i].name << ";" << std::endl;
 	}
 
 	return code.str();

@@ -43,8 +43,8 @@ void Frame::update(const float speed)
 
 void Frame::update(const Gui_input& input)
 {
-	const float2& pos = input.cursor.get_coord();
-	const float2& oldPos = input.cursor.get_previous_coord();
+	const float2& pos = input.cursor.coord();
+	const float2& oldPos = input.cursor.previous_coord();
 
 	float2 apos = get_absolute_position();
 
@@ -194,8 +194,8 @@ void Frame::close()
 
 void Frame::on_set_size()
 {
-	m_minimize_button.set_position(float2(size_.x - (m_minimize_button.get_size().x + m_close_button.get_size().x + 3.f * s_side_boder_width), 4.f));
-	m_close_button.set_position(float2(size_.x - (m_close_button.get_size().x + s_side_boder_width), 4.f));
+	m_minimize_button.set_position(float2(size_.x - (m_minimize_button.dimensions().x + m_close_button.dimensions().x + 3.f * s_side_boder_width), 4.f));
+	m_close_button.set_position(float2(size_.x - (m_close_button.dimensions().x + s_side_boder_width), 4.f));
 }
 
 void Frame::set_state(State state)

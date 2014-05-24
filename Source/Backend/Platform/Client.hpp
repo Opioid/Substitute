@@ -44,38 +44,35 @@ public:
 	Client();
 	~Client();
 
-	bool create(const std::string& title, const uint2& size, Input_sink& input_sink);
+	bool create(const std::string& title, const uint2& dimensions, Input_sink& input_sink);
 
-    SDL_Window* get_handle() const;
+	SDL_Window* handle() const;
 
     void update();
 
-    Message get_message();
+    Message query_message();
 
-	const uint2& get_size() const;
+	const uint2& dimensions() const;
 
     void show_system_cursor(bool show);
 
-	float2 get_relative_cursor_position() const;
+	float2 relative_cursor_position() const;
 
 	void set_title(const std::string& title);
 
 private:
 
+	void on_input_signal(const Input_signal& signal);
+
 	bool valid_;
 
 	SDL_Window* window_;
 
-	uint2 size_;
+	uint2 dimensions_;
 
 	Input_sink* input_sink_;
 
 	std::stack<Message> messages_;
-
-public:
-
-	// Hacky Hack
-	void on_input_signal(const Input_signal& signal);
-	void add_message(Message message);
 };
+
 }

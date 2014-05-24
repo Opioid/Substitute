@@ -6,57 +6,57 @@ namespace scene
 Camera::Camera() : upside_down_(false), rot_mat_(float3x3::identity), rot_(float3::identity), exposure_(1.f), linear_white_(float3(11.2f, 11.2f, 11.2f))
 {}
 
-const float4x4& Camera::get_view() const
+const float4x4& Camera::view() const
 {
 	return view_;
 }
 
-const float4x4& Camera::get_projection() const
+const float4x4& Camera::projection() const
 {
 	return projection_;
 }
 
-const float4x4& Camera::get_view_projection() const
+const float4x4& Camera::view_projection() const
 {
 	return view_projection_;
 }
 
-const Frustum& Camera::get_frustum() const
+const Frustum& Camera::frustum() const
 {
 	return frustum_;
 }
 
-const float3* Camera::get_view_rays_vs() const
+const float3* Camera::view_rays_vs() const
 {
 	return view_rays_vs_;
 }
 
-const float3* Camera::get_view_rays_ws() const
+const float3* Camera::view_rays_ws() const
 {
 	return view_rays_ws_;
 }
 
-const float2& Camera::get_linear_depth_projection() const
+const float2& Camera::linear_depth_projection() const
 {
 	return linear_depth_projection_;
 }
 
-float Camera::get_fov() const
+float Camera::FOV() const
 {
 	return fov_;
 }
 
-float Camera::get_ratio() const
+float Camera::ratio() const
 {
 	return ratio_;
 }
 
-float Camera::get_z_near() const
+float Camera::z_near() const
 {
 	return z_near_;
 }
 
-float Camera::get_z_far() const
+float Camera::z_far() const
 {
 	return z_far_;
 }
@@ -66,7 +66,7 @@ bool Camera::is_upside_down() const
 	return upside_down_;
 }
 
-float Camera::get_greatest_distance_to_near_plane() const
+float Camera::greatest_distance_to_near_plane() const
 {
 	return greatest_distance_to_near_plane_;
 }
@@ -88,7 +88,7 @@ void Camera::update_view()
 	set_local_rotation(Quaternion(rot_mat_));
 	fix_world_transformation();
 
-	set_look_at(view_, get_world_position(), get_world_position() + rot_mat_.z, rot_mat_.y);
+	set_look_at(view_, world_position(), world_position() + rot_mat_.z, rot_mat_.y);
 
 	update_frustum();
 }
@@ -166,20 +166,20 @@ void Camera::set_rot(const float3x3& rot)
 
 void Camera::translate(const float3& v)
 {
-	set_local_position(get_local_position() + v);
+	set_local_position(local_position() + v);
 }
 
 void Camera::calculate_greatest_distance_to_near_plane()
 {
-	const float a = squared_distance(get_world_position(), frustum_.points_[0]);
-	const float b = squared_distance(get_world_position(), frustum_.points_[1]);
-	const float c = squared_distance(get_world_position(), frustum_.points_[2]);
-	const float d = squared_distance(get_world_position(), frustum_.points_[3]);
+	const float a = squared_distance(world_position(), frustum_.points_[0]);
+	const float b = squared_distance(world_position(), frustum_.points_[1]);
+	const float c = squared_distance(world_position(), frustum_.points_[2]);
+	const float d = squared_distance(world_position(), frustum_.points_[3]);
 
 	greatest_distance_to_near_plane_ = sqrt(std::max(a, std::max(b, std::max(c, d))));
 }
 
-float Camera::get_exposure() const
+float Camera::exposure() const
 {
 	return exposure_;
 }
@@ -189,7 +189,7 @@ void Camera::set_exposure(float exposure)
 	exposure_ = exposure;
 }
 
-const float3& Camera::get_linear_white() const
+const float3& Camera::linear_white() const
 {
 	return linear_white_;
 }

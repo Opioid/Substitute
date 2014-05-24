@@ -34,17 +34,17 @@ bool Light_probe::is_faulty() const
 	return 0.f == world_transformation_.m00;
 }
 
-const float3& Light_probe::get_world_position() const
+const float3& Light_probe::world_position() const
 {
 	return world_transformation_.rows[3].xyz;
 }
 
-const float4x4& Light_probe::get_world_transformation() const
+const float4x4& Light_probe::world_transformation() const
 {
 	return world_transformation_;
 }
 
-const Handle<rendering::Shader_resource_view>& Light_probe::get_texture() const
+const Handle<rendering::Shader_resource_view>& Light_probe::texture() const
 {
 	return texture_;
 }
@@ -54,7 +54,7 @@ void Light_probe::set_texture(const Handle<rendering::Shader_resource_view>& tex
 	texture_ = texture;
 }
 
-const Handle<rendering::Shader_resource_view>& Light_probe::get_integrated_brdf()
+const Handle<rendering::Shader_resource_view>& Light_probe::integrated_brdf()
 {
 	return integrated_brdf_;
 }

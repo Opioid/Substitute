@@ -54,7 +54,7 @@ public:
 	Material(const std::string& name);
 	~Material();
 
-	Technique get_technique() const;
+	Technique technique() const;
 
 	uint32_t get_property_mask() const;
 
@@ -64,27 +64,27 @@ public:
 	bool is_two_sided() const;
 	void set_two_sided(bool two_sided);
 
-	const rendering::Color4& get_color_and_emissive_factor() const;
+	const rendering::Color4& color_and_emissive_factor() const;
 
-	const rendering::Color3& get_color() const;
+	const rendering::Color3& color() const;
 	void                     set_color(const rendering::Color3& color);
 
-	float get_emissive_factor() const;
+	float emissive_factor() const;
 	void  set_emissive_factor(float emissive_factor);
 
-	const float2& get_metallic_and_roughness() const;
+	const float2& metallic_and_roughness() const;
 	void          set_metallic_and_roughness(const float2& metallic_and_roughness);
 
-	float get_metallic() const;
+	float metallic() const;
 	void  set_metallic(float metallic);
 
-	float get_roughness() const;
+	float roughness() const;
 	void  set_roughness(float roughness);
 
-	const float2& get_height_scale() const;
+	const float2& height_scale() const;
 	void          set_height_scale(const float2& scale);
 
-	const Handle<rendering::Shader_resource_view>* get_textures() const;
+	const Handle<rendering::Shader_resource_view>* textures() const;
 
 	bool has_texture(Sampler sampler) const;
 

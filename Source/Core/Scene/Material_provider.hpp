@@ -21,9 +21,9 @@ public:
 
 private:
 
-	static Material::Sampler get_sampler(const rapidjson::Value& value);
-	static rendering::Color3 get_color(const rapidjson::Value& color_vaye);
-	static std::string get_file_name(const rapidjson::Value& value);
+	static Material::Sampler read_sampler(const rapidjson::Value& value);
+	static rendering::Color3 read_color(const rapidjson::Value& color_vaye);
+	static std::string read_file_name(const rapidjson::Value& value);
 };
 
 }

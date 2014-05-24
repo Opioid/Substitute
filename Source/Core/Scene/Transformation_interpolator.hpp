@@ -21,9 +21,9 @@ public:
 
 private:
 
-	Entity* m_entity;
+	Entity* entity_;
 
-	Transformation m_transformation;
+	Transformation transformation_;
 };
 
 }

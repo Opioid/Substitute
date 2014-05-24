@@ -280,7 +280,7 @@ void Input_stream::close()
 	}
 }
 
-const std::string& Input_stream::get_name() const
+const std::string& Input_stream::name() const
 {
 		return name_;
 }

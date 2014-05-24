@@ -36,15 +36,15 @@ private:
 
 	static std::string get_glsl_primitive_topology(const std::string& primitive_topology);
 
-	std::string m_input_name;
-	std::string m_output_name;
-	std::string m_input_primitive_topology;
-	std::string m_output_primitive_topology;
-	uint32_t m_max_vertex_count;
+	std::string input_name_;
+	std::string output_name_;
+	std::string input_primitive_topology_;
+	std::string output_primitive_topology_;
+	uint32_t max_vertex_count_;
 
-	uint32_t next__passthrough_index;
+	uint32_t next_passthrough_index_;
 
-	const Shader_data_layout& m_layout;
+	const Shader_data_layout& layout_;
 };
 
 }

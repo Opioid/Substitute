@@ -82,7 +82,7 @@ public:
 
 	void close();
 
-	const std::string& get_name() const;
+	const std::string& name() const;
 
 private:
 

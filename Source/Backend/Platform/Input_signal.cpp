@@ -13,7 +13,7 @@ Input_signal::Input_signal(uint32_t id) : id_(id), is_character_(true), data_(0)
 Input_signal::Input_signal(uint32_t id, int data, bool wait_for_release) : id_(id), is_character_(false), data_(data), wait_for_release_(wait_for_release)
 {}
 
-uint32_t Input_signal::get_id() const
+uint32_t Input_signal::id() const
 {
 	return id_;
 }
@@ -28,7 +28,7 @@ bool Input_signal::is_pressed() const
 	return data_ != 0;
 }
 
-int Input_signal::get_data() const
+int Input_signal::data() const
 {
 	return data_;
 }

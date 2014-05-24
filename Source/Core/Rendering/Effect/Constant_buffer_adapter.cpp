@@ -27,12 +27,12 @@ void Constant_buffer_adapter::set_constant_buffer(const Handle<Constant_buffer>&
 	constant_buffer_ = constant_buffer;
 }
 
-uint32_t Constant_buffer_adapter::get_binding_point() const
+uint32_t Constant_buffer_adapter::binding_point() const
 {
 	return binding_point_;
 }
 
-uint32_t Constant_buffer_adapter::get_num_bytes() const
+uint32_t Constant_buffer_adapter::num_bytes() const
 {
 	return num_bytes_;
 }
@@ -77,7 +77,7 @@ void Constant_buffer_adapter::update(uint32_t num_bytes, const void* data, const
 //	{
 //		uint32_t offset = current_circle_segment_ * circle_segment_size_;
 
-//		glBindBufferRange(GL_UNIFORM_BUFFER, binding_point_, constant_buffer_->get_id(), offset, num_bytes);
+//		glBindBufferRange(GL_UNIFORM_BUFFER, binding_point_, constant_buffer_->id(), offset, num_bytes);
 /*
 		++current_circle_segment_;
 
@@ -95,16 +95,16 @@ void Constant_buffer_adapter::update(uint32_t num_bytes, const void* data, const
 
 		if (discard)
 		{
-			buffer = glMapNamedBufferRangeEXT(constant_buffer_->get_id(), offset, num_bytes, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+			buffer = glMapNamedBufferRangeEXT(constant_buffer_->id(), offset, num_bytes, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 		}
 		else
 		{
-			buffer = glMapNamedBufferRangeEXT(constant_buffer_->get_id(), offset, num_bytes, GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
+			buffer = glMapNamedBufferRangeEXT(constant_buffer_->id(), offset, num_bytes, GL_MAP_WRITE_BIT | GL_MAP_UNSYNCHRONIZED_BIT | GL_MAP_INVALIDATE_RANGE_BIT);
 		}
 
 		memcpy(buffer, data, num_bytes);
 
-		glUnmapNamedBufferEXT(constant_buffer_->get_id());*/
+		glUnmapNamedBufferEXT(constant_buffer_->id());*/
 //	}
 //	else
 	{

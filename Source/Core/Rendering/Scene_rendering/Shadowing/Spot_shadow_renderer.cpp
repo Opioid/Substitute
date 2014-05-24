@@ -18,41 +18,41 @@ Spot_shadow_renderer::Spot_shadow_renderer(Rendering_tool& rendering_tool, Surfa
 
 void Spot_shadow_renderer::render(const scene::Light& light, const Frustum& light_frustum, const scene::Scene& scene, const Rendering_context& context)
 {
-	const auto& camera = context.get_camera();
+	const auto& camera = context.camera();
 
-	Polyhedron shadow_volume = Polyhedron::create_point_shadow_caster_volume(camera.get_frustum(), light.get_world_position());
+	Polyhedron shadow_volume = Polyhedron::create_point_shadow_caster_volume(camera.frustum(), light.world_position());
 
-	AABB shadow_caster_aabb = calculate_shadow_caster_AABB(scene, context.get_options().is_set(Rendering_context::Options::Render_actors), shadow_volume, light_frustum);
+	AABB shadow_caster_aabb = calculate_shadow_caster_AABB(scene, context.options().is_set(Rendering_context::Options::Render_actors), shadow_volume, light_frustum);
 
-	calculate_optimized_light_view_projection(view_data_.shadow_view_projection, view_data_.linear_depth_projection, light, shadow_caster_aabb, camera.get_frustum());
+	calculate_optimized_light_view_projection(view_data_.shadow_view_projection, view_data_.linear_depth_projection, light, shadow_caster_aabb, camera.frustum());
 
 	Frustum shadow_frustum(view_data_.shadow_view_projection);
 
-	surface_collector_.collect_unified(scene, light.get_world_position(), shadow_frustum,
-									   context.get_options().is_set(Rendering_context::Options::Render_actors),
-									   context.get_options().is_set(Rendering_context::Options::Render_static_geometry));
+	surface_collector_.collect_unified(scene, light.world_position(), shadow_frustum,
+									   context.options().is_set(Rendering_context::Options::Render_actors),
+									   context.options().is_set(Rendering_context::Options::Render_static_geometry));
 
 	render_shadow_map(view_data_);
 
-	rendering_tool_.get_device().set_viewports(1, &context.get_viewport());
+	rendering_tool_.device().set_viewports(1, &context.viewport());
 }
 
-const float4x4& Spot_shadow_renderer::get_view_projection() const
+const float4x4& Spot_shadow_renderer::view_projection() const
 {
 	return view_data_.shadow_view_projection;
 }
 
-const float2& Spot_shadow_renderer::get_linear_depth_projection() const
+const float2& Spot_shadow_renderer::linear_depth_projection() const
 {
 	return view_data_.linear_depth_projection;
 }
 
 void Spot_shadow_renderer::calculate_optimized_light_view_projection(float4x4& view_projection, float2& linear_depth_projection, const scene::Light& light, const AABB& shadow_caster_aabb, const Frustum& frustum)
 {
-	const float3 light_direction = light.get_world_direction();
+	const float3 light_direction = light.world_direction();
 
 	// we still need to compute a pos that is just outside the shadow_caster_aabb, but centering on the shadowReceiverAABB center with light dir
-	float center = dot(shadow_caster_aabb.position - light.get_world_position(), light_direction);
+	float center = dot(shadow_caster_aabb.position - light.world_position(), light_direction);
 	float radius = dot(shadow_caster_aabb.halfsize, absolute(light_direction));
 
 	float z_near = center - radius;
@@ -71,7 +71,7 @@ void Spot_shadow_renderer::calculate_optimized_light_view_projection(float4x4& v
 //	// I believe it represents the area that potentially can recieve visible shadows
 //	AABB shadowReceiverAABB(smin, smax);
 
-//	center = dot(shadowReceiverAABB.position - light.get_world_position(), light_direction);
+//	center = dot(shadowReceiverAABB.position - light.world_position(), light_direction);
 //	radius = dot(shadowReceiverAABB.halfsize, absolute(light_direction));
 
 //	float shadowReceiverNear = std::max(center - radius, z_near);
@@ -102,7 +102,7 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 
 		for (auto a : actors)
 		{
-			auto& aabb = a->get_aabb();
+			auto& aabb = a->aabb();
 			if (shadow_volume.intersect(aabb) && light_frustum.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
@@ -118,7 +118,7 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 
 		for (auto p : props)
 		{
-			auto& aabb = p->get_aabb();
+			auto& aabb = p->aabb();
 			if (shadow_volume.intersect(aabb) && light_frustum.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
@@ -132,7 +132,7 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 
 	while (node)
 	{
-		auto& node_AABB = node->get_aabb();
+		auto& node_AABB = node->aabb();
 
 		const Intersection_type::Value intersection_v = shadow_volume.intersect(node_AABB);
 		const Intersection_type::Value intersection_f = light_frustum.intersect(node_AABB);
@@ -156,7 +156,7 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 
 		for (auto p : props)
 		{
-			auto& aabb = p->get_aabb();
+			auto& aabb = p->aabb();
 			if (shadow_volume.intersect(aabb) && light_frustum.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);

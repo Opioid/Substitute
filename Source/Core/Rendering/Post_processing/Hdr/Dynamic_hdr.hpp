@@ -127,7 +127,7 @@ private:
 
 	Handle<Render_target_shader_resource_view> m_luminance;
 
-	const InputLayout* m_layout;
+	const InputLayout* layout_;
 
 	Depth_stencil_state ds_state_;
 

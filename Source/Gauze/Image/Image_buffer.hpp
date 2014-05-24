@@ -27,7 +27,7 @@ public:
 	{
 		resize(dimensions);
 
-		std::fill(data_, data_ + get_num_pixels(), color);
+		std::fill(data_, data_ + num_pixels(), color);
 	}
 
 	Image_buffer(const Image_buffer& source) :
@@ -42,7 +42,7 @@ public:
 
 		data_ = new T[dimensions_.x * dimensions_.y];
 
-		std::copy(source.data_, source.data_ + source.get_num_pixels(), data_);
+		std::copy(source.data_, source.data_ + source.num_pixels(), data_);
 	}
 
 	~Image_buffer()
@@ -63,39 +63,39 @@ public:
 		}
 		else
 		{
-			uint32_t byte_size = uint32_t(rendering::Data_format::size_of(format_));
+			uint32_t byte_size = rendering::Data_format::num_bytes_per_block(format_);
 
 			num_bytes_ = dimensions_.x * dimensions_.y * byte_size;
 			data_      = new T[dimensions_.x * dimensions_.y];
 		}
 	}
 
-	rendering::Data_format::Value get_format() const
+	rendering::Data_format::Value format() const
 	{
 		return format_;
 	}
 
-	const uint2& get_dimensions() const
+	const uint2& dimensions() const
 	{
 		return dimensions_;
 	}
 
-	uint32_t get_num_pixels() const
+	uint32_t num_pixels() const
 	{
 		return dimensions_.x * dimensions_.y;
 	}
 
-	uint32_t get_num_bytes() const
+	uint32_t num_bytes() const
 	{
 		return num_bytes_;
 	}
 
-	const T* get_data() const
+	const T* data() const
 	{
 		return data_;
 	}
 
-	T* get_data()
+	T* data()
 	{
 		return data_;
 	}
@@ -127,9 +127,8 @@ public:
 
 	void clear_channel(uint32_t channel, float value)
 	{
-		const uint32_t num_pixels = get_num_pixels();
-
-		for (uint32_t i = 0; i < num_pixels; ++i)
+		const uint32_t count = num_pixels();
+		for (uint32_t i = 0; i < count; ++i)
 		{
 			data_[i].v[channel] = value;
 		}

@@ -4,16 +4,16 @@
 namespace fi
 {
 
-std::string error_message;
+std::string error_message_;
 
 void error_handler(FREE_IMAGE_FORMAT /*fif*/, const char* message)
 {
-	error_message = message;
+	error_message_ = message;
 }
 
-const std::string& get_error_message()
+const std::string& error_message()
 {
-	return error_message;
+	return error_message_;
 }
 
 unsigned int read(void* buffer, unsigned int size, unsigned int count, fi_handle handle)

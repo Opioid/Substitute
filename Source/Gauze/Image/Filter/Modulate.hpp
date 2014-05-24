@@ -15,17 +15,17 @@ public:
 
 	bool filter(Image_buffer<rendering::Color4c>& destination, const Image_buffer<rendering::Color4c>& source) const
 	{
-		if (destination.get_format() != source.get_format()
-		||  destination.get_dimensions() != source.get_dimensions())
+		if (destination.format() != source.format()
+		||  destination.dimensions() != source.dimensions())
 		{
 			return false;
 		}
 
 //		const __m128 m4x255f = _mm_set_ps1(255.f);
 
-		for (uint32_t y = 0; y < source.get_dimensions().y; ++y)
+		for (uint32_t y = 0; y < source.dimensions().y; ++y)
 		{
-			for (uint32_t x = 0; x < source.get_dimensions().x; ++x)
+			for (uint32_t x = 0; x < source.dimensions().x; ++x)
 			{
 				const rendering::Color4c& source_color = source.get(uint2(x, y));
 /*
@@ -57,15 +57,15 @@ public:
 
 	bool filter(Image_buffer<rendering::Color4>& destination, const Image_buffer<rendering::Color4>& source) const
 	{
-		if (destination.get_format() != source.get_format()
-		||  destination.get_dimensions() != source.get_dimensions())
+		if (destination.format() != source.format()
+		||  destination.dimensions() != source.dimensions())
 		{
 			return false;
 		}
 
-		for (uint32_t y = 0; y < source.get_dimensions().y; ++y)
+		for (uint32_t y = 0; y < source.dimensions().y; ++y)
 		{
-			for (uint32_t x = 0; x < source.get_dimensions().x; ++x)
+			for (uint32_t x = 0; x < source.dimensions().x; ++x)
 			{
 				const rendering::Color4& source_color = source.get(uint2(x, y));
 
@@ -93,15 +93,15 @@ public:
 
 	bool filter(Image_buffer<rendering::Color4>& destination, const Image_buffer<rendering::Color4>& source) const
 	{
-		if (destination.get_format() != source.get_format()
-		||  destination.get_dimensions() != source.get_dimensions())
+		if (destination.format() != source.format()
+		||  destination.dimensions() != source.dimensions())
 		{
 			return false;
 		}
 
-		for (uint32_t y = 0; y < source.get_dimensions().y; ++y)
+		for (uint32_t y = 0; y < source.dimensions().y; ++y)
 		{
-			for (uint32_t x = 0; x < source.get_dimensions().x; ++x)
+			for (uint32_t x = 0; x < source.dimensions().x; ++x)
 			{
 				const rendering::Color4& source_color = source.get(uint2(x, y));
 

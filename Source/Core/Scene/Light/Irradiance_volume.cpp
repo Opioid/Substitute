@@ -51,12 +51,12 @@ uint32_t Irradiance_volume::get_num_probes() const
 	return resolution_.x * resolution_.y * resolution_.z;
 }
 
-const float3& Irradiance_volume::get_world_position() const
+const float3& Irradiance_volume::world_position() const
 {
 	return world_transformation_.rows[3].xyz;
 }
 
-const float4x4& Irradiance_volume::get_world_transformation() const
+const float4x4& Irradiance_volume::world_transformation() const
 {
 	return world_transformation_;
 }
@@ -85,7 +85,7 @@ float3 Irradiance_volume::get_probe_position(uint32_t index) const
 	return (origin + offset) * world_transformation_;
 }
 
-const Handle<rendering::Shader_resource_view>* Irradiance_volume::get_textures() const
+const Handle<rendering::Shader_resource_view>* Irradiance_volume::textures() const
 {
 	return textures_;
 }

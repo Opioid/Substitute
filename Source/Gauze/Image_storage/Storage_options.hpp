@@ -17,7 +17,7 @@ public:
 
 	Storage_options(rendering::Data_format::Value format, bool alpha, bool normal_map, Container container);
 
-	rendering::Data_format::Value get_format() const;
+	rendering::Data_format::Value format() const;
 
 	bool has_alpha() const;
 

@@ -13,7 +13,7 @@ namespace scripting
 
 	bool init_print(Script_tool& tool)
 	{
-		Script_engine const& engine = tool.get_engine();
+		Script_engine const& engine = tool.engine();
 
 		engine.register_function("void print(bool)", asFUNCTIONPR(print, (bool), void));
 		engine.register_function("void print(int)", asFUNCTIONPR(print, (int), void));

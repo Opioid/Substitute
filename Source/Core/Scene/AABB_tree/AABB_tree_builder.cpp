@@ -102,11 +102,11 @@ void AABB_tree_builder::split(Temp_aabb_node* node, std::vector<Static_prop*>& p
 
 	for (size_t i = 0; i < props.size(); ++i)
 	{
-		if (aabb0.intersect(props[i]->get_aabb()) == Intersection_type::Inside)
+		if (aabb0.intersect(props[i]->aabb()) == Intersection_type::Inside)
 		{
             props0.push_back(props[i]);
 		}
-		else if (aabb1.intersect(props[i]->get_aabb()) == Intersection_type::Inside)
+		else if (aabb1.intersect(props[i]->aabb()) == Intersection_type::Inside)
 		{
             props1.push_back(props[i]);
 		}
@@ -132,8 +132,8 @@ AABB AABB_tree_builder::calculate_AABB(const std::vector<Static_prop*>& props)
 
 	for (size_t i = 0; i < props.size(); ++i)
 	{
-		float3 tmin = props[i]->get_aabb().get_min();
-		float3 tmax = props[i]->get_aabb().get_max();
+		float3 tmin = props[i]->aabb().get_min();
+		float3 tmax = props[i]->aabb().get_max();
 
 		min = math::min(min, tmin);
 		max = math::max(max, tmax);

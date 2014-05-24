@@ -22,7 +22,7 @@ std::shared_ptr<Texture_data_adapter> load_DDS_texture_2D(file::Input_stream& st
 
 	if (!treat_as_linear)
 	{
-		description.format = Data_format::get_sRGB(description.format);
+		description.format = Data_format::to_sRGB(description.format);
 	}
 
 	description.dimensions.x = texture.dimensions().x;
@@ -48,7 +48,7 @@ std::shared_ptr<Texture_data_adapter> load_DDS_texture_cube(file::Input_stream& 
 
 	if (!treat_as_linear)
 	{
-		description.format = Data_format::get_sRGB(description.format);
+		description.format = Data_format::to_sRGB(description.format);
 	}
 
 	description.dimensions.x = texture.dimensions().x;

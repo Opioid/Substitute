@@ -17,7 +17,7 @@ public:
     /// Output data. Compressed data is output as soon as it's generated to minimize memory allocations.
 	virtual bool writeData(const void* data, int size);
 
-	const uint2& get_dimensions() const;
+	const uint2& dimensions() const;
 
 private:
 

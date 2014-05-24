@@ -39,15 +39,15 @@ bool Scene_loader::load(const std::string& name)
 
 	if (!json::parse(root, stream))
 	{
-		logging::error("Scene_loader::load(): \"" + name + "\" could not be loaded: failed to parse the file: " + json::get_error(root, stream));
+		logging::error("Scene_loader::load(): \"" + name + "\" could not be loaded: failed to parse the file: " + json::read_error(root, stream));
 
 		return false;
 	}
 
-	auto& file_system = resource_manager_.get_virtual_file_system();
+	auto& file_system = resource_manager_.virtual_file_system();
 
 	std::string resolved_path;
-	file_system.get_resolved_complete_path(resolved_path, name);
+	file_system.query_resolved_complete_path(resolved_path, name);
 	file_system.push_mount(resolved_path);
 
 	for (auto n = root.MemberBegin(); n != root.MemberEnd(); ++n)
@@ -96,7 +96,7 @@ bool Scene_loader::load(const std::string& name)
 
 void Scene_loader::load_camera(const rapidjson::Value& camera_value)
 {
-	auto& camera = scene_.get_camera();
+	auto& camera = scene_.camera();
 
 	for (auto n = camera_value.MemberBegin(); n != camera_value.MemberEnd(); ++n)
 	{ 
@@ -105,7 +105,7 @@ void Scene_loader::load_camera(const rapidjson::Value& camera_value)
 
 		if ("position" == node_name)
 		{
-			camera.set_local_position(json::get_float3(node_value));
+			camera.set_local_position(json::read_float3(node_value));
 		}
 		else if ("exposure" == node_name)
 		{
@@ -128,14 +128,14 @@ void Scene_loader::load_surrounding(const rapidjson::Value& surrounding)
 
 		if (node_name == "color")
 		{
-			scene_.get_surrounding().set_color(json::get_float3(node_value));
+			scene_.surrounding().set_color(json::read_float3(node_value));
 		}
 		else if (node_name == "texture")
 		{
 			Flags flags;
 			flags.set(rendering::Texture_provider::Options::Texture_Cube, true);
 
-			scene_.get_surrounding().set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString(), flags));
+			scene_.surrounding().set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString(), flags));
 		}
 	}
 }
@@ -184,15 +184,15 @@ void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* /*par
 
 				if (property_name == "position")
 				{
-					entity->set_local_position(json::get_float3(property_value));
+					entity->set_local_position(json::read_float3(property_value));
 				}
 				else if (property_name == "scale")
 				{
-					entity->set_local_scale(json::get_float3(property_value));
+					entity->set_local_scale(json::read_float3(property_value));
 				}
 				else if (property_name== "rotation")
 				{
-					entity->set_local_rotation(json::get_local_rotation(property_value));
+					entity->set_local_rotation(json::read_local_rotation(property_value));
 				}				
 			}
 
@@ -241,7 +241,7 @@ Entity* Scene_loader::load_light(const rapidjson::Value& entity)
 
 			if (node_name == "color")
 			{
-				light->set_color(json::get_float3(node_value));
+				light->set_color(json::read_float3(node_value));
 			}
 			if (node_name == "lumen")
 			{
@@ -353,19 +353,19 @@ void Scene_loader::load_irradiance_volume(const rapidjson::Value& volume)
 
 		if (node_name == "resolution")
 		{
-			resolution = json::get_uint3(node_value);
+			resolution = json::read_uint3(node_value);
 		}
 		else if (node_name == "position")
 		{
-			position = json::get_float3(node_value);
+			position = json::read_float3(node_value);
 		}
 		else if (node_name == "scale")
 		{
-			scale = json::get_float3(node_value);
+			scale = json::read_float3(node_value);
 		}
 		else if (node_name == "rotation")
 		{
-			rotation = json::get_local_rotation(node_value);
+			rotation = json::read_local_rotation(node_value);
 		}
 	}
 
@@ -398,15 +398,15 @@ void Scene_loader::load_light_probe(const rapidjson::Value& probe)
 
 		if (node_name == "position")
 		{
-			position = json::get_float3(node_value);
+			position = json::read_float3(node_value);
 		}
 		else if (node_name == "scale")
 		{
-			scale = json::get_float3(node_value);
+			scale = json::read_float3(node_value);
 		}
 		else if (node_name == "rotation")
 		{
-			rotation = json::get_local_rotation(node_value);
+			rotation = json::read_local_rotation(node_value);
 		}
 	}
 
@@ -460,15 +460,15 @@ void Scene_loader::load_static_prop(const rapidjson::Value& static_prop)
 		}
 		else if (node_name == "position")
 		{
-			position = json::get_float3(node_value);
+			position = json::read_float3(node_value);
 		}
 		else if (node_name == "scale")
 		{
-			scale = json::get_float3(node_value);
+			scale = json::read_float3(node_value);
 		}
 		else if (node_name == "rotation")
 		{
-			rotation = json::get_local_rotation(node_value);
+			rotation = json::read_local_rotation(node_value);
 		}
 	}
 

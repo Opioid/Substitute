@@ -30,20 +30,20 @@ public:
 
 	const Group* get_groups() const;
 
-	const rendering::Vertex_layout_description* get_vertex_layout_description() const;
+	const rendering::Vertex_layout_description* vertex_layout_description() const;
 
-	const Handle<rendering::Vertex_buffer>* get_vertex_buffers() const;
+	const Handle<rendering::Vertex_buffer>* vertex_buffers() const;
 
-	const Handle<rendering::Index_buffer>& get_index_buffer() const;
+	const Handle<rendering::Index_buffer>& index_buffer() const;
 
-	uint32_t get_num_indices() const;
+	uint32_t num_indices() const;
 
-	inline const AABB& get_aabb() const
+	inline const AABB& aabb() const
 	{
 		return aabb_;
 	}
 
-	size_t get_num_bytes() const;
+	size_t num_bytes() const;
 
 private:
 

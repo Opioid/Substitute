@@ -16,7 +16,7 @@ bool save_DDS(const std::string& file_name, const Texture_data_adapter& adapter)
 		return false;
 	}
 
-	const Texture_description& description = adapter.get_description();
+	const Texture_description& description = adapter.description();
 
 	gli::format format;
 

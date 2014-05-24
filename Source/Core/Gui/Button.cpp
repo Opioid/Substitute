@@ -12,7 +12,7 @@ Button::Button() : m_hovered_over(false)
 
 void Button::update(const Gui_input& input)
 {
-	const float2& pos = input.cursor.get_coord();
+	const float2& pos = input.cursor.coord();
 
 	float2 apos = get_absolute_position();
 

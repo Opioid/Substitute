@@ -25,12 +25,12 @@ Thumbnail_provider::~Thumbnail_provider()
 	}
 }
 
-const uint2& Thumbnail_provider::get_thumbnail_dimensions()
+const uint2& Thumbnail_provider::thumbnail_dimensions()
 {
 	return thumbnail_dimensions_;
 }
 
-const Image_buffer<rendering::Color4c>& Thumbnail_provider::get_checkerboard() const
+const Image_buffer<rendering::Color4c>& Thumbnail_provider::checkerboard() const
 {
 	return checkerboard_;
 }
@@ -51,14 +51,14 @@ Image_buffer<rendering::Color4>* Thumbnail_provider::get_thumbnail(const std::st
 		return nullptr;
 	}
 
-	Image_buffer<rendering::Color4>* thumbnail = create_thumbnail(cached_image->get_source_image());
+	Image_buffer<rendering::Color4>* thumbnail = create_thumbnail(cached_image->source_image());
 
 	thumbnails_[file_name] = thumbnail;
 
 	return thumbnail;
 }
 
-Image_buffer<rendering::Color4>& Thumbnail_provider::get_scratch_buffer()
+Image_buffer<rendering::Color4>& Thumbnail_provider::scratch_buffer()
 {
 	return scratch_buffer_;
 }
@@ -66,7 +66,7 @@ Image_buffer<rendering::Color4>& Thumbnail_provider::get_scratch_buffer()
 Image_buffer<rendering::Color4>* Thumbnail_provider::create_thumbnail(const Image<rendering::Color4c>& image)
 {
 	const Image_buffer<rendering::Color4c>* source = image.get_level(0);
-	const uint2& dimensions = source->get_dimensions();
+	const uint2& dimensions = source->dimensions();
 
 	if (dimensions.x <= thumbnail_dimensions_.x && dimensions.y <= thumbnail_dimensions_.y)
 	{
@@ -82,7 +82,7 @@ Image_buffer<rendering::Color4>* Thumbnail_provider::create_thumbnail(const Imag
 		nvtt::InputOptions input_options;
 
 		input_options.setTextureLayout(nvtt::TextureType_2D, dimensions.x, dimensions.y);
-		input_options.setMipmapData(source->get_data(), dimensions.x, dimensions.y);
+		input_options.setMipmapData(source->data(), dimensions.x, dimensions.y);
 		input_options.setMaxExtents(thumbnail_dimensions_.x);
 		input_options.setMipmapGeneration(false);
 
@@ -97,7 +97,7 @@ Image_buffer<rendering::Color4>* Thumbnail_provider::create_thumbnail(const Imag
 		compression_options.setFormat(nvtt::Format_RGBA);
 		compressor.process(input_options, compression_options, output_options);
 
-		Image_buffer<rendering::Color4>* thumbnail = new Image_buffer<rendering::Color4>(rendering::Data_format::R32G32B32A32_Float, output_handler.get_dimensions());
+		Image_buffer<rendering::Color4>* thumbnail = new Image_buffer<rendering::Color4>(rendering::Data_format::R32G32B32A32_Float, output_handler.dimensions());
 
 		RGBA_to_float to_float(true);
 		to_float.filter(*thumbnail, scratch_buffer_8bit);
@@ -111,7 +111,7 @@ void Thumbnail_provider::init_checkerboard()
     const rendering::Color4c light_color(153, 153, 153, 255);
     const rendering::Color4c dark_color (102, 102, 102, 255);
 
-    rendering::Color4c* checkerboard_buffer = checkerboard_.get_data();
+    rendering::Color4c* checkerboard_buffer = checkerboard_.data();
 
 	bool toggle = true;
 

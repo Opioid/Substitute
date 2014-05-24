@@ -34,7 +34,7 @@ bool Gui::init(Resource_manager& resource_manager, rendering::Printer& printer)
 
 	printer.set_font("Consola", 18);
 
-	m_console.get_message_viewer().set_line_height(printer.get_line_height());
+	m_console.query_message_viewer().set_line_height(printer.line_height());
 
 	return true;
 }

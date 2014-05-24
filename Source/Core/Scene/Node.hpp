@@ -16,27 +16,27 @@ public:
 
 	Node();
 
-	const float3& get_local_position() const;
+	const float3& local_position() const;
 	void set_local_position(const float3& position);
 
-	const float3& get_local_scale() const;
+	const float3& local_scale() const;
 	void set_local_scale(const float3& scale);
 
-	const Quaternion& get_local_rotation() const;
+	const Quaternion& local_rotation() const;
 	void set_local_rotation(const Quaternion& rotation);
 
-	const Transformation& get_local_transformation() const;
+	const Transformation& local_transformation() const;
 
-	float3 get_world_position() const;
-	float3 get_world_scale() const;
+	float3 world_position() const;
+	float3 world_scale() const;
 
-	float3 get_world_direction() const;
-	float3 get_world_right() const;
-	float3 get_world_up() const;
+	float3 world_direction() const;
+	float3 world_right() const;
+	float3 world_up() const;
 
-	float3x3 get_world_rotation() const;
+	float3x3 world_rotation() const;
 
-	const float4x4& get_world_transformation() const;
+	const float4x4& world_transformation() const;
 	void set_world_transformation(const float3& position, const float3& scale, const float3x3& rotation);
 	void fix_world_transformation();
 
@@ -46,7 +46,7 @@ public:
 	void attach(Node* node);
 	void detach();
 
-	const Node* get_parent() const;
+	const Node* parent() const;
 
 protected:
 

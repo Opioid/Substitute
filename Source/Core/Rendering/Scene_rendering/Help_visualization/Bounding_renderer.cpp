@@ -35,7 +35,7 @@ bool Bounding_renderer::init(Resource_manager& resource_manager, Constant_buffer
 		return false;
 	}
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position3x32::vertex_layout_description(), effect_->get_technique(0)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position3x32::vertex_layout_description(), effect_->technique(0)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
@@ -56,7 +56,7 @@ bool Bounding_renderer::init(Resource_manager& resource_manager, Constant_buffer
 		return false;
 	}
 
-	vertex_buffer_ = rendering_tool_.get_device().create_vertex_buffer(sizeof(float3) * 256);
+	vertex_buffer_ = rendering_tool_.device().create_vertex_buffer(sizeof(float3) * 256);
 	if (!vertex_buffer_)
 	{
 		return false;
@@ -72,7 +72,7 @@ bool Bounding_renderer::on_resize_targets(const uint2& /*size*/, const Handle<De
 
 void Bounding_renderer::render(const scene::Scene& scene, const Rendering_context& context)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.set_primitive_topology(Primitive_topology::Line_list);
 
@@ -82,34 +82,34 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 	device.set_input_layout(input_layout_);
 	device.set_vertex_buffer(vertex_buffer_, sizeof(float3));
 
-	const auto& camera = context.get_camera();
+	const auto& camera = context.camera();
 
 	effect_->use(device);
 
-	change_per_camera_.get_data().view_projection = camera.get_view_projection();
+	change_per_camera_.data().view_projection = camera.view_projection();
 	change_per_camera_.update(device);
 
-	change_per_object_.get_data().world = float4x4::identity;
+	change_per_object_.data().world = float4x4::identity;
 	change_per_object_.update(device);
 
-	const Frustum& frustum = camera.get_frustum();
+	const Frustum& frustum = camera.frustum();
 
 	render(scene.get_aabb_tree(), frustum);
 
-	change_per_color_.get_data().color = color3::red;
+	change_per_color_.data().color = color3::red;
 	change_per_color_.update(device);
 
 	auto& actors = scene.get_actors();
 
 	for (auto a : actors)
 	{
-		if (frustum.intersect(a->get_aabb()))
+		if (frustum.intersect(a->aabb()))
 		{
-			render(a->get_aabb());
+			render(a->aabb());
 		}
 	}
 
-	change_per_color_.get_data().color = color3::yellow;
+	change_per_color_.data().color = color3::yellow;
 	change_per_color_.update(device);
 
 	auto& lights = scene.get_lights();
@@ -126,7 +126,7 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 		if (scene::Light::Type::Point == light.get_type())
 		{
 			float radius = l->get_point_energy_and_range().w;
-			Sphere sphere(l->get_world_position(), radius);
+			Sphere sphere(l->world_position(), radius);
 
 			if (frustum.intersect(sphere))
 			{
@@ -137,7 +137,7 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 		{
 			Frustum frustum(light.calculate_view_projection());
 
-			if (camera.get_frustum().intersect(frustum))
+			if (camera.frustum().intersect(frustum))
 			{
 				render(frustum);
 			}
@@ -147,19 +147,19 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 
 void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frustum)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	{
-		change_per_color_.get_data().color = color3::red;
+		change_per_color_.data().color = color3::red;
 		change_per_color_.update(device);
 
 		auto& props = tree.get_static_props();
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->get_aabb()))
+			if (frustum.intersect(p->aabb()))
 			{
-				render(p->get_aabb());
+				render(p->aabb());
 			}
 		}
 	}
@@ -168,31 +168,31 @@ void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frus
 
 	while (node)
 	{
-		if (!frustum.intersect(node->get_aabb()))
+		if (!frustum.intersect(node->aabb()))
 		{
 			node = node->get_skip_node();
 			continue;
 		}
 
-		change_per_color_.get_data().color = color3::red;
+		change_per_color_.data().color = color3::red;
 		change_per_color_.update(device);
 
 		auto& props = node->get_static_props();
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->get_aabb()))
+			if (frustum.intersect(p->aabb()))
 			{
-				render(p->get_aabb());
+				render(p->aabb());
 			}
 		}
 
 		if (!node->has_children())
 		{
-			change_per_color_.get_data().color = color3::blue;
+			change_per_color_.data().color = color3::blue;
 			change_per_color_.update(device);
 
-			render(node->get_aabb());
+			render(node->aabb());
 
 			node = node->get_skip_node();
 		}
@@ -240,11 +240,11 @@ void Bounding_renderer::render(const AABB& aabb)
 	vertices_[22] = float3(max.x, max.y, min.z);
 	vertices_[23] = max;
 
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.update_buffer(*vertex_buffer_, 0, 24 * sizeof(float3), vertices_);
 
-	effect_->get_technique(0)->use();
+	effect_->technique(0)->use();
 	device.draw(24);
 }
 
@@ -274,11 +274,11 @@ void Bounding_renderer::render(const Sphere& sphere)
 		vertices_[i*2+1 + maxi*4] = sphere.position + sphere.radius * tmp;
 	}
 
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.update_buffer(*vertex_buffer_, 0, 252 * sizeof(float3), vertices_);
 
-	effect_->get_technique(0)->use();
+	effect_->technique(0)->use();
 	device.draw(252);
 }
 
@@ -325,11 +325,11 @@ void Bounding_renderer::render(const Frustum& frustum)
 	vertices_[22] = p124;
 	vertices_[23] = p125;
 
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
 	device.update_buffer(*vertex_buffer_, 0, 24 * sizeof(float3), vertices_);
 
-	effect_->get_technique(0)->use();
+	effect_->technique(0)->use();
 	device.draw(24);
 }
 
@@ -340,7 +340,7 @@ bool Bounding_renderer::create_render_states()
 	ds_description.depth_write_mask = false;
 	ds_description.comparison_func = Depth_stencil_state::Description::Comparison::Less;
 
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -351,7 +351,7 @@ bool Bounding_renderer::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;

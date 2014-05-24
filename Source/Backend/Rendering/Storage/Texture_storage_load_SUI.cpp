@@ -38,7 +38,7 @@ std::shared_ptr<Texture_data_adapter> load_SUI_texture(file::Input_stream& strea
 
 	std::shared_ptr<Texture_data_adapter> adapter = std::make_shared<Generic_texture_data_adapter>(description);
 
-	const uint32_t num_images = adapter->get_num_images();
+	const uint32_t num_images = adapter->num_images();
 	for (uint32_t i = 0; i < num_images; ++i)
 	{
 		Texture_description::Data data;

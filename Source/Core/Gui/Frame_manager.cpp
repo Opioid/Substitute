@@ -42,7 +42,7 @@ void Frame_manager::update(const float /*speed*/)
 
 void Frame_manager::update(const Gui_input& input)
 {
-	const float2& pos = input.cursor.get_coord();
+	const float2& pos = input.cursor.coord();
 
 	m_hovering_over = nullptr;
 	std::list<Frame*>::const_iterator h;
@@ -95,8 +95,8 @@ void Frame_manager::update(const Gui_input& input)
 
 				float2 apos = frame->get_absolute_position();
 
-				if (pos.x >= apos.x && pos.x <= apos.x + frame->get_size().x
-				&&  pos.y >= apos.y && pos.y <= apos.y + frame->get_size().y)
+				if (pos.x >= apos.x && pos.x <= apos.x + frame->dimensions().x
+				&&  pos.y >= apos.y && pos.y <= apos.y + frame->dimensions().y)
 				{
 					if (get_selected_frame() == frame)
 					{
@@ -163,7 +163,7 @@ void Frame_manager::render(rendering::Printer& printer)
 	printer.set_texture(nullptr);
 	printer.set_color(rendering::Color4(0.005f, 0.005f, 0.0075f, 1.f));
 
-	const float2 screen_size = printer.get_screen_size();
+	const float2 screen_size = printer.screen_dimensions();
 
 	float2 pos(0, screen_size.y - s_task_bar_height);
 

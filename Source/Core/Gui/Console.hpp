@@ -22,7 +22,7 @@ public:
 
 	Console(logging::Message_server &server, scripting::Script_tool& script_tool);
 
-	Message_viewer& get_message_viewer();
+	Message_viewer& query_message_viewer();
 
 	void on_input_line_accept(Component *source);
 

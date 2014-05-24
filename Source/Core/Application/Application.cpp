@@ -35,7 +35,7 @@ bool Application::run(const std::string& name, const uint2& size, bool windowed)
 	{
         client_.update();
 
-		const platform::Message message = client_.get_message();
+		const platform::Message message = client_.query_message();
 
 		if (platform::Message::Quit == message)
 		{
@@ -45,7 +45,7 @@ bool Application::run(const std::string& name, const uint2& size, bool windowed)
 		{
 			update();
 
-			accumulator += fps_counter_.get_frame_time();
+			accumulator += fps_counter_.frame_time();
 
 			while (accumulator >= simulation_frequency_)
 			{
@@ -82,52 +82,52 @@ void Application::request_close()
 	request_close_ = true;
 }
 
-platform::Client& Application::get_client()
+platform::Client& Application::client()
 {
 	return client_;
 }
 
-const std::string& Application::get_name() const
+const std::string& Application::name() const
 {
 	return name_;
 }
 
-const timing::Fps_counter& Application::get_fps_counter() const
+const timing::Fps_counter& Application::fps_counter() const
 {
 	return fps_counter_;
 }
 
-scripting::Script_tool& Application::get_script_tool()
+scripting::Script_tool& Application::script_tool()
 {
 	return script_tool_;
 }
 
-Control_mappings_interface& Application::get_control_mappings()
+Control_mappings_interface& Application::control_mappings()
 {
-	return controls_.get_mappings();
+	return controls_.mappings();
 }
 
-Resource_manager& Application::get_resource_manager()
+Resource_manager& Application::resource_manager()
 {
 	return resource_manager_;
 }
 
-rendering::Rendering_tool& Application::get_rendering_tool()
+rendering::Rendering_tool& Application::rendering_tool()
 {
 	return rendering_tool_;
 }
 
-rendering::Renderer& Application::get_renderer()
+rendering::Renderer& Application::renderer()
 {
 	return renderer_;
 }
 
-rendering::Printer& Application::get_printer()
+rendering::Printer& Application::printer()
 {
 	return printer_;
 }
 
-Application::Mode Application::get_mode() const
+Application::Mode Application::mode() const
 {
 	return mode_;
 }
@@ -151,12 +151,12 @@ bool Application::toggle_gui()
     return gui_active;
 }
 
-const scene::Scene& Application::get_scene() const
+const scene::Scene& Application::scene() const
 {
 	return scene_;
 }
 
-scene::Scene& Application::get_scene()
+scene::Scene& Application::scene()
 {
 	return scene_;
 }
@@ -173,7 +173,7 @@ bool Application::load_scene(const std::string& name)
 
     if (result)
     {
-		renderer_.get_light_baker()->bake(scene_, resource_manager_);
+		renderer_.light_baker()->bake(scene_, resource_manager_);
     }
 
 	resource_manager_.cleanup();
@@ -181,7 +181,7 @@ bool Application::load_scene(const std::string& name)
 	return result;
 }
 
-const scene::Editor& Application::get_editor() const
+const scene::Editor& Application::editor() const
 {
 	return editor_;
 }
@@ -229,11 +229,11 @@ void Application::on_render()
 void Application::on_render_gui(rendering::Printer& /*printer*/)
 {}
 
-bool Application::init(const std::string& name, const uint2& size, bool windowed)
+bool Application::init(const std::string& name, const uint2& dimensions, bool windowed)
 {
 	name_ = name;
 
-	if (!resource_manager_.get_virtual_file_system().is_valid())
+	if (!resource_manager_.virtual_file_system().is_valid())
 	{
 		return false;
 	}
@@ -255,22 +255,22 @@ bool Application::init(const std::string& name, const uint2& size, bool windowed
 
 	if (!scripting::load_console_script("../Config.txt"))
 	{
-		configuration::client_size = size;
+		configuration::client_dimensions = dimensions;
 		configuration::client_windowed = windowed;
-		configuration::virtual_size = size;
+		configuration::virtual_dimensions = dimensions;
 	}
 
-	if (!client_.create(name, configuration::client_size, *this))
+	if (!client_.create(name, configuration::client_dimensions, *this))
 	{
 		return false;
 	}
 
-    if (!rendering_tool_.init(configuration::client_size, configuration::virtual_size, configuration::client_windowed, configuration::v_sync, client_))
+	if (!rendering_tool_.init(configuration::client_dimensions, configuration::virtual_dimensions, configuration::client_windowed, configuration::v_sync, client_))
 	{
 		return false;
 	}
 
-	resource_manager_.get_virtual_file_system().mount("../..");
+	resource_manager_.virtual_file_system().mount("../..");
 
 	resource_manager_.register_resource_provider<rendering::Shader_resource_view>(&texture_provider_);
 
@@ -321,28 +321,28 @@ void Application::update()
 {
 	fps_counter_.update();
 
-	float frame_time = float(fps_counter_.get_frame_time());
+	float frame_time = static_cast<float>(fps_counter_.frame_time());
 
 	controls_.update(frame_time);
 
-	cursor_.update(client_.get_relative_cursor_position());
+	cursor_.update(client_.relative_cursor_position());
 
     if (gui_.is_active())
 	{
 		gui_.update(frame_time);
 
-		gui_.update(gui::Gui_input(controls_.get_keyboard_state(), controls_.get_mouse_state(), controls_.get_signal_stream(), cursor_, float2(rendering_tool_.get_size())));
+		gui_.update(gui::Gui_input(controls_.keyboard_state(), controls_.mouse_state(), controls_.signal_stream(), cursor_, float2(rendering_tool_.dimensions())));
 	}
 
 	if (Mode::Edit == mode_)
 	{
-		Ray3 ray = cursor_.get_ray(scene_.get_camera(), rendering_tool_.get_size());
-		editor_.update(scene_, ray, scene_.get_camera(), controls_.get_mouse_state());
+		Ray3 ray = cursor_.get_ray(scene_.camera(), rendering_tool_.dimensions());
+		editor_.update(scene_, ray, scene_.camera(), controls_.mouse_state());
 	}
-//	client_.set_title(std::to_string(fps_counter_.get_fps()));
+//	client_.set_title(std::to_string(fps_counter_.fps()));
 }
 
-std::string Application::get_build_info()
+std::string Application::build_info()
 {
 #ifdef __gnu_linux__
 

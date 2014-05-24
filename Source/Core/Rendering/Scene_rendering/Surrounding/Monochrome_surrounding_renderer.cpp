@@ -25,7 +25,7 @@ bool Monochrome_surrounding_renderer::init(Resource_manager& resource_manager)
 		return false;
 	}
 
-	input_layout_ = rendering_tool_.get_vertex_layout_cache().get_input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->get_technique(0)->get_program()->get_signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*Vertex_position2x32_tex_coord2x32::vertex_layout_description(), effect_->technique(0)->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
@@ -41,15 +41,15 @@ bool Monochrome_surrounding_renderer::init(Resource_manager& resource_manager)
 
 void Monochrome_surrounding_renderer::render(const scene::Scene& scene, const Rendering_context& context)
 {
-	clear(scene.get_surrounding().get_color(), context);
+	clear(scene.surrounding().color(), context);
 }
 
 void Monochrome_surrounding_renderer::clear(const Color3& color, const Rendering_context& context)
 {
-	auto& device = rendering_tool_.get_device();
+	auto& device = rendering_tool_.device();
 
-	device.set_viewports(1, &context.get_viewport());
-	device.set_framebuffer(context.get_framebuffer());
+	device.set_viewports(1, &context.viewport());
+	device.set_framebuffer(context.framebuffer());
 
 	device.set_depth_stencil_state(ds_state_);
 	device.set_blend_state(blend_state_);
@@ -58,10 +58,10 @@ void Monochrome_surrounding_renderer::clear(const Color3& color, const Rendering
 
 	effect_->use(device);
 
-	color_buffer_.get_data().surrounding_color = color;
+	color_buffer_.data().surrounding_color = color;
 	color_buffer_.update(device);
 
-	effect_->get_technique(0)->use();
+	effect_->technique(0)->use();
 
 	rendering_tool_.render_fullscreen_effect();
 }
@@ -81,7 +81,7 @@ bool Monochrome_surrounding_renderer::create_render_states()
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
 
-	ds_state_ = rendering_tool_.get_render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -91,7 +91,7 @@ bool Monochrome_surrounding_renderer::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	blend_state_ = rendering_tool_.get_render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;

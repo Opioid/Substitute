@@ -6,38 +6,38 @@
 namespace rendering
 {
 
-Shader_passthrough_layout::Shader_passthrough_layout(const Shader_data_layout& layout) : m_max_vertex_count(0), next__passthrough_index(0), m_layout(layout)
+Shader_passthrough_layout::Shader_passthrough_layout(const Shader_data_layout& layout) : max_vertex_count_(0), next_passthrough_index_(0), layout_(layout)
 {}
 
 void Shader_passthrough_layout::set_input_name(const std::string& input_name)
 {
-	m_input_name = input_name;
+	input_name_ = input_name;
 }
 
 void Shader_passthrough_layout::set_output_name(const std::string& output_name)
 {
-	m_output_name = output_name;
+	output_name_ = output_name;
 }
 
 void Shader_passthrough_layout::set_input_primitive_topology(const std::string& primitive_topology)
 {
-	m_input_primitive_topology = primitive_topology;
+	input_primitive_topology_ = primitive_topology;
 }
 
 void Shader_passthrough_layout::set_output_primitive_topology(const std::string& primitive_topology)
 {
-	m_output_primitive_topology = primitive_topology;
+	output_primitive_topology_ = primitive_topology;
 }
 
 void Shader_passthrough_layout::set_max_vertex_count(uint32_t max_vertex_count)
 {
-	m_max_vertex_count = max_vertex_count;
+	max_vertex_count_ = max_vertex_count;
 }
 
 std::string Shader_passthrough_layout::generate_input_layout_code(Shader::Type type)
 {
-	const auto& descriptions = m_layout.get_descriptions();
-	auto p = descriptions.find(m_input_name);
+	const auto& descriptions = layout_.descriptions();
+	auto p = descriptions.find(input_name_);
 
 	if (descriptions.end() == p)
 	{
@@ -61,8 +61,8 @@ std::string Shader_passthrough_layout::generate_input_layout_code(Shader::Type t
 
 std::string Shader_passthrough_layout::generate_output_layout_code(Shader::Type type)
 {
-	const auto& descriptions = m_layout.get_descriptions();
-	auto p = descriptions.find(m_output_name);
+	const auto& descriptions = layout_.descriptions();
+	auto p = descriptions.find(output_name_);
 
 	if (descriptions.end() == p)
 	{
@@ -90,7 +90,7 @@ std::string Shader_passthrough_layout::generate_vertex_input_layout_code(const S
 
 	for (size_t i = 0; i < data_struct.elements.size(); ++i)
 	{
-		code << "layout(location = " << i << ") in " << Shader_data_type::get_glsl_mapping(data_struct.elements[i].type) << " vertex_in_" << data_struct.elements[i].name << ";" << std::endl;
+		code << "layout(location = " << i << ") in " << Shader_data_type::glsl_mapping(data_struct.elements[i].type) << " vertex_in_" << data_struct.elements[i].name << ";" << std::endl;
 	}
 
 	code << std::endl;
@@ -106,28 +106,28 @@ std::string Shader_passthrough_layout::generate_passthrough_layout_code(const Sh
 	{
 		if (in)
 		{
-			code << "layout(" << get_glsl_primitive_topology(m_input_primitive_topology) << ") in;" << std::endl;
+			code << "layout(" << get_glsl_primitive_topology(input_primitive_topology_) << ") in;" << std::endl;
 		}
 		else
 		{
-			code << "layout(" << get_glsl_primitive_topology(m_output_primitive_topology) << ", max_vertices = " << m_max_vertex_count << ") out;" << std::endl;
+			code << "layout(" << get_glsl_primitive_topology(output_primitive_topology_) << ", max_vertices = " << max_vertex_count_ << ") out;" << std::endl;
 		}
 	}
 
 	if (in)
 	{
-		code << "in Passthrough" << (next__passthrough_index - 1);
+		code << "in Passthrough" << (next_passthrough_index_ - 1);
 	}
 	else
 	{
-		code << "out Passthrough" << (next__passthrough_index++);
+		code << "out Passthrough" << (next_passthrough_index_++);
 	}
 
 	code << std::endl << "{" << std::endl;
 
 	for (size_t i = 0; i < data_struct.elements.size(); ++i)
 	{
-		code << "\t" << Shader_data_type::get_glsl_mapping(data_struct.elements[i].type) << " " << data_struct.elements[i].name << ";" << std::endl;
+		code << "\t" << Shader_data_type::glsl_mapping(data_struct.elements[i].type) << " " << data_struct.elements[i].name << ";" << std::endl;
 	}
 
 	code << "} ";
@@ -166,7 +166,7 @@ std::string Shader_passthrough_layout::generate_pixel_output_layout_code(const S
 
 	for (size_t i = 0; i < data_struct.elements.size(); ++i)
 	{
-		code << "layout(location = " << i << ") out " << Shader_data_type::get_glsl_mapping(data_struct.elements[i].type) << " pixel_out_" << data_struct.elements[i].name << ";" << std::endl;
+		code << "layout(location = " << i << ") out " << Shader_data_type::glsl_mapping(data_struct.elements[i].type) << " pixel_out_" << data_struct.elements[i].name << ";" << std::endl;
 	}
 
 	code << std::endl;

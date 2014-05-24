@@ -37,35 +37,35 @@ public:
 
 	void request_close();
 
-	platform::Client& get_client();
+	platform::Client& client();
 
-	const std::string& get_name() const;
+	const std::string& name() const;
 
-	const timing::Fps_counter& get_fps_counter() const;
+	const timing::Fps_counter& fps_counter() const;
 
-	scripting::Script_tool& get_script_tool();
+	scripting::Script_tool& script_tool();
 
-	Control_mappings_interface& get_control_mappings();
+	Control_mappings_interface& control_mappings();
 
-	Resource_manager& get_resource_manager();
+	Resource_manager& resource_manager();
 
-	rendering::Rendering_tool& get_rendering_tool();
-	rendering::Renderer& get_renderer();
-	rendering::Printer& get_printer();
+	rendering::Rendering_tool& rendering_tool();
+	rendering::Renderer& renderer();
+	rendering::Printer& printer();
 
-	Mode get_mode() const;
+	Mode mode() const;
 	void set_mode(Mode mode);
 
 	gui::Gui& get_gui();
 
 	bool toggle_gui();
 
-	const scene::Scene& get_scene() const;
-	scene::Scene& get_scene();
+	const scene::Scene& scene() const;
+	scene::Scene& scene();
 
 	bool load_scene(const std::string& name);
 
-	const scene::Editor& get_editor() const;
+	const scene::Editor& editor() const;
 
 protected:
 
@@ -85,7 +85,7 @@ protected:
 
 private:
 
-	bool init(const std::string& name, const uint2& size, bool windowed);
+	bool init(const std::string& name, const uint2& dimensions, bool windowed);
 
 	void release();
 
@@ -128,5 +128,5 @@ private:
 
 public:
 
-	static std::string get_build_info();
+	static std::string build_info();
 };

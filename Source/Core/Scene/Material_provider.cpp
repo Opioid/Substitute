@@ -18,7 +18,7 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 
 	if (!json::parse(root, stream))
 	{
-		logging::error("Material_provider::load(): \"" + stream.get_name() + "\" could not be loaded: failed to parse the file: " + json::get_error(root, stream));
+		logging::error("Material_provider::load(): \"" + stream.name() + "\" could not be loaded: failed to parse the file: " + json::read_error(root, stream));
 
 		return nullptr;
 	}
@@ -27,12 +27,12 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 
 	if (!rendering)
 	{
-		logging::error("Material_provider::load(): \"" + stream.get_name() + "\" could not be loaded: No rendering properties found.");
+		logging::error("Material_provider::load(): \"" + stream.name() + "\" could not be loaded: No rendering properties found.");
 
 		return nullptr;
 	}
 
-	Handle<Material> material(new Material(stream.get_name()));
+	Handle<Material> material(new Material(stream.name()));
 
 	bool has_height = false;
 	bool has_emissive = false;
@@ -62,14 +62,14 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 			{
 				const rapidjson::Value& texture_value = node_value[i];
 
-				std::string file_name = get_file_name(texture_value);
+				std::string file_name = read_file_name(texture_value);
 
 				if (file_name.empty())
 				{
 					continue;
 				}
 
-				Material::Sampler sampler = get_sampler(texture_value);
+				Material::Sampler sampler = read_sampler(texture_value);
 
 				Flags flags;
 
@@ -82,7 +82,7 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 
 				if (Material::Sampler::Color == sampler)
 				{
-					material->set_alpha_transparency(json::get_bool(texture_value, "alpha_transparency", false));
+					material->set_alpha_transparency(json::read_bool(texture_value, "alpha_transparency", false));
 				}
 				else if (Material::Sampler::Surface1 == sampler)
 				{
@@ -90,13 +90,13 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 
 					if (range_node)
 					{
-						float2 range = json::get_float2(range_node->value);
+						float2 range = json::read_float2(range_node->value);
 						material->set_height_scale(float2(range.y - range.x, range.x));
 
 						has_height = true;
 					}
 
-					has_emissive = json::get_bool(texture_value, "emissive", false);
+					has_emissive = json::read_bool(texture_value, "emissive", false);
 				}
 
 				material->textures_[static_cast<size_t>(sampler)] = resource_manager.load<rendering::Shader_resource_view>(file_name, flags);
@@ -104,7 +104,7 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 		}
 		else if (node_name == "color")
 		{
-			material->set_color(get_color(node_value));
+			material->set_color(read_color(node_value));
 		}
 		else if (node_name == "metallic")
 		{
@@ -138,7 +138,7 @@ Handle<Material> Material_provider::clone(const Handle<Material>& material, Reso
 	return Handle<Material>(new Material(*material));
 }
 
-Material::Sampler Material_provider::get_sampler(const rapidjson::Value& value)
+Material::Sampler Material_provider::read_sampler(const rapidjson::Value& value)
 {
 	const rapidjson::Value::Member* usage = value.FindMember("usage");
 
@@ -171,13 +171,13 @@ Material::Sampler Material_provider::get_sampler(const rapidjson::Value& value)
 	}
 }
 
-rendering::Color3 Material_provider::get_color(const rapidjson::Value& color_value)
+rendering::Color3 Material_provider::read_color(const rapidjson::Value& color_value)
 {
 	rendering::Color3 color;
 
 	if (color_value.IsArray())
 	{
-		 color = json::get_float3(color_value);
+		 color = json::read_float3(color_value);
 	}
 	else
 	{
@@ -190,7 +190,7 @@ rendering::Color3 Material_provider::get_color(const rapidjson::Value& color_val
 
 			if (node_name == "value")
 			{
-				color = json::get_float3(node_value);
+				color = json::read_float3(node_value);
 			}
 			else if (node_name == "space")
 			{
@@ -207,7 +207,7 @@ rendering::Color3 Material_provider::get_color(const rapidjson::Value& color_val
 	return color;
 }
 
-std::string Material_provider::get_file_name(const rapidjson::Value& value)
+std::string Material_provider::read_file_name(const rapidjson::Value& value)
 {
 	const rapidjson::Value& file_name = value["file"];
 

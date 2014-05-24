@@ -14,7 +14,7 @@ public:
 	OpenGL_object(uint32_t id);
 //	virtual ~OpenGL_object();
 
-	uint32_t get_id() const;
+	uint32_t id() const;
 
 protected:
 

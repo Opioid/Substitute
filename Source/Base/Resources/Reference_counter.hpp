@@ -11,7 +11,7 @@ public:
 
 private:
 
-	size_t m_reference_count;
+	size_t reference_count_;
 
 	template<typename> friend class Handle;
 };

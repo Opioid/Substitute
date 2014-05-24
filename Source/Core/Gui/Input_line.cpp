@@ -50,7 +50,7 @@ void Input_line::update(const Gui_input& input)
 		process_signal(input.signal_stream[i]);
 	}
 
-	const float2& pos = input.cursor.get_coord();
+	const float2& pos = input.cursor.coord();
 
 	float2 apos = get_absolute_position();
 
@@ -276,13 +276,13 @@ void Input_line::process_signal(const platform::Input_signal& signal)
         }
 
 		std::string character;
-		character = char(signal.get_id());
+		character = char(signal.id());
 
 		insert(cursor_position_, character);
 	}
 	else if (signal.is_pressed())
 	{
-		uint32_t key = signal.get_id();
+		uint32_t key = signal.id();
 
 		if (platform::key::Enter == key)
 		{

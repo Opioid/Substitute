@@ -14,13 +14,13 @@ public:
 	explicit Input_signal(uint32_t id);
 	explicit Input_signal(uint32_t id, int data, bool wait_for_release = true);
 
-	uint32_t get_id() const;
+	uint32_t id() const;
 
 	bool is_character() const;
 
 	bool is_pressed() const;
 
-	int get_data() const;
+	int data() const;
 
 	bool wait_for_release() const;
 

@@ -15,9 +15,9 @@ public:
 
 	virtual bool init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache);
 
-	virtual Handle<Shader_resource_view>& get_shadow_map();
+	virtual Handle<Shader_resource_view>& shadow_map();
 
-	virtual Handle<Shader_resource_view>& get_white_buffer();
+	virtual Handle<Shader_resource_view>& white_buffer();
 
 private:
 

@@ -55,7 +55,7 @@ public:
     const AABB_node* get_skip_node() const;
 	AABB_node* get_skip_node();
 
-	const AABB& get_aabb() const;
+	const AABB& aabb() const;
 
 	const Geometry* get_geometry() const;
 

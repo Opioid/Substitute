@@ -16,7 +16,7 @@ public:
 	Texture_transfer(uint32_t id, const Texture_description& description);
 	~Texture_transfer();
 
-	const Texture_description& get_description() const;
+	const Texture_description& description() const;
 
 private:
 

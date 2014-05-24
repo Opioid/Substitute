@@ -29,7 +29,7 @@ public:
 
 private:
 
-	unsigned char m_flags;
+	unsigned char flags_;
 };
 
 }

@@ -10,15 +10,15 @@ public:
 
 	Identifiable(const std::string& name) : name_(name)
 	{
-		s_id = id::manager.get_id(name);
+		s_id = id::manager.id(name);
 	}
 
-	const std::string& get_name() const
+	const std::string& name() const
 	{
 		return name_;
 	}
 
-	static size_t get_id()
+	static size_t id()
 	{
 		return s_id;
 	}

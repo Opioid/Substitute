@@ -1,5 +1,7 @@
 #include "Texture.hpp"
+#include <algorithm>
 #include <GL/glew.h>
+
 
 namespace rendering
 {
@@ -7,8 +9,10 @@ namespace rendering
 Texture::Texture(uint32_t id, const Texture_description& description) :
 	OpenGL_object(id),
 	description_(description),
-	internal_type_(get_gl_type(description.type))
-{}
+	internal_type_(gl_type(description.type))
+{
+	description_.dimensions.z = std::max(description.dimensions.z, uint32_t(1));
+}
 
 Texture::~Texture()
 {
@@ -22,12 +26,12 @@ Texture::~Texture()
 	}
 }
 
-const Texture_description& Texture::get_description() const
+const Texture_description& Texture::description() const
 {
 	return description_;
 }
 
-uint32_t Texture::get_gl_type(Texture_description::Type type)
+uint32_t Texture::gl_type(Texture_description::Type type)
 {
 	switch (type)
 	{

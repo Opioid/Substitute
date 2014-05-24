@@ -83,12 +83,12 @@ bool Legacy_converter::convert(const std::string& input_name, const std::string&
 	istream.read((char*)&num_vertices, sizeof(uint32_t));
 	ostream.write((char*)&num_vertices, sizeof(uint32_t));
 
-	uint32_t num_streams = vd.get_num_streams();
+	uint32_t num_streams = vd.num_streams();
 	char** vertex_streams = new char*[num_streams];
 
 	for (uint32_t i = 0; i < num_streams; ++i)
 	{
-		uint32_t vertex_bytes = vd.get_strides()[i] * num_vertices;
+		uint32_t vertex_bytes = vd.strides()[i] * num_vertices;
 		vertex_streams[i] = new char[vertex_bytes];
 		istream.read(vertex_streams[i], vertex_bytes);
 	}
@@ -100,17 +100,17 @@ bool Legacy_converter::convert(const std::string& input_name, const std::string&
 
 	for (uint32_t i = 0; i < num_vertices; ++i)
 	{
-		memcpy(ovs, vertex_streams[0], vd.get_strides()[0]);
-		ovs += vd.get_strides()[0];
-		vertex_streams[0] += vd.get_strides()[0];
+		memcpy(ovs, vertex_streams[0], vd.strides()[0]);
+		ovs += vd.strides()[0];
+		vertex_streams[0] += vd.strides()[0];
 
-		memcpy(ovs, vertex_streams[1], vd.get_strides()[1]);
-		ovs += vd.get_strides()[1];
-		vertex_streams[1] += vd.get_strides()[1];
+		memcpy(ovs, vertex_streams[1], vd.strides()[1]);
+		ovs += vd.strides()[1];
+		vertex_streams[1] += vd.strides()[1];
 
 		memcpy(ovs, vertex_streams[2], sizeof(Vector4_UNorm1010102));
 		ovs += sizeof(Vector4_UNorm1010102);
-		vertex_streams[2] += vd.get_strides()[2];
+		vertex_streams[2] += vd.strides()[2];
 	}
 
 	ostream.write(out_vertices, num_out_vertex_bytes);
@@ -126,7 +126,7 @@ bool Legacy_converter::convert(const std::string& input_name, const std::string&
 	ostream.write((char*)&index_type, sizeof(uint32_t));
 	ostream.write((char*)&num_indices, sizeof(uint32_t));
 
-	const uint32_t num_index_bytes = num_indices * uint32_t(rendering::Data_format::size_of(index_type));
+	const uint32_t num_index_bytes = num_indices * rendering::Data_format::num_bytes_per_block(index_type);
 	char* indices = new char[num_index_bytes];
 	istream.read(indices, num_index_bytes);
 	ostream.write(indices, num_index_bytes);
@@ -162,7 +162,7 @@ bool Legacy_converter::write_vertex_layout_description(std::ostream &stream, con
 		return false;
 	}
 
-	uint32_t num_elements_ = vertex_layout_description->get_num_elements_();
+	uint32_t num_elements_ = vertex_layout_description->num_elements();
 	stream.write((char*)&num_elements_, sizeof(uint32_t));
 
 	for (uint32_t i = 0; i < num_elements_; ++i)
