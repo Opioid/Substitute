@@ -5,6 +5,7 @@
 #include "Cursor.hpp"
 #include "../Controls/Controls.hpp"
 #include "Scripting/Script_tool.hpp"
+#include "Scripting/Scripter.hpp"
 #include "Resources/Resource_manager.hpp"
 #include "Rendering/Rendering_tool.hpp"
 #include "Rendering/Renderer.hpp"
@@ -33,7 +34,7 @@ public:
 	Application();
 	virtual ~Application();
 
-	bool run(const std::string& name, const uint2& size, bool windowed);
+	bool run(const std::string& name, const uint2& dimensions, bool windowed);
 
 	void request_close();
 
@@ -105,6 +106,8 @@ private:
 
 	scripting::Script_tool script_tool_;
 
+	scripting::Scripter scripter_;
+
 	Controls controls_;
 
 	Resource_manager resource_manager_;
@@ -123,7 +126,7 @@ private:
 	gui::Gui gui_;
 
 	scene::Scene		scene_;
-	scene::Scene_loader scene_provider_;
+	scene::Scene_loader scene_loader_;
 	scene::Editor		editor_;
 
 public:

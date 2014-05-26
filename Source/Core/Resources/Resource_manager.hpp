@@ -33,7 +33,7 @@ class Resource_manager
 		
 		virtual void reassign_ids() = 0;
 
-		virtual size_t get_resource_info(std::vector<std::string>& info) const = 0;
+		virtual size_t query_resource_info(std::vector<std::string>& info) const = 0;
 
 	protected:
 
@@ -109,7 +109,7 @@ class Resource_manager
 			}
 		}
 
-		virtual size_t get_resource_info(std::vector<std::string>& info) const
+		virtual size_t query_resource_info(std::vector<std::string>& info) const
 		{
 			info.push_back("");
 
@@ -322,7 +322,7 @@ public:
 
 	file::Virtual_file_system& virtual_file_system();
 
-	void get_resource_info(std::vector<std::string>& info, const std::string& type = "") const;
+	void query_resource_info(std::vector<std::string>& info, const std::string& type = "") const;
 
 private:
 

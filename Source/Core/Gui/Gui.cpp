@@ -9,7 +9,7 @@
 namespace gui
 {
 
-Gui::Gui(logging::Message_server& message_server, scripting::Script_tool& script_tool) : m_console(message_server, script_tool), m_is_active(false)
+Gui::Gui(logging::Message_server& message_server, scripting::Script_tool& Script_tool) : m_console(message_server, Script_tool), m_is_active(false)
 {
 	m_console.set_position(float2(128.f, 16.f));
 	m_console.set_size(float2(1024.f, 640.f));
@@ -34,7 +34,7 @@ bool Gui::init(Resource_manager& resource_manager, rendering::Printer& printer)
 
 	printer.set_font("Consola", 18);
 
-	m_console.query_message_viewer().set_line_height(printer.line_height());
+	m_console.message_viewer().set_line_height(printer.line_height());
 
 	return true;
 }

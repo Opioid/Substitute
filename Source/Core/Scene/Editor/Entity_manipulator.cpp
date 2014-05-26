@@ -13,7 +13,7 @@ Entity_manipulator::Entity_manipulator() : hit_in_previous_tick_(false), draggin
 
 void Entity_manipulator::update(const Scene& scene, const Ray3 &ray, const Camera& camera, const Input_state &mouse)
 {
-	auto& entities = scene.get_entities();
+	auto& entities = scene.entities();
 
 	focused_entity_ = nullptr;
 

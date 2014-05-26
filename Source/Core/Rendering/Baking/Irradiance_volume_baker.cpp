@@ -49,7 +49,7 @@ bool Irradiance_volume_baker::load_cached_data(scene::Scene& scene, Resource_man
 	flags.set(rendering::Texture_provider::Options::Texture_3D, true);
 
 	uint32_t i = 0;
-	for (auto v : scene.get_irradiance_volumes())
+	for (auto v : scene.irradiance_volumes())
 	{
 		for (uint32_t j = 0; j < 5; ++j)
 		{
@@ -107,7 +107,7 @@ void Irradiance_volume_baker::bake(scene::Scene& scene, Environment_map_renderer
 	}
 
 	uint32_t i = 0;
-	for (auto v : scene.get_irradiance_volumes())
+	for (auto v : scene.irradiance_volumes())
 	{
 		bake(*v, scene, environment_map_renderer, options, cache, cache ? cache_save_name_template + std::to_string(i) : "");
 		++i;

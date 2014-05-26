@@ -5,6 +5,13 @@
 
 class Resource_manager;
 
+namespace scripting
+{
+
+class Scripter;
+
+}
+
 namespace rendering
 {
 
@@ -23,7 +30,7 @@ class Scene_loader
 
 public:
 
-	Scene_loader(Scene& scene, rendering::Rendering_tool& rendering_tool, Resource_manager& resource_manager);
+	Scene_loader(Scene& scene, scripting::Scripter& scripter, rendering::Rendering_tool& rendering_tool, Resource_manager& resource_manager);
 
     bool load(const std::string& name);
 
@@ -48,7 +55,16 @@ private:
 
 	void load_abt(const rapidjson::Value& abt);
 
+	struct Scripting
+	{
+		std::string file_name;
+		std::string class_name;
+	};
+
+	void load_scripting(const rapidjson::Value& scripting_value, Scripting& scripting);
+
 	Scene& scene_;
+	scripting::Scripter& scripter_;
 	rendering::Rendering_tool& rendering_tool_;
 	Resource_manager& resource_manager_;
 };

@@ -33,12 +33,12 @@ void Surface_collector::collect(const scene::Scene& scene, const float3& eye_pos
 
 	if (collect_static_geometry)
 	{
-		collect(scene.get_aabb_tree(), eye_position, frustum);
+		collect(scene.aabb_tree(), eye_position, frustum);
 	}
 
 	if (collect_actors)
 	{
-		auto& actors = scene.get_actors();
+		auto& actors = scene.actors();
 
 		for (auto a : actors)
 		{
@@ -58,12 +58,12 @@ void Surface_collector::collect_unified(const scene::Scene& scene, const float3&
 
 	if (collect_static_geometry)
 	{
-		collect_unified(scene.get_aabb_tree(), eye_position, frustum);
+		collect_unified(scene.aabb_tree(), eye_position, frustum);
 	}
 
 	if (collect_actors)
 	{
-		auto& actors = scene.get_actors();
+		auto& actors = scene.actors();
 
 		for (auto a : actors)
 		{

@@ -2,7 +2,9 @@
 
 namespace scripting
 {
-	class Script_tool;
 
-	bool init_scene(Script_tool& tool);
+class Script_tool;
+
+bool init_scene(Script_tool& tool);
+
 }

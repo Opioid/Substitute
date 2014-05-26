@@ -20,6 +20,7 @@ HEADERS +=
 
 include(Application/Application.pri)
 include(Controls/Controls.pri)
+include(File/File.pri)
 include(Flags/Flags.pri)
 include(Gui/Gui.pri)
 include(Logging/Logging.pri)

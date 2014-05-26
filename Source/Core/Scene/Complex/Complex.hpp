@@ -18,7 +18,7 @@ public:
 
 	virtual bool init(Scene& scene, Resource_manager& resource_manager) = 0;
 
-	virtual void on_tick();
+	virtual void on_tick(float time_slice);
 };
 
 

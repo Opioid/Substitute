@@ -65,12 +65,12 @@ void Scene::clear()
 
 	static_props_.clear();
 
-	for (auto c : m_complexes)
+	for (auto c : complexes_)
 	{
 		delete c;
 	}
 
-	m_complexes.clear();
+	complexes_.clear();
 
 	surrounding_.clear();
 
@@ -129,7 +129,7 @@ void Scene::compile()
     }
 }
 
-std::string Scene::name() const
+const std::string& Scene::name() const
 {
 	return name_;
 }
@@ -139,16 +139,16 @@ void Scene::set_name(const std::string& name)
 	name_ = name;
 }
 
-void Scene::on_tick()
+void Scene::on_tick(float time_slice)
 {
 	for (auto& i : interpolators_)
 	{
 		i.copy_previous_state();
 	}
 
-	for (auto c : m_complexes)
+	for (auto c : complexes_)
 	{
-		c->on_tick();
+		c->on_tick(time_slice);
 	}
 }
 
@@ -182,22 +182,22 @@ Camera& Scene::camera()
 	return camera_;
 }
 
-const AABB_tree& Scene::get_aabb_tree() const
+const AABB_tree& Scene::aabb_tree() const
 {
 	return aabb_tree_;
 }
 
-AABB_tree& Scene::get_aabb_tree()
+AABB_tree& Scene::aabb_tree()
 {
 	return aabb_tree_;
 }
 
-const std::vector<Entity*>& Scene::get_entities() const
+const std::vector<Entity*>& Scene::entities() const
 {
 	return entities_;
 }
 
-const Heap_cache<Actor>& Scene::get_actors() const
+const Heap_cache<Actor>& Scene::actors() const
 {
 	return actors_;
 }
@@ -207,12 +207,12 @@ const Heap_cache<Actor>& Scene::get_actors() const
 //	return decal_provider_;
 //}
 
-const Heap_cache<Light>& Scene::get_lights() const
+const Heap_cache<Light>& Scene::lights() const
 {
 	return lights_;
 }
 
-const Heap_cache<Irradiance_volume>& Scene::get_irradiance_volumes() const
+const Heap_cache<Irradiance_volume>& Scene::irradiance_volumes() const
 {
 	return irradiance_volumes_;
 }
@@ -227,7 +227,7 @@ Light_probe* Scene::surrounding_light_probe()
 	return surrounding_light_probe_valid_ ? &surrounding_light_probe_ : nullptr;
 }
 
-const Heap_cache<Light_probe>& Scene::get_light_probes() const
+const Heap_cache<Light_probe>& Scene::light_probes() const
 {
 	return light_probes_;
 }
@@ -309,7 +309,7 @@ Complex* Scene::create_complex(const std::string& type, Resource_manager& resour
 		return nullptr;
 	}
 
-	m_complexes.push_back(complex);
+	complexes_.push_back(complex);
 
 	return complex;
 }

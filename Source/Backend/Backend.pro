@@ -57,11 +57,5 @@ DEPENDPATH += $$PWD/../../../../Libraries/gli-0.5.1.1/external/glm-0.9.5.1
 
 win32:INCLUDEPATH += $$PWD/../../../../Libraries/angelscript_2.28.2/angelscript/include
 
-INCLUDEPATH += $$PWD/../../../../Libraries/angelscript_2.28.2/add_on/scriptstdstring
-DEPENDPATH += $$PWD/../../../../Libraries/angelscript_2.28.2/add_on/scriptstdstring
-
-INCLUDEPATH += $$PWD/../../../../Libraries/angelscript_2.28.2/add_on/scripthelper
-DEPENDPATH += $$PWD/../../../../Libraries/angelscript_2.28.2/add_on/scripthelper
-
 INCLUDEPATH += $$PWD/../../../../Libraries/rapidjson/include
 DEPENDPATH += $$PWD/../../../../Libraries/rapidjson/include

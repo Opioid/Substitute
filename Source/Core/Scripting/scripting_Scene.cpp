@@ -8,39 +8,47 @@
 
 namespace scripting
 {
-	bool load_scene(const std::string& name);
-	void set_exposure(float exposure);
-	void set_linear_white(float white);
 
-	bool init_scene(Script_tool& tool)
-	{
-		Script_engine const& engine = tool.engine();
+bool load_scene(const std::string& name);
+void set_exposure(float exposure);
+void set_linear_white(float white);
 
-		engine.set_default_namespace("scene");
+bool init_scene(Script_tool& tool)
+{
+	const Script_engine& engine = tool.engine();
 
-		engine.register_function("bool load(const string &in)", asFUNCTION(load_scene));
+	engine.set_default_namespace("scene");
 
-		engine.set_default_namespace("camera");
+	engine.register_function("bool load(const string &in)", asFUNCTION(load_scene));
 
-		engine.register_function("void set_exposure(float)", asFUNCTION(set_exposure));
-		engine.register_function("void set_linear_white(float)", asFUNCTION(set_linear_white));
+	engine.set_default_namespace("camera");
 
-		return true;
-	}
+	engine.register_function("void set_exposure(float)", asFUNCTION(set_exposure));
+	engine.register_function("void set_linear_white(float)", asFUNCTION(set_linear_white));
 
-	bool load_scene(const std::string& name)
-	{
-		return app->load_scene(name);
-	}
+	engine.set_default_namespace("");
 
-	void set_exposure(float exposure)
-	{
-		app->scene().camera().set_exposure(exposure);
-	}
+	engine.register_object_type("Scene", 0, asOBJ_REF | asOBJ_NOCOUNT);
 
-	void set_linear_white(float white)
-	{
-		app->scene().camera().set_linear_white(float3(white, white, white));
-	}
+	engine.register_object_method("Scene", "const string &name() const", asMETHODPR(scene::Scene, name, () const, const std::string&));
+
+
+	return true;
+}
+
+bool load_scene(const std::string& name)
+{
+	return app->load_scene(name);
+}
+
+void set_exposure(float exposure)
+{
+	app->scene().camera().set_exposure(exposure);
+}
+
+void set_linear_white(float white)
+{
+	app->scene().camera().set_linear_white(float3(white, white, white));
+}
 
 }

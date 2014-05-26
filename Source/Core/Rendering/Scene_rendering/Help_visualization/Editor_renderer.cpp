@@ -93,7 +93,7 @@ void Editor_renderer::render(const scene::Scene& scene, const scene::Editor& edi
 	change_per_camera_data.view            = camera.view();
 	change_per_camera_.update(device);
 
-	auto& entities = scene.get_entities();
+	auto& entities = scene.entities();
 
 	per_vertex_color_technique_->use();
 

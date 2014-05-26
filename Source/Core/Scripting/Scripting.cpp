@@ -6,8 +6,8 @@
 #include "scripting_Configuration.hpp"
 #include "scripting_Scene.hpp"
 #include "scripting_Gui.hpp"
-#include "../Application/Application.hpp"
-#include "../Logging/Logging.hpp"
+#include "Application/Application.hpp"
+#include "Logging/Logging.hpp"
 #include <fstream>
 #include <angelscript.h>
 
@@ -89,7 +89,7 @@ bool load_console_script(std::istream& stream, const std::string& name)
 
 	logging::post("Loading console script \"" + name + "\":");
 
-	const Script_engine& engine = app->script_tool().engine();
+	const Script_tool& script_tool = app->script_tool();
 
 	std::string line;
 
@@ -97,7 +97,7 @@ bool load_console_script(std::istream& stream, const std::string& name)
 	{
 		getline(stream, line, '\n');
 		logging::input(line);
-		engine.execute_string(line);
+		script_tool.execute_string(line);
 	}
 
 	logging::post("End of console script.");
@@ -124,7 +124,7 @@ void resource_info(const std::string& type)
 {
 	std::vector<std::string> info;
 
-	app->resource_manager().get_resource_info(info, type);
+	app->resource_manager().query_resource_info(info, type);
 
 	for (auto& i : info)
 	{

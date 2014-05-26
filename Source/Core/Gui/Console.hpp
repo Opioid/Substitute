@@ -3,7 +3,7 @@
 #include "Frame.hpp"
 #include "Message_viewer.hpp"
 #include "Input_line.hpp"
-#include "../Logging/Message_sender.hpp"
+#include "Logging/Message_sender.hpp"
 
 namespace scripting
 {
@@ -22,7 +22,7 @@ public:
 
 	Console(logging::Message_server &server, scripting::Script_tool& script_tool);
 
-	Message_viewer& query_message_viewer();
+	Message_viewer& message_viewer();
 
 	void on_input_line_accept(Component *source);
 
@@ -32,8 +32,8 @@ private:
 
 	void render_private(rendering::Printer& printer);
 
-	Message_viewer m_message_viewer;
-	Input_line     m_input_line;
+	Message_viewer message_viewer_;
+	Input_line     input_line_;
 
 	scripting::Script_tool& script_tool_;
 };

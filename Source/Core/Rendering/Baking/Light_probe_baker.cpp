@@ -143,7 +143,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 		}
 	}
 
-	for (auto p : scene.get_light_probes())
+	for (auto p : scene.light_probes())
 	{
 		std::string cache_load_name = cache_load_name_template + "_light_probe_0.sui";
 
@@ -243,7 +243,7 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 	options.set(Rendering_context::Options::Render_image_based_lighting, pass > 0);
 	options.set(Rendering_context::Options::Render_emissive_lighting, true);
 
-	for (auto p : scene.get_light_probes())
+	for (auto p : scene.light_probes())
 	{
 		environment_map_renderer.render(scene, p->world_position(), options);
 

@@ -37,7 +37,7 @@ void Resource_manager::reassign_resource_ids()
 	}
 }
 
-void Resource_manager::get_resource_info(std::vector<std::string>& info, const std::string& type) const
+void Resource_manager::query_resource_info(std::vector<std::string>& info, const std::string& type) const
 {
 	if (type.empty())
 	{
@@ -47,7 +47,7 @@ void Resource_manager::get_resource_info(std::vector<std::string>& info, const s
 
 		for (auto i : stores_)	
 		{
-			num_bytes_total += i.second->get_resource_info(info);
+			num_bytes_total += i.second->query_resource_info(info);
 		}
 
 		info[0] = "Resources, " + string::format_byte_size(num_bytes_total) + ":";
@@ -58,7 +58,7 @@ void Resource_manager::get_resource_info(std::vector<std::string>& info, const s
 		{
 			if (id::manager.name(i.first) == type)
 			{
-				i.second->get_resource_info(info);
+				i.second->query_resource_info(info);
 				return;
 			}
 		}

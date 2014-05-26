@@ -5,6 +5,7 @@
 #include "Static_prop.hpp"
 #include "AABB_tree/AABB_tree_loader.hpp"
 #include "Complex/Complex.hpp"
+#include "Scripting/Scripter.hpp"
 #include "Resources/Resource_manager.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Texture_provider.hpp"
@@ -15,8 +16,8 @@
 namespace scene
 {
 
-Scene_loader::Scene_loader(Scene &scene, rendering::Rendering_tool& rendering_tool, Resource_manager& resource_manager) :
-	scene_(scene), rendering_tool_(rendering_tool), resource_manager_(resource_manager)
+Scene_loader::Scene_loader(Scene &scene, scripting::Scripter& scripter, rendering::Rendering_tool& rendering_tool, Resource_manager& resource_manager) :
+	scene_(scene), scripter_(scripter), rendering_tool_(rendering_tool), resource_manager_(resource_manager)
 {}
 
 bool Scene_loader::load(const std::string& name)
@@ -44,6 +45,8 @@ bool Scene_loader::load(const std::string& name)
 		return false;
 	}
 
+	scripter_.start();
+
 	auto& file_system = resource_manager_.virtual_file_system();
 
 	std::string resolved_path;
@@ -55,35 +58,44 @@ bool Scene_loader::load(const std::string& name)
 		const std::string node_name = n->name.GetString();
 		const rapidjson::Value& node_value = n->value;
 
-		if (node_name == "camera")
+		if ("camera" == node_name)
 		{
 			load_camera(node_value);
 		}
-		else if (node_name == "surrounding")
+		else if ("surrounding" == node_name)
 		{
 			load_surrounding(node_value);
 		}
-		else if (node_name == "entities")
+		else if ("entities" == node_name)
 		{
 			load_entities(node_value);
 		}
-		else if (node_name == "static_props")
+		else if ("static_props" == node_name)
 		{
 			load_static_props(node_value);
 		}
-		else if (node_name == "abt")
+		else if ("abt" == node_name)
 		{
 			load_abt(node_value);
 		}
-		else if (node_name == "irradiance_volumes")
+		else if ("irradiance_volumes" == node_name)
 		{
 			load_irradiance_volumes(node_value);
 		}
-		else if (node_name == "light_probes")
+		else if ("light_probes" == node_name)
 		{
 			load_light_probes(node_value);
 		}
+		else if ("scripting" == node_name)
+		{
+			Scripting scripting;
+			load_scripting(node_value, scripting);
+
+			scripter_.register_script_class(scene_, scripting.file_name, scripting.class_name);
+		}
 	}
+
+	scripter_.compile();
 
 	file_system.pop_mount();
 
@@ -528,7 +540,25 @@ void Scene_loader::load_abt(const rapidjson::Value& abt)
 	}
 
 	AABB_tree_loader loader(rendering_tool_);
-	loader.load(stream, scene_.get_aabb_tree(), materials);
+	loader.load(stream, scene_.aabb_tree(), materials);
+}
+
+void Scene_loader::load_scripting(const rapidjson::Value& scripting_value, Scripting& scripting)
+{
+	for (auto n = scripting_value.MemberBegin(); n != scripting_value.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if ("source" == node_name)
+		{
+			scripting.file_name = node_value.GetString();
+		}
+		else if ("class" == node_name)
+		{
+			scripting.class_name = node_value.GetString();
+		}
+	}
 }
 
 }

@@ -1,5 +1,6 @@
 #include "Application.hpp"
 #include "Configuration.hpp"
+#include "Scripting/Scripting.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Baking/Light_baker.hpp"
 #include "Scene/Static_prop.hpp"
@@ -8,23 +9,23 @@
 #include "Scene/Light/Light_probe.hpp"
 #include "Gui/Gui_input.hpp"
 #include "Logging/Logging.hpp"
-#include "Scripting/Scripting.hpp"
 #include "String/String.hpp"
 #include <iostream>
 
 Application::Application() :
-	request_close_(false), simulation_frequency_(1.0 / 60.0), mode_(Mode::Simulation), script_tool_(logging::server),
+	request_close_(false), simulation_frequency_(1.0 / 60.0), mode_(Mode::Simulation),
+	script_tool_(logging::server), scripter_(script_tool_),
 	texture_provider_(rendering_tool_), effect_provider_(rendering_tool_), model_provider_(rendering_tool_),
 	renderer_(rendering_tool_), printer_(rendering_tool_), gui_(logging::server, script_tool_),
-	scene_provider_(scene_, rendering_tool_, resource_manager_)
+	scene_loader_(scene_, scripter_, rendering_tool_, resource_manager_)
 {}
 
 Application::~Application()
 {}
 
-bool Application::run(const std::string& name, const uint2& size, bool windowed)
+bool Application::run(const std::string& name, const uint2& dimensions, bool windowed)
 {
-	if (!init(name, size, windowed))
+	if (!init(name, dimensions, windowed))
 	{
 		return false;
 	}
@@ -55,14 +56,14 @@ bool Application::run(const std::string& name, const uint2& size, bool windowed)
 				t += dt;
 				*/
 
-				scene_.on_tick();
+				scene_.on_tick(static_cast<float>(simulation_frequency_));
 
 				on_tick();
 
 				accumulator -= simulation_frequency_;
 			}
 
-			scene_.update(float(accumulator / simulation_frequency_));
+			scene_.update(static_cast<float>(accumulator / simulation_frequency_));
 
 			on_render();
 
@@ -163,7 +164,7 @@ scene::Scene& Application::scene()
 
 bool Application::load_scene(const std::string& name)
 {
-	bool result = scene_provider_.load(name);
+	bool result = scene_loader_.load(name);
 
     scene_.compile();
 
@@ -175,6 +176,8 @@ bool Application::load_scene(const std::string& name)
     {
 		renderer_.light_baker()->bake(scene_, resource_manager_);
     }
+
+	scripter_.execute_on_scene_loaded();
 
 	resource_manager_.cleanup();
 
@@ -313,6 +316,8 @@ void Application::release()
 	resource_manager_.release();
 
 	rendering_tool_.release();
+
+	script_tool_.release();
 
 	logging::release();
 }

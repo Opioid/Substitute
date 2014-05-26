@@ -6,7 +6,7 @@ namespace scene
 Complex::~Complex()
 {}
 
-void Complex::on_tick()
+void Complex::on_tick(float /*time_slice*/)
 {}
 
 Complex_factory::~Complex_factory()

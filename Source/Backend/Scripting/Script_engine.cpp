@@ -1,8 +1,8 @@
 #include "Script_engine.hpp"
+#include "Script_context.hpp"
+#include "scriptstdstring/scriptstdstring.h"
+#include "scripthelper/scripthelper.h"
 #include <angelscript.h>
-//#include <scriptbuilder/scriptbuilder.h>
-#include <scriptstdstring.h>
-#include <scripthelper.h>
 
 namespace scripting
 {
@@ -16,59 +16,16 @@ Script_engine::Script_engine() //: m_default_module(nullptr)
 		RegisterStdString(engine_);
 
 		engine_->SetMessageCallback(asMETHOD(Script_engine, internal_message_callback), this, asCALL_THISCALL);
-
-		default_context_ = engine_->CreateContext();
-			
-	#ifdef SE_USE_WATCHDOG
-		m_watchdogData.m_shutDown = false;
-		m_watchdogData.context_ToWatch = default_context_;
-		m_watchdogData.m_tickLength = 250;
-
-		m_watchdog.create(watchdogThread, &m_watchdogData);
-	#endif	
 	}
 }
 
 Script_engine::~Script_engine()
 {
-	//	releaseResources();
-		//Seems like you should release the context before the module or risk a crash?
-
-#ifdef SE_USE_WATCHDOG
-	m_watchdogData.m_shutDown = true;
-	m_watchdog.wait();
-#endif
-
-	if (default_context_)
-	{
-		default_context_->Release();
-	}
-
 	if (engine_)
 	{
-		engine_->DiscardModule(0);
+		engine_->DiscardModule(nullptr);
 		engine_->Release();
 	}
-}
-
-void Script_engine::release_resources()
-{
-	if (default_context_)
-	{
-			/*
-#ifdef SE_USE_WATCHDOG
-			m_watchdogData.m_lock.enter();
-                default_context_->Release();
-                default_context_ = engine_->CreateContext();
-                m_watchdogData.context_ToWatch = default_context_;
-			m_watchdogData.m_lock.leave();
-#elif*/
-    //		default_context_->Release();
-    //		default_context_ = engine_->CreateContext();
-//#endif
-		}
-
-	garbage_collect();
 }
 
 bool Script_engine::is_valid() const
@@ -81,15 +38,24 @@ bool Script_engine::garbage_collect(Garbage_collection flags) const
 	return engine_->GarbageCollect(static_cast<asDWORD>(flags)) >= 0;
 }
 
-bool Script_engine::execute_string(const std::string& script) const
+Script_context* Script_engine::create_context() const
 {
-#ifdef SE_USE_WATCHDOG
-	m_watchdogData.m_lock.enter();
-	m_watchdogData.m_ticks = 4;
-	m_watchdogData.m_lock.leave();
-#endif
+	return new Script_context(engine_->CreateContext());
+}
 
-	int result = ExecuteString(engine_, script.c_str(), 0, default_context_);
+asIScriptModule* Script_engine::query_module(const std::string& name) const
+{
+	return engine_->GetModule(name.c_str());
+}
+
+bool Script_engine::execute_string(const std::string& script, const Script_context* context) const
+{
+	if (!context)
+	{
+		return false;
+	}
+
+	int result = ExecuteString(engine_, script.c_str(), nullptr, context->context_);
 
 	if (asEXECUTION_ABORTED == result)
 	{
@@ -161,26 +127,5 @@ void Script_engine::send_message(const std::string& text, Message_type type) con
 		message_callback_(text, type);
 	}
 }
-
-#ifdef SE_USE_WATCHDOG
-	DWORD WINAPI Script_engine::watchdogThread(void* arg)
-	{
-		WatchdogData *data = static_cast<WatchdogData*>(arg);
-
-		while (true)
-		{
-			Sleep(data->m_tickLength);
-
-			data->m_lock.enter();
-				if (--data->m_ticks == 0 && data->context_ToWatch->GetState() == asEXECUTION_ACTIVE)
-					data->context_ToWatch->Abort();
-			data->m_lock.leave();
-
-			if (data->m_shutDown) return 0;
-		}
-
-		return 0;
-	}
-#endif
 
 }

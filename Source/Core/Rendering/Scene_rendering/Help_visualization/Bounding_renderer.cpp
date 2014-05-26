@@ -94,12 +94,12 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 
 	const Frustum& frustum = camera.frustum();
 
-	render(scene.get_aabb_tree(), frustum);
+	render(scene.aabb_tree(), frustum);
 
 	change_per_color_.data().color = color3::red;
 	change_per_color_.update(device);
 
-	auto& actors = scene.get_actors();
+	auto& actors = scene.actors();
 
 	for (auto a : actors)
 	{
@@ -112,7 +112,7 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 	change_per_color_.data().color = color3::yellow;
 	change_per_color_.update(device);
 
-	auto& lights = scene.get_lights();
+	auto& lights = scene.lights();
 
 	for (auto l : lights)
 	{

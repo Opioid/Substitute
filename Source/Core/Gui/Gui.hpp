@@ -32,7 +32,7 @@ class Gui
 
 public:
 
-	Gui(logging::Message_server& message_server, scripting::Script_tool& script_tool);
+	Gui(logging::Message_server& message_server, scripting::Script_tool& Script_tool);
 
 	bool init(Resource_manager& resource_manager, rendering::Printer& printer);
 

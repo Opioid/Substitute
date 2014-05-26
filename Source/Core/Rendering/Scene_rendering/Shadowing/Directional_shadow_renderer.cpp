@@ -163,7 +163,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 
 	if (include_actors)
 	{
-		auto& actors = scene.get_actors();
+		auto& actors = scene.actors();
 
 		for (auto a : actors)
 		{
@@ -176,7 +176,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 		}
 	}
 
-	const scene::AABB_tree& tree = scene.get_aabb_tree();
+	const scene::AABB_tree& tree = scene.aabb_tree();
 
 	{
 		auto& props = tree.get_static_props();

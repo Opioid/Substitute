@@ -97,7 +97,7 @@ void Help_visualization_light_renderer::render(const scene::Scene& scene, const 
 	change_per_camera_.data().view_projection = camera.view_projection();
 	change_per_camera_.update(device);
 
-	auto& volumes = scene.get_irradiance_volumes();
+	auto& volumes = scene.irradiance_volumes();
 
 	for (auto volume : volumes)
 	{

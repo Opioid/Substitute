@@ -187,7 +187,7 @@ void Deferred_lighting_renderer::render(const scene::Scene& scene, const Renderi
 
 	if (context.options().is_set(Rendering_context::Options::Render_analytical_lighting))
 	{
-		for (auto l : scene.get_lights())
+		for (auto l : scene.lights())
 		{
 			const scene::Light& light = *l;
 
@@ -233,7 +233,7 @@ void Deferred_lighting_renderer::render_irradiance_volumes(const scene::Scene& s
 
 	device.set_input_layout(volume_input_layout_);
 
-	for (auto v : scene.get_irradiance_volumes())
+	for (auto v : scene.irradiance_volumes())
 	{
 		render_irradiance_volume(*v, context);
 	}
@@ -304,7 +304,7 @@ void Deferred_lighting_renderer::render_light_probes(const scene::Scene& scene, 
 
 	device.set_input_layout(volume_input_layout_);
 
-	for (auto p : scene.get_light_probes())
+	for (auto p : scene.light_probes())
 	{
 		render_light_probe(*p, context);
 	}

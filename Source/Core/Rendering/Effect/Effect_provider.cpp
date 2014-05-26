@@ -5,7 +5,7 @@
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Rendering_tool.hpp"
 #include "Resources/Resource_manager.hpp"
-#include "File/File_stream.hpp"
+#include "File/Text_stream.hpp"
 #include "Parsing/Json.hpp"
 #include "Logging/Logging.hpp"
 #include <sstream>
@@ -414,7 +414,7 @@ bool Effect_provider::load_shaders(std::vector<Handle<Shader>>& shaders, const r
 
 			std::string source_name = source_node.GetString();
 			std::string source;
-			bool result = load_shader_source(source, source_name);
+			bool result = file::read_text_file(source_name, source);
 
 			if (!result)
 			{
@@ -505,27 +505,6 @@ Handle<Shader> Effect_provider::compile_shader(Shader::Type type, const std::str
 	}
 
 	return shader;
-}
-
-bool Effect_provider::load_shader_source(std::string& source, const std::string& name)
-{
-	file::Input_stream stream(name);
-
-	if (!stream)
-	{
-		return false;
-	}
-
-	char buffer[4096];
-
-	while (stream.read(buffer, sizeof(buffer)))
-	{
-		source.append(buffer, sizeof(buffer));
-	}
-
-	source.append(buffer, stream.gcount());
-
-	return true;
 }
 
 std::string Effect_provider::generate_sampler_code(const std::vector<Effect_sampler::Description>& description)

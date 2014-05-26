@@ -32,32 +32,32 @@ public:
 
     void compile();
 
-	std::string name() const;
+	const std::string& name() const;
 	void set_name(const std::string& name);
 
-	void on_tick();
+	void on_tick(float time_slice);
 	void update(float delta);
 
 	const Camera& camera() const;
 	Camera& camera();
 
-	const AABB_tree& get_aabb_tree() const;
-	AABB_tree& get_aabb_tree();
+	const AABB_tree& aabb_tree() const;
+	AABB_tree& aabb_tree();
 
-	const std::vector<Entity*>& get_entities() const;
+	const std::vector<Entity*>& entities() const;
 
-    const Heap_cache<Actor>& get_actors() const;
+	const Heap_cache<Actor>& actors() const;
 
 //	const Decal_provider& get_decal_provider() const;
 
-    const Heap_cache<Light>& get_lights() const;
+	const Heap_cache<Light>& lights() const;
 
-	const Heap_cache<Irradiance_volume>& get_irradiance_volumes() const;
+	const Heap_cache<Irradiance_volume>& irradiance_volumes() const;
 
 	const Light_probe* surrounding_light_probe() const;
 	Light_probe* surrounding_light_probe();
 
-    const Heap_cache<Light_probe>& get_light_probes() const;
+	const Heap_cache<Light_probe>& light_probes() const;
 
 	Actor* create_actor(bool interpolated = true);
 	Static_prop* create_static_prop();
@@ -104,7 +104,7 @@ private:
 	Surrounding surrounding_;
 
 	Complex_factory_manager m_complex_factories;
-	std::vector<Complex*> m_complexes;
+	std::vector<Complex*> complexes_;
 };
 
 }
