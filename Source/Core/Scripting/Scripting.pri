@@ -7,6 +7,7 @@ SOURCES += Scripting/Scripter.cpp \
 	Scripting/scripting_Rendering.cpp \
 	Scripting/scripting_Scene.cpp \
     Scripting/Scripting.cpp \
+    Scripting/Script_object_wrapper.cpp \
     Scripting/Script_tool.cpp
 
 HEADERS += Scripting/Scripter.hpp \
@@ -18,4 +19,5 @@ HEADERS += Scripting/Scripter.hpp \
 	Scripting/scripting_Rendering.hpp \
 	Scripting/scripting_Scene.hpp \
     Scripting/Scripting.hpp \
+    Scripting/Script_object_wrapper.hpp \
     Scripting/Script_tool.hpp

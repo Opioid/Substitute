@@ -8,8 +8,7 @@ Actor::Actor()
 {}
 
 Actor::~Actor()
-{
-}
+{}
 
 void Actor::on_finalized_world_transformation()
 {

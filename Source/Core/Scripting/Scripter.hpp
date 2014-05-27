@@ -43,6 +43,9 @@ private:
 	std::set<std::string> added_files_;
 
 	std::string module_name_;
+
+
+	scene::Scene* scene_;
 };
 
 }

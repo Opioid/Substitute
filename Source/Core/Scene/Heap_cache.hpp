@@ -35,6 +35,20 @@ public:
         size_ = 0;
     }
 
+	Type* pop()
+	{
+		if (0 == size_)
+		{
+			return nullptr;
+		}
+		else
+		{
+			--size_;
+
+			return vector_[size_];
+		}
+	}
+
     Type* add()
     {
         Type* instance;

@@ -57,6 +57,8 @@ bool Scripter::register_script_class(scene::Scene& scene, const std::string& fil
 		return false;
 	}
 
+	scene_ = &scene;
+
 	return true;
 }
 
@@ -69,7 +71,7 @@ void Scripter::execute_on_scene_loaded()
 	asIObjectType* type = script_tool_.engine().engine_->GetObjectTypeById(module->GetTypeIdByDecl("Interpolation_test"));
 
 	// Get the factory function from the object type
-	asIScriptFunction* factory = type->GetFactoryByDecl("Interpolation_test @Interpolation_test()");
+	asIScriptFunction* factory = type->GetFactoryByDecl("Interpolation_test @Interpolation_test(Scene@)");
 	// Prepare the context to call the factory function
 
 	if (!factory)
@@ -79,6 +81,9 @@ void Scripter::execute_on_scene_loaded()
 	}
 
 	context->Prepare(factory);
+
+	context->SetArgAddress(0, static_cast<void*>(scene_));
+
 	// Execute the callr
 	context->Execute();
 	// Get the object that was created

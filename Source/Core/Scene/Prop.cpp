@@ -2,8 +2,6 @@
 #include "Model.hpp"
 #include "Rendering/Data_buffer.hpp"
 
-#include <iostream>
-
 namespace scene
 {
 
