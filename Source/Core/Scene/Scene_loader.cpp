@@ -152,7 +152,7 @@ void Scene_loader::load_surrounding(const rapidjson::Value& surrounding)
 	}
 }
 
-void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* /*parent*/)
+void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* parent)
 {
 	if (!entities.IsArray())
 	{
@@ -194,15 +194,15 @@ void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* /*par
 				const std::string property_name = n->name.GetString();
 				const rapidjson::Value& property_value = n->value;
 
-				if (property_name == "position")
+				if ("position" == property_name)
 				{
 					entity->set_local_position(json::read_float3(property_value));
 				}
-				else if (property_name == "scale")
+				else if ("scale" == property_name)
 				{
 					entity->set_local_scale(json::read_float3(property_value));
 				}
-				else if (property_name== "rotation")
+				else if ("rotation" == property_name)
 				{
 					entity->set_local_rotation(json::read_local_rotation(property_value));
 				}				
@@ -213,6 +213,11 @@ void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* /*par
 			if (children)
 			{
 				load_entities(children->value, entity);
+			}
+
+			if (parent)
+			{
+				parent->attach(entity);
 			}
 		}
 	}
@@ -279,6 +284,7 @@ Entity* Scene_loader::load_light(const rapidjson::Value& entity)
 
 Entity* Scene_loader::load_actor(const rapidjson::Value& entity)
 {
+	std::string name;
 	Handle<Model> model;
 	std::vector<Handle<Material>> materials; 
 
@@ -287,11 +293,15 @@ Entity* Scene_loader::load_actor(const rapidjson::Value& entity)
 		const std::string node_name = n->name.GetString();
 		const rapidjson::Value& node_value = n->value;
 
-		if (node_name == "model")
+		if ("name" == node_name)
+		{
+			name = node_value.GetString();
+		}
+		else if ("model" == node_name)
 		{
 			model = resource_manager_.load<Model>(node_value.GetString());
 		}
-		else if (node_name == "materials")
+		else if ("materials" == node_name)
 		{
 			if (!node_value.IsArray())
 			{
@@ -317,7 +327,7 @@ Entity* Scene_loader::load_actor(const rapidjson::Value& entity)
 		return nullptr;
 	}
 
-	Actor* actor = scene_.create_actor();
+	Actor* actor = scene_.create_actor(true, name);
 
 	actor->create_surfaces(model, static_cast<uint32_t>(materials.size()), materials.data());
 

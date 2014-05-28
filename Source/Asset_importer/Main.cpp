@@ -15,7 +15,7 @@ int main()
 
 	Importer importer;
 //	Model* model = importer.read("sphere.dae");
-	Model* model = importer.read("Mitsuba.obj");
+	Model* model = importer.read("Rock.obj");
 //	Model* model = importer.read("Sponza.obj");
 
 	if (!model)
@@ -24,13 +24,14 @@ int main()
 		return 0;
 	}
 
-	model->scale(0.90539f);
+	model->scale(0.0139f);
 
-//	float3x3 rotation;
-//	set_rotation_y(rotation, math::to_radians(90.f));
-//	model->rotate(rotation);
+	float3x3 rotation;
+	set_rotation_x(rotation, math::to_radians(180.f));
+	model->rotate(rotation);
 
 //	model->set_origin_center_bottom();
+	model->set_origin_center();
 
 	AABB aabb = model->calculate_aabb();
 
@@ -39,7 +40,7 @@ int main()
 
 	Exporter_json exporter;
 
-	exporter.write("Mitsuba", *model);
+	exporter.write("Rock", *model);
 //	exporter.write("Imrod", *model);
 
 	delete model;

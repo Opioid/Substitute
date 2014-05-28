@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scripting/Script_builder.hpp"
+#include "Memory/Heap_cache.hpp"
 #include <string>
 
 namespace scene
@@ -14,6 +15,7 @@ namespace scripting
 {
 
 class Script_tool;
+class Script_object_wrapper;
 
 class Scripter
 {
@@ -21,6 +23,10 @@ class Scripter
 public:
 
 	Scripter(Script_tool& script_tool);
+
+	void release();
+
+	void clear();
 
 	bool start();
 
@@ -30,7 +36,7 @@ public:
 
 	void execute_on_scene_loaded();
 
-	void execute_on_tick();
+	void execute_on_tick(float time_slice);
 
 private:
 
@@ -44,8 +50,16 @@ private:
 
 	std::string module_name_;
 
+	Heap_cache<Script_object_wrapper> script_objects_;
 
-	scene::Scene* scene_;
+	struct Registered_object
+	{
+		std::string script_type;
+		std::string native_type;
+		void*       native_object;
+	};
+
+	std::vector<Registered_object> added_objects_;
 };
 
 }

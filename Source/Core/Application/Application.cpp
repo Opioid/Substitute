@@ -1,6 +1,7 @@
 #include "Application.hpp"
 #include "Configuration.hpp"
 #include "Scripting/Scripting.hpp"
+#include "Scripting/Script_object_wrapper.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Baking/Light_baker.hpp"
 #include "Scene/Static_prop.hpp"
@@ -56,9 +57,13 @@ bool Application::run(const std::string& name, const uint2& dimensions, bool win
 				t += dt;
 				*/
 
-				scene_.on_tick(static_cast<float>(simulation_frequency_));
+				float time_slice = static_cast<float>(simulation_frequency_);
 
-				on_tick();
+				scene_.on_tick(time_slice);
+
+				scripter_.execute_on_tick(time_slice);
+
+				on_tick(time_slice);
 
 				accumulator -= simulation_frequency_;
 			}
@@ -170,12 +175,12 @@ bool Application::load_scene(const std::string& name)
 
     scene_.update(0.f);
 
-	on_load_scene();
-
     if (result)
     {
 		renderer_.light_baker()->bake(scene_, resource_manager_);
     }
+
+	on_scene_loaded();
 
 	scripter_.execute_on_scene_loaded();
 
@@ -199,10 +204,10 @@ bool Application::on_post_init()
 	return true;
 }
 
-void Application::on_load_scene()
+void Application::on_scene_loaded()
 {}
 
-void Application::on_tick()
+void Application::on_tick(float time_slice)
 {}
 
 void Application::on_input_signal(const platform::Input_signal& signal)
@@ -316,6 +321,8 @@ void Application::release()
 	resource_manager_.release();
 
 	rendering_tool_.release();
+
+	scripter_.release();
 
 	script_tool_.release();
 

@@ -1,5 +1,6 @@
 #include "scripting_Scene.hpp"
 #include "scripting_Common.hpp"
+#include "scripting_Entity.hpp"
 #include "Script_tool.hpp"
 #include "Application/Application.hpp"
 #include "Logging/Logging.hpp"
@@ -15,6 +16,11 @@ void set_linear_white(float white);
 
 bool init_scene(Script_tool& tool)
 {
+	if (!init_entity(tool))
+	{
+		return false;
+	}
+
 	const Script_engine& engine = tool.engine();
 
 	engine.set_default_namespace("scene");
@@ -30,8 +36,9 @@ bool init_scene(Script_tool& tool)
 
 	engine.register_object_type("Scene", 0, asOBJ_REF | asOBJ_NOCOUNT);
 
-	engine.register_object_method("Scene", "const string &name() const", asMETHODPR(scene::Scene, name, () const, const std::string&));
+	engine.register_object_method("Scene", "const string& name() const", asMETHODPR(scene::Scene, name, () const, const std::string&));
 
+	engine.register_object_method("Scene", "Entity@ entity(const string &in) const", asMETHODPR(scene::Scene, entity, (const std::string&) const, scene::Entity*));
 
 	return true;
 }

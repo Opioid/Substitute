@@ -1,5 +1,6 @@
 #include "Scripter.hpp"
 #include "Script_tool.hpp"
+#include "Script_object_wrapper.hpp"
 #include "Scripting/Script_context.hpp"
 #include "File/Text_stream.hpp"
 #include "Logging/Logging.hpp"
@@ -8,13 +9,28 @@ namespace scripting
 {
 
 Scripter::Scripter(Script_tool& script_tool) : script_tool_(script_tool), module_name_("Scene")
-{
+{}
 
+void Scripter::release()
+{
+	clear();
+}
+
+void Scripter::clear()
+{
+	for (auto o : script_objects_)
+	{
+		o->clear();
+	}
+
+	script_objects_.clear();
+
+	added_files_.clear();
 }
 
 bool Scripter::start()
 {
-	added_files_.clear();
+	clear();
 
 	return script_builder_.start_new_module(module_name_, script_tool_.engine());
 }
@@ -25,6 +41,22 @@ bool Scripter::compile()
 	{
 		return false;
 	}
+
+	auto context = script_tool_.default_context();
+
+	asIScriptModule* module = script_tool_.engine().query_module(module_name_);
+
+	for (auto& added_object : added_objects_)
+	{
+		Script_object_wrapper* object = script_objects_.add();
+
+		if (!object->construct(added_object.script_type, added_object.native_type, added_object.native_object, script_tool_.engine(), context, module))
+		{
+			script_objects_.pop();
+		}
+	}
+
+	added_objects_.clear();
 
 	return true;
 }
@@ -52,64 +84,34 @@ bool Scripter::register_script_class(scene::Scene& scene, const std::string& fil
 
 	if (!script_builder_.add_section(file_name, source_buffer_))
 	{
-	//	logging::error()
+		logging::error("Scripter::register_script_class(): could not open add section for \"" + file_name + "\".");
 
 		return false;
 	}
 
-	scene_ = &scene;
+	added_objects_.push_back( { class_name, "Scene", static_cast<void*>(&scene) } );
 
 	return true;
 }
 
 void Scripter::execute_on_scene_loaded()
 {
-	auto* context = script_tool_.default_context()->context_;
+	auto context = script_tool_.default_context();
 
-	asIScriptModule* module = script_tool_.engine().query_module(module_name_);
-
-	asIObjectType* type = script_tool_.engine().engine_->GetObjectTypeById(module->GetTypeIdByDecl("Interpolation_test"));
-
-	// Get the factory function from the object type
-	asIScriptFunction* factory = type->GetFactoryByDecl("Interpolation_test @Interpolation_test(Scene@)");
-	// Prepare the context to call the factory function
-
-	if (!factory)
+	for (auto o : script_objects_)
 	{
-		logging::error("Oh no");
-		return;
+		o->execute_on_scene_loaded(context);
 	}
-
-	context->Prepare(factory);
-
-	context->SetArgAddress(0, static_cast<void*>(scene_));
-
-	// Execute the callr
-	context->Execute();
-	// Get the object that was created
-	asIScriptObject* object = *(asIScriptObject**)context->GetAddressOfReturnValue();
-	// If you're going to store the object you must increase the reference,
-	// otherwise it will be destroyed when the context is reused or destroyed.
-	object->AddRef();
-
-	// Obtain the function object that represents the class method
-	asIScriptFunction* function = type->GetMethodByDecl("void on_scene_loaded()");
-	// Prepare the context for calling the method
-	context->Prepare(function);
-	// Set the object pointer
-	context->SetObject(object);
-	// Execute the call
-	context->Execute();
-/*
-	asIScriptFunction* function = module->GetFunctionByDecl("void on_scene_loaded()");
-	context->Prepare(function);
-	context->Execute();
-	*/
 }
 
-void Scripter::execute_on_tick()
+void Scripter::execute_on_tick(float time_slice)
 {
+	auto context = script_tool_.default_context();
 
+	for (auto o : script_objects_)
+	{
+		o->execute_on_tick(context, time_slice);
+	}
 }
 
 }

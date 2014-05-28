@@ -73,6 +73,20 @@ void Model::rotate(const float3x3& m)
 	}
 }
 
+void Model::set_origin_center()
+{
+	AABB aabb = calculate_aabb();
+
+	// TODO implement this properly
+
+	for (size_t i = 0; i < positions.size(); ++i)
+	{
+		positions[i].y += aabb.halfsize.y;
+	//	positions[i].x -= aabb.position.x;
+	//	positions[i].z -= aabb.position.z;
+	}
+}
+
 void Model::set_origin_center_bottom()
 {
 	AABB aabb = calculate_aabb();

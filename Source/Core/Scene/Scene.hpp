@@ -8,7 +8,7 @@
 #include "AABB_tree/AABB_tree.hpp"
 #include "Surrounding.hpp"
 #include "Complex/Complex_factory_manager.hpp"
-#include "Heap_cache.hpp"
+#include "Memory/Heap_cache.hpp"
 #include <vector>
 
 namespace scene
@@ -44,6 +44,8 @@ public:
 	const AABB_tree& aabb_tree() const;
 	AABB_tree& aabb_tree();
 
+	Entity* entity(const std::string& name) const;
+
 	const std::vector<Entity*>& entities() const;
 
 	const Heap_cache<Actor>& actors() const;
@@ -59,7 +61,7 @@ public:
 
 	const Heap_cache<Light_probe>& light_probes() const;
 
-	Actor* create_actor(bool interpolated = true);
+	Actor* create_actor(bool interpolated = true, const std::string& name = "");
 	Static_prop* create_static_prop();
 
 	Light* create_light(Light::Type type);
@@ -83,6 +85,7 @@ private:
 	AABB_tree aabb_tree_;
 
 	std::vector<Entity*> entities_;
+	std::map<std::string, Entity*> named_entities_;
 
     Heap_cache<Actor> actors_;
 

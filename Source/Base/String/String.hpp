@@ -45,6 +45,20 @@ std::ostream& operator<<(std::ostream& stream, const tVector4<T>& v)
 }
 
 template<typename T>
+std::ostream& operator<<(std::ostream& stream, const tQuaternion<T>& q)
+{
+	return stream << "[" << q.x << ", " << q.y << ", " << q.z << ", " << q.w << "]";
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& stream, const tMatrix3x3<T>& m)
+{
+	return stream << "[" << m.m00 << ", " << m.m01 << ", " <<  m.m02 << ", "
+						 << m.m10 << ", " << m.m11 << ", " <<  m.m12 << ", "
+						 << m.m20 << ", " << m.m21 << ", " <<  m.m22 <<  "]";
+}
+
+template<typename T>
 std::ostream& operator<<(std::ostream& stream, const tMatrix4x4<T>& m)
 {
 	return stream << "[" << m.m00 << ", " << m.m01 << ", " <<  m.m02 << ", " <<  m.m03 << "," << std::endl

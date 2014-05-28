@@ -38,6 +38,8 @@ void Scene::clear()
 
 	entities_.clear();
 
+	named_entities_.clear();
+
 	// clear irradiance volumes
 	for (auto iv : irradiance_volumes_)
 	{
@@ -192,6 +194,18 @@ AABB_tree& Scene::aabb_tree()
 	return aabb_tree_;
 }
 
+Entity* Scene::entity(const std::string& name) const
+{
+	auto e = named_entities_.find(name);
+
+	if (named_entities_.end() == e)
+	{
+		return nullptr;
+	}
+
+	return e->second;
+}
+
 const std::vector<Entity*>& Scene::entities() const
 {
 	return entities_;
@@ -232,11 +246,16 @@ const Heap_cache<Light_probe>& Scene::light_probes() const
 	return light_probes_;
 }
 
-Actor* Scene::create_actor(bool interpolated)
+Actor* Scene::create_actor(bool interpolated, const std::string& name)
 {
 	Actor* actor = actors_.add();
 
 	entities_.push_back(actor);
+
+	if (!name.empty())
+	{
+		named_entities_[name] = static_cast<Entity*>(actor);
+	}
 
     actor->set_visible(true);
 

@@ -22,6 +22,7 @@ struct Model
 
 	void rotate(const float3x3& m);
 
+	void set_origin_center();
 	void set_origin_center_bottom();
 
 	struct Group

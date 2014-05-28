@@ -29,7 +29,7 @@ int main()
 
     Importer importer;
 
-	Model* model = importer.read("Mitsuba.json");
+	Model* model = importer.read("Rock.json");
 
     if (!model)
     {
@@ -38,7 +38,7 @@ int main()
         return 0;
     }
 
-	export_model("Mitsuba", *model);
+	export_model("Rock", *model);
 //	export_AABB_tree("Sponza", *model);
 
     delete model;

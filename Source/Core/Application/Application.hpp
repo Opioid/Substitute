@@ -74,9 +74,9 @@ protected:
 
 	virtual bool on_post_init();
 
-	virtual void on_load_scene();
+	virtual void on_scene_loaded();
 
-	virtual void on_tick();
+	virtual void on_tick(float time_slice);
 
 	virtual void on_input_signal(const platform::Input_signal& signal);
 

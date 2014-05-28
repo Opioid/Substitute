@@ -76,26 +76,26 @@ template<typename T>
 const tQuaternion<T> tQuaternion<T>::identity(T(0), T(0), T(0), T(1));
 
 template<typename T>
-inline T dot(const tQuaternion<T> &a, const tQuaternion<T> &b)
+inline T dot(const tQuaternion<T>& a, const tQuaternion<T>& b)
 {
 	return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 }
 
 template<typename T>
-inline T length(const tQuaternion<T> &q)
+inline T length(const tQuaternion<T>& q)
 {
 	return sqrt(dot(q, q));
 }
 
 template<typename T>
-inline T angle(const tQuaternion<T> &a, const tQuaternion<T> &b)
+inline T angle(const tQuaternion<T>& a, const tQuaternion<T>& b)
 {
 	T s = sqrt(dot(a, a) * dot(b, b));
 	return acos(dot(a, b) / s);
 }
 
 template<typename T>
-inline void set_rotation_x(tQuaternion<T> &q, T a)
+inline void set_rotation_x(tQuaternion<T>& q, T a)
 {
 	q.x = sin(a * T(0.5));
 	q.y = T(0);
@@ -104,7 +104,7 @@ inline void set_rotation_x(tQuaternion<T> &q, T a)
 }
 
 template<typename T>
-inline void set_rotation_y(tQuaternion<T> &q, T a)
+inline void set_rotation_y(tQuaternion<T>& q, T a)
 {
 	q.x = T(0);
 	q.y = sin(a * T(0.5));
@@ -113,7 +113,7 @@ inline void set_rotation_y(tQuaternion<T> &q, T a)
 }
 
 template<typename T>
-inline void set_rotation_z(tQuaternion<T> &q, T a)
+inline void set_rotation_z(tQuaternion<T>& q, T a)
 {
 	q.x = T(0);
 	q.y = T(0);
@@ -122,7 +122,7 @@ inline void set_rotation_z(tQuaternion<T> &q, T a)
 }
 
 template<typename T>
-inline void set_rotation(tQuaternion<T> &q, const tVector3<T>& v, T a)
+inline void set_rotation(tQuaternion<T>& q, const tVector3<T>& v, T a)
 {
 	T d = length(v);
 
@@ -135,7 +135,7 @@ inline void set_rotation(tQuaternion<T> &q, const tVector3<T>& v, T a)
 }
 
 template<typename T>
-inline void set_rotation(tQuaternion<T> &q, T yaw, T pitch, T roll)
+inline void set_rotation(tQuaternion<T>& q, T yaw, T pitch, T roll)
 {
 	/*	btScalar halfYaw = btScalar(yaw) * btScalar(0.5);  
 		btScalar halfPitch = btScalar(pitch) * btScalar(0.5);  
@@ -178,7 +178,7 @@ inline void set_rotation(tQuaternion<T> &q, T yaw, T pitch, T roll)
 }
 
 template<typename T>
-inline tQuaternion<T> slerp(const tQuaternion<T> &a, const tQuaternion<T> &b, T t)
+inline tQuaternion<T> slerp(const tQuaternion<T>& a, const tQuaternion<T>& b, T t)
 {
 /*	T theta = angle(a, b);
 
