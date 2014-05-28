@@ -64,7 +64,7 @@ public:
 	Actor* create_actor(bool interpolated = true, const std::string& name = "");
 	Static_prop* create_static_prop();
 
-	Light* create_light(Light::Type type);
+	Light* create_light(Light::Type type, const std::string& name = "");
 	Irradiance_volume* create_irradiance_volume(const uint3& resolution, const float3& position, const float3& scale, const Quaternion& rotation);
 	Light_probe* create_light_probe();
 	Light_probe* create_light_probe(const float3& position, const float3& scale, const Quaternion& rotation);
@@ -77,6 +77,8 @@ public:
 	Complex_factory_manager& complex_factories();
 
 private:
+
+	void add_entity(Entity* entity, const std::string& name = "");
 
 	std::string name_;
 

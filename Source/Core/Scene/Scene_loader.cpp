@@ -234,19 +234,21 @@ Entity* Scene_loader::load_light(const rapidjson::Value& entity)
 
 	const std::string type_name = type->value.GetString();
 
+	const std::string name = json::read_string(entity, "name");
+
 	Light* light = nullptr;
 
 	if ("Directional" == type_name)
 	{
-		light = scene_.create_light(Light::Type::Directional);
+		light = scene_.create_light(Light::Type::Directional, name);
 	}
 	else if ("Point" == type_name)
 	{
-		light = scene_.create_light(Light::Type::Point);
+		light = scene_.create_light(Light::Type::Point, name);
 	}
 	else if ("Spot" == type_name)
 	{
-		light = scene_.create_light(Light::Type::Spot);
+		light = scene_.create_light(Light::Type::Spot, name);
 	}
 
 	if (light)
@@ -256,23 +258,23 @@ Entity* Scene_loader::load_light(const rapidjson::Value& entity)
 			const std::string node_name = n->name.GetString();
 			const rapidjson::Value& node_value = n->value;
 
-			if (node_name == "color")
+			if ("color" == node_name)
 			{
 				light->set_color(json::read_float3(node_value));
 			}
-			if (node_name == "lumen")
+			if ("lumen" == node_name)
 			{
-				light->set_lumen(float(node_value.GetDouble()));
+				light->set_lumen(static_cast<float>(node_value.GetDouble()));
 			}
-			else if (node_name== "shadow")
+			else if ("shadow" == node_name)
 			{
 				light->set_casts_shadow(node_value.GetBool());
 			}
-			else if (node_name == "fov")
+			else if ("fov" == node_name)
 			{
-				light->set_fov(math::to_radians(float(node_value.GetDouble())));
+				light->set_fov(math::to_radians(static_cast<float>(node_value.GetDouble())));
 			}
-			else if (node_name == "texture")
+			else if ("texture" == node_name)
 			{
 				light->set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString()));
 			}

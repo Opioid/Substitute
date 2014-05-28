@@ -250,14 +250,7 @@ Actor* Scene::create_actor(bool interpolated, const std::string& name)
 {
 	Actor* actor = actors_.add();
 
-	entities_.push_back(actor);
-
-	if (!name.empty())
-	{
-		named_entities_[name] = static_cast<Entity*>(actor);
-	}
-
-    actor->set_visible(true);
+	add_entity(actor, name);
 
 	if (interpolated)
 	{
@@ -272,14 +265,13 @@ Static_prop* Scene::create_static_prop()
 	return static_props_.add();
 }
 
-Light* Scene::create_light(Light::Type type)
+Light* Scene::create_light(Light::Type type, const std::string& name)
 {
 	Light* light = lights_.add();
 
-	entities_.push_back(light);
+	add_entity(light, name);
 
     light->init(type);
-    light->set_visible(true);
 
 	return light;
 }
@@ -336,6 +328,18 @@ Complex* Scene::create_complex(const std::string& type, Resource_manager& resour
 Complex_factory_manager& Scene::complex_factories()
 {
 	return m_complex_factories;
+}
+
+void Scene::add_entity(Entity* entity, const std::string& name)
+{
+	entities_.push_back(entity);
+
+	if (!name.empty())
+	{
+		named_entities_[name] = entity;
+	}
+
+	entity->set_visible(true);
 }
 
 }
