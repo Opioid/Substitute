@@ -9,12 +9,16 @@ Script_tool::Script_tool(logging::Message_server& server) : Message_sender(serve
 {
 	engine_.set_message_callback(&Script_tool::message_callback, this);
 
-	default_context_ = engine_.create_context();
+	console_context_ = engine_.create_context();
+
+	main_context_ = engine_.create_context();
 }
 
 void Script_tool::release()
 {
-	delete default_context_;
+	delete main_context_;
+
+	delete console_context_;
 }
 
 const Script_engine& Script_tool::engine() const
@@ -22,14 +26,19 @@ const Script_engine& Script_tool::engine() const
 	return engine_;
 }
 
-Script_context* Script_tool::default_context()
+Script_context* Script_tool::console_context()
 {
-	return default_context_;
+	return console_context_;
+}
+
+Script_context* Script_tool::main_context()
+{
+	return main_context_;
 }
 
 void Script_tool::execute_string(const std::string& script) const
 {
-	engine_.execute_string(script, default_context_);
+	engine_.execute_string(script, console_context_);
 }
 
 void Script_tool::message_callback(const std::string& text, Script_engine::Message_type type)

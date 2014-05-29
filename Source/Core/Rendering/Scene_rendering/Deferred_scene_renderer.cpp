@@ -123,7 +123,7 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 		return false;
 	}
 
-	framebuffer_->set_render_targets({ normal_target_->render_tarview(), color_target_->render_tarview(), surface_target_->render_tarview() },
+	framebuffer_->set_render_targets({ normal_target_->render_target_view(), color_target_->render_target_view(), surface_target_->render_target_view() },
 									 depth_stencil->depth_stencil_view());
 
 	if (!framebuffer_->is_valid())

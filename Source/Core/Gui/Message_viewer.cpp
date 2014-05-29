@@ -81,7 +81,7 @@ namespace gui
 				}
 			}
 			
-			switch (entry.m_message.get_type())
+			switch (entry.m_message.type())
 			{
 				case logging::Message::Type::Output:
 					printer.set_color(rendering::Color4(0.3f, 0.3f, 1.f));

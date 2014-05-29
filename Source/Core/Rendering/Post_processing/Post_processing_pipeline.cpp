@@ -38,7 +38,7 @@ bool Post_processing_pipeline::resize_targets(const uint2& size, Data_format::Va
 		return false;
 	}
 
-	framebuffer_->set_render_targets(m_scratch_texture->render_tarview());
+	framebuffer_->set_render_targets(m_scratch_texture->render_target_view());
 
 	if (!framebuffer_->is_valid())
 	{

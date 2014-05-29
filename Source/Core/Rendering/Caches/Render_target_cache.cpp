@@ -10,7 +10,7 @@ Render_target_cache::Render_target_cache(const Rendering_device& device) : Cache
 
 void Render_target_cache::release()
 {
-	render_tarviews_.clear();
+	Render_target_views_.clear();
 	depth_stencil_views_.clear();
 }
 
@@ -89,7 +89,7 @@ Handle<Depth_stencil_shader_resource_view> Render_target_cache::get_depth_stenci
 Handle<Render_target_shader_resource_view> Render_target_cache::get_render_target_shader_resource_view(const Texture_description& description,
 																									   std::initializer_list<Handle<Render_target_shader_resource_view>> must_not_match)
 {
-	for (const auto& t : render_tarviews_)
+	for (const auto& t : Render_target_views_)
 	{
 		if (t.description == description)
 		{
@@ -117,7 +117,7 @@ Handle<Render_target_shader_resource_view> Render_target_cache::get_render_targe
 
 	Resource_slot<Render_target_shader_resource_view> slot{ description, render_target };
 
-	render_tarviews_.push_back(slot);
+	Render_target_views_.push_back(slot);
 
 	return render_target;
 }

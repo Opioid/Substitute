@@ -17,7 +17,9 @@ public:
 
 	const Script_engine& engine() const;
 
-	Script_context* default_context();
+	Script_context* console_context();
+
+	Script_context* main_context();
 
 	void execute_string(const std::string& script) const;
 
@@ -27,7 +29,9 @@ private:
 
 	Script_engine engine_;
 
-	Script_context* default_context_;
+	Script_context* console_context_;
+
+	Script_context* main_context_;
 };
 
 }

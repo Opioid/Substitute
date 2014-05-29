@@ -128,7 +128,7 @@ void Environment_map_renderer::render(const scene::Scene& scene, const float3& p
 
 	for (uint32_t i = 0; i < 6; ++i)
 	{
-		framebuffer_->set_render_targets(color_target_->render_tarview(i), depth_stencil_->depth_stencil_view());
+		framebuffer_->set_render_targets(color_target_->render_target_view(i), depth_stencil_->depth_stencil_view());
 
 		Color4 clear_color(0.f, 0.f, 0.f, 1.f);
 		device.clear_color(framebuffer_, 1, &clear_color);
@@ -152,7 +152,7 @@ void Environment_map_renderer::start_batch(const Rendering_context::Rendering_op
 
 	context_.set_options(options);
 
-	framebuffer_->set_render_targets(color_target_->render_tarview(0), depth_stencil_->depth_stencil_view());
+	framebuffer_->set_render_targets(color_target_->render_target_view(0), depth_stencil_->depth_stencil_view());
 
 	Color4 clear_color(0.f, 0.f, 0.f, 1.f);
 	device.clear_color(framebuffer_, 1, &clear_color);

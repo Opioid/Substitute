@@ -43,7 +43,7 @@ Script_context* Script_engine::create_context() const
 	return new Script_context(engine_->CreateContext());
 }
 
-asIScriptModule* Script_engine::query_module(const std::string& name) const
+asIScriptModule* Script_engine::module(const std::string& name) const
 {
 	return engine_->GetModule(name.c_str());
 }

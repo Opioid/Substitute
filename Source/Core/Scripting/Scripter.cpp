@@ -26,6 +26,13 @@ void Scripter::clear()
 	script_objects_.clear();
 
 	added_files_.clear();
+
+	asIScriptModule* module = script_tool_.engine().module(module_name_);
+
+	if (module)
+	{
+		module->Discard();
+	}
 }
 
 bool Scripter::start()
@@ -42,9 +49,9 @@ bool Scripter::compile()
 		return false;
 	}
 
-	auto context = script_tool_.default_context();
+	auto context = script_tool_.main_context();
 
-	asIScriptModule* module = script_tool_.engine().query_module(module_name_);
+	asIScriptModule* module = script_tool_.engine().module(module_name_);
 
 	for (auto& added_object : added_objects_)
 	{
@@ -62,6 +69,41 @@ bool Scripter::compile()
 }
 
 bool Scripter::register_script_class(scene::Scene& scene, const std::string& file_name, const std::string& class_name)
+{
+	return register_script_class(static_cast<void*>(&scene), "Scene", file_name, class_name);
+}
+
+bool Scripter::register_script_class(scene::Light& light, const std::string& file_name, const std::string& class_name)
+{
+	return register_script_class(static_cast<void*>(&light), "Light", file_name, class_name);
+}
+
+bool Scripter::register_script_class(scene::Actor& actor, const std::string& file_name, const std::string& class_name)
+{
+	return register_script_class(static_cast<void*>(&actor), "Actor", file_name, class_name);
+}
+
+void Scripter::execute_on_scene_loaded()
+{
+	auto context = script_tool_.main_context();
+
+	for (auto o : script_objects_)
+	{
+		o->execute_on_scene_loaded(context);
+	}
+}
+
+void Scripter::execute_on_tick(float time_slice)
+{
+	auto context = script_tool_.main_context();
+
+	for (auto o : script_objects_)
+	{
+		o->execute_on_tick(context, time_slice);
+	}
+}
+
+bool Scripter::register_script_class(void* native_object, const std::string& native_type, const std::string& file_name, const std::string& class_name)
 {
 	if (file_name.empty() || class_name.empty())
 	{
@@ -89,29 +131,9 @@ bool Scripter::register_script_class(scene::Scene& scene, const std::string& fil
 		return false;
 	}
 
-	added_objects_.push_back( { class_name, "Scene", static_cast<void*>(&scene) } );
+	added_objects_.push_back( { class_name, native_type, native_object } );
 
 	return true;
-}
-
-void Scripter::execute_on_scene_loaded()
-{
-	auto context = script_tool_.default_context();
-
-	for (auto o : script_objects_)
-	{
-		o->execute_on_scene_loaded(context);
-	}
-}
-
-void Scripter::execute_on_tick(float time_slice)
-{
-	auto context = script_tool_.default_context();
-
-	for (auto o : script_objects_)
-	{
-		o->execute_on_tick(context, time_slice);
-	}
 }
 
 }

@@ -30,6 +30,8 @@ Data_format_mapping Data_format_mapping::map(Data_format::Value format)
 		return Data_format_mapping(GL_RG16F, GL_RG, 2, GL_HALF_FLOAT, false);
 	case Data_format::R16G16_UNorm:
 		return Data_format_mapping(GL_RG16, GL_RG, 2, GL_UNSIGNED_SHORT, true);
+	case Data_format::R16G16_SNorm:
+		return Data_format_mapping(GL_RG16_SNORM, GL_RG_SNORM, 2, GL_SHORT, true);
 	case Data_format::D32_Float:
 		return Data_format_mapping(GL_DEPTH_COMPONENT32F, GL_RED, 1, GL_FLOAT, false);
 	case Data_format::R32_Float:

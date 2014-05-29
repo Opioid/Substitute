@@ -39,6 +39,7 @@ bool init_scene(Script_tool& tool)
 	engine.register_object_method("Scene", "const string& name() const", asMETHODPR(scene::Scene, name, () const, const std::string&));
 
 	engine.register_object_method("Scene", "Entity@ entity(const string &in) const", asMETHODPR(scene::Scene, entity, (const std::string&) const, scene::Entity*));
+	engine.register_object_method("Scene", "Light@ light(const string &in) const", asMETHODPR(scene::Scene, light, (const std::string&) const, scene::Light*));
 
 	return true;
 }

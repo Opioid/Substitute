@@ -3,7 +3,7 @@ void main()
 	ivec2 pixel_coord = ivec2(gl_FragCoord.x, gl_FragCoord.y);
 
 	float depth  = texelFetch(g_depth_map, pixel_coord, 0).r;
-	vec3 normal  = decode_normal_spheremap(texelFetch(g_normal_map, pixel_coord, 0).xy);
+	vec3 normal  = decode_normal(texelFetch(g_normal_map, pixel_coord, 0).xy);
 	vec3 color   = texelFetch(g_color_map, pixel_coord, 0).rgb;
 	vec3 surface = texelFetch(g_surface_map, pixel_coord, 0).xyz;
 

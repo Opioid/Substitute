@@ -60,22 +60,22 @@ size_t Shader_resource_view::num_bytes() const
 	return static_cast<size_t>(description_.num_layers * num_blocks * Data_format::num_bytes_per_block(description_.format));
 }
 
-Render_tarview::Render_tarview(uint32_t id, const Texture_description& description, const Handle<Texture>& texture) :
+Render_target_view::Render_target_view(uint32_t id, const Texture_description& description, const Handle<Texture>& texture) :
 	Texture_view(id, description, texture)
 {}
 
-Render_target_shader_resource_view::Render_target_shader_resource_view(const Handle<Render_tarview>& render_tarview, const Handle<Shader_resource_view>& shader_resource_view) :
-	render_tarview_(render_tarview), shader_resource_view_(shader_resource_view)
+Render_target_shader_resource_view::Render_target_shader_resource_view(const Handle<Render_target_view>& Render_target_view, const Handle<Shader_resource_view>& shader_resource_view) :
+	render_target_view_(Render_target_view), shader_resource_view_(shader_resource_view)
 {}
 
-const Handle<Render_tarview>& Render_target_shader_resource_view::render_tarview() const
+const Handle<Render_target_view>& Render_target_shader_resource_view::render_target_view() const
 {
-	return render_tarview_;
+	return render_target_view_;
 }
 
-Handle<Render_tarview>& Render_target_shader_resource_view::render_tarview()
+Handle<Render_target_view>& Render_target_shader_resource_view::render_target_view()
 {
-	return render_tarview_;
+	return render_target_view_;
 }
 
 const Handle<Shader_resource_view>& Render_target_shader_resource_view::shader_resource_view() const
@@ -88,25 +88,25 @@ Handle<Shader_resource_view>& Render_target_shader_resource_view::shader_resourc
 	return shader_resource_view_;
 }
 
-Cube_render_target_shader_resource_view::Cube_render_target_shader_resource_view(const Handle<Render_tarview>* render_tarviews, const Handle<Shader_resource_view>& shader_resource_view) :
+Cube_render_target_shader_resource_view::Cube_render_target_shader_resource_view(const Handle<Render_target_view>* Render_target_views, const Handle<Shader_resource_view>& shader_resource_view) :
 	shader_resource_view_(shader_resource_view)
 {
-	render_tarviews_[0] = render_tarviews[0];
-	render_tarviews_[1] = render_tarviews[1];
-	render_tarviews_[2] = render_tarviews[2];
-	render_tarviews_[3] = render_tarviews[3];
-	render_tarviews_[4] = render_tarviews[4];
-	render_tarviews_[5] = render_tarviews[5];
+	Render_target_views_[0] = Render_target_views[0];
+	Render_target_views_[1] = Render_target_views[1];
+	Render_target_views_[2] = Render_target_views[2];
+	Render_target_views_[3] = Render_target_views[3];
+	Render_target_views_[4] = Render_target_views[4];
+	Render_target_views_[5] = Render_target_views[5];
 }
 
-const Handle<Render_tarview>& Cube_render_target_shader_resource_view::render_tarview(uint32_t face) const
+const Handle<Render_target_view>& Cube_render_target_shader_resource_view::render_target_view(uint32_t face) const
 {
-	return render_tarviews_[face];
+	return Render_target_views_[face];
 }
 
-Handle<Render_tarview>& Cube_render_target_shader_resource_view::render_tarview(uint32_t face)
+Handle<Render_target_view>& Cube_render_target_shader_resource_view::render_target_view(uint32_t face)
 {
-	return render_tarviews_[face];
+	return Render_target_views_[face];
 }
 
 const Handle<Shader_resource_view>& Cube_render_target_shader_resource_view::shader_resource_view() const

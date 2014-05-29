@@ -123,9 +123,9 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 			continue;
 		}
 
-		if (scene::Light::Type::Point == light.get_type())
+		if (scene::Light::Type::Point == light.type())
 		{
-			float radius = l->get_point_energy_and_range().w;
+			float radius = l->point_energy_and_range().w;
 			Sphere sphere(l->world_position(), radius);
 
 			if (frustum.intersect(sphere))
@@ -133,7 +133,7 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 				render(sphere);
 			}
 		}
-		else if (scene::Light::Type::Spot == light.get_type())
+		else if (scene::Light::Type::Spot == light.type())
 		{
 			Frustum frustum(light.calculate_view_projection());
 

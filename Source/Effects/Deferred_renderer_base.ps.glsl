@@ -108,7 +108,7 @@ void main()
 
 #endif // SURFACE_MAP
 
-	pixel_out.normal  = encode_normal_spheremap(normal);
+	pixel_out.normal  = encode_normal(normal);
 	pixel_out.color   = color_and_emissive_factor; 
 	pixel_out.surface = surface;
 }

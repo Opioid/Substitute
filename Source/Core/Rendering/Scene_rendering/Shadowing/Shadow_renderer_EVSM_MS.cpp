@@ -48,7 +48,7 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 		return false;
 	}
 
-	resolve_shadow_.framebuffer->set_render_targets(shadow_map_->render_tarview());
+	resolve_shadow_.framebuffer->set_render_targets(shadow_map_->render_target_view());
 	if (!resolve_shadow_.framebuffer->is_valid())
 	{
 		return false;

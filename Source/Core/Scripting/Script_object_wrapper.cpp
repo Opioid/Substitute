@@ -6,10 +6,7 @@
 namespace scripting
 {
 
-Script_object_wrapper::Script_object_wrapper()
-{}
-
-Script_object_wrapper::~Script_object_wrapper()
+Script_object_wrapper::Script_object_wrapper() : script_object_(nullptr), on_scene_loaded_(nullptr), on_tick_(nullptr)
 {}
 
 bool Script_object_wrapper::construct(const std::string& script_type, const std::string& native_type, void* native_object,
@@ -63,6 +60,7 @@ void Script_object_wrapper::clear()
 		script_object_ = nullptr;
 
 		on_scene_loaded_ = nullptr;
+		on_tick_ = nullptr;
 	}
 }
 

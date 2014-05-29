@@ -43,7 +43,7 @@ namespace logging
 
 	void Html_log_writer::on_receive(const Message& message)
 	{
-		switch (message.get_type())
+		switch (message.type())
 		{
 			case Message::Type::Input:   m_stream << "<span class=\"input\">";   break;
 			case Message::Type::Output:  m_stream << "<span class=\"output\">";  break;

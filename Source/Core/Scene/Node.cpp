@@ -157,7 +157,7 @@ void Node::add_sibling(Node* node)
 
 void Node::detach(Node* node)
 {
-	//we can assume this to be true because of detach()
+	// we can assume this to be true because of detach()
 //	if (node->parent_ == this)
 //	{
 		node->parent_ = nullptr;

@@ -107,7 +107,7 @@ bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 		return false;
 	}
 
-	luminance_framebuffer_->set_render_targets(luminance_target_->render_tarview());
+	luminance_framebuffer_->set_render_targets(luminance_target_->render_target_view());
 
 	if (!luminance_framebuffer_->is_valid())
 	{
@@ -143,7 +143,7 @@ bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 			return false;
 		}
 
-		bloom_framebuffers_[i]->set_render_targets(bloom_targets_[i]->render_tarview());
+		bloom_framebuffers_[i]->set_render_targets(bloom_targets_[i]->render_target_view());
 
 		if (!bloom_framebuffers_[i]->is_valid())
 		{
@@ -342,7 +342,7 @@ void Standard_Hdr::calculate_average_luminance(const Shader_resource_view* sourc
 
 	m_render_tool.get_context().set_blend_state(blend_state__luminance);
 
-	m_render_tool.get_context().set_render_target(&m_luminance->render_tarview(), nullptr);
+	m_render_tool.get_context().set_render_target(&m_luminance->Render_target_view(), nullptr);
 
 	effect_->setResource("g_source", source);
 
@@ -361,7 +361,7 @@ void Standard_Hdr::bloom(const Shader_resource_view* source, const uint2& size)
 
 	m_render_tool.get_context().set_blend_state(blend_state__bloom);
 
-	m_render_tool.get_context().set_render_target(&m_targets[0]->render_tarview(), nullptr);
+	m_render_tool.get_context().set_render_target(&m_targets[0]->Render_target_view(), nullptr);
 
 	float2 texel_size(1.f / float(size.x), 1.f / float(size.y));
 
@@ -376,7 +376,7 @@ void Standard_Hdr::bloom(const Shader_resource_view* source, const uint2& size)
 
 	effect_->setVector("g_texel_size", texel_size);
 
-	m_render_tool.get_context().set_render_target(&m_targets[1]->render_tarview(), nullptr);
+	m_render_tool.get_context().set_render_target(&m_targets[1]->Render_target_view(), nullptr);
 	effect_->setResource("g_source", &m_targets[0]->shader_resource_view());
 	effect_->setResource("g_average_luminance", &m_luminance->shader_resource_view());
 	effect_->technique("Bright_filter").apply(m_render_tool.get_context());
@@ -384,14 +384,14 @@ void Standard_Hdr::bloom(const Shader_resource_view* source, const uint2& size)
 	
 	m_render_tool.get_context().unbindShaderResources();
 
-	m_render_tool.get_context().set_render_target(&m_targets[0]->render_tarview(), nullptr);
+	m_render_tool.get_context().set_render_target(&m_targets[0]->Render_target_view(), nullptr);
 	effect_->setResource("g_source", &m_targets[1]->shader_resource_view());
 	effect_->technique("Blur_horizontal").apply(m_render_tool.get_context());
 	m_render_tool.drawFullscreenTriangle();
 
 	m_render_tool.get_context().unbindShaderResources();
 
-	m_render_tool.get_context().set_render_target(&m_targets[1]->render_tarview(), nullptr);
+	m_render_tool.get_context().set_render_target(&m_targets[1]->Render_target_view(), nullptr);
 	effect_->setResource("g_source", &m_targets[0]->shader_resource_view());
 	effect_->technique("Blur_vertical").apply(m_render_tool.get_context());
 	m_render_tool.drawFullscreenTriangle();

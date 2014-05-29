@@ -453,7 +453,7 @@ Handle<Shader_resource_view> Rendering_device::create_shader_resource_view(const
 	return Handle<Shader_resource_view>(new Shader_resource_view(id, description, texture, name));
 }
 
-Handle<Render_tarview> Rendering_device::create_render_tarview(const Handle<Texture>& texture, uint32_t min_layer, uint32_t num_layers) const
+Handle<Render_target_view> Rendering_device::create_render_target_view(const Handle<Texture>& texture, uint32_t min_layer, uint32_t num_layers) const
 {
 	if (!texture)
 	{
@@ -479,7 +479,7 @@ Handle<Render_tarview> Rendering_device::create_render_tarview(const Handle<Text
 	new_description.type = multisample ? Texture_description::Type::Texture_2D_multisample : Texture_description::Type::Texture_2D;
 	new_description.num_layers = num_layers;
 	new_description.num_mip_levels = 1;
-	return Handle<Render_tarview>(new Render_tarview(id, new_description, texture));
+	return Handle<Render_target_view>(new Render_target_view(id, new_description, texture));
 }
 
 Handle<Render_target_shader_resource_view> Rendering_device::create_render_target_shader_resource_view(const Texture_description& description) const
@@ -491,9 +491,9 @@ Handle<Render_target_shader_resource_view> Rendering_device::create_render_targe
 		return nullptr;
 	}
 
-	Handle<Render_tarview> render_tarview = create_render_tarview(texture);
+	Handle<Render_target_view> Render_target_view = create_render_target_view(texture);
 
-	if (!render_tarview)
+	if (!Render_target_view)
 	{
 		return nullptr;
 	}
@@ -505,7 +505,7 @@ Handle<Render_target_shader_resource_view> Rendering_device::create_render_targe
 		return nullptr;
 	}
 
-	return Handle<Render_target_shader_resource_view>(new Render_target_shader_resource_view(render_tarview, shader_resource_view));
+	return Handle<Render_target_shader_resource_view>(new Render_target_shader_resource_view(Render_target_view, shader_resource_view));
 }
 
 Handle<Cube_render_target_shader_resource_view> Rendering_device::create_cube_render_target_shader_resource_view(const Texture_description& description) const
@@ -517,13 +517,13 @@ Handle<Cube_render_target_shader_resource_view> Rendering_device::create_cube_re
 		return nullptr;
 	}
 
-	Handle<Render_tarview> render_tarviews[6];
+	Handle<Render_target_view> Render_target_views[6];
 
 	for (uint32_t i = 0; i < 6; ++i)
 	{
-		render_tarviews[i] = create_render_tarview(texture, i);
+		Render_target_views[i] = create_render_target_view(texture, i);
 
-		if (!render_tarviews[i])
+		if (!Render_target_views[i])
 		{
 			return nullptr;
 		}
@@ -536,7 +536,7 @@ Handle<Cube_render_target_shader_resource_view> Rendering_device::create_cube_re
 		return nullptr;
 	}
 
-	return Handle<Cube_render_target_shader_resource_view>(new Cube_render_target_shader_resource_view(render_tarviews, shader_resource_view));
+	return Handle<Cube_render_target_shader_resource_view>(new Cube_render_target_shader_resource_view(Render_target_views, shader_resource_view));
 }
 
 Handle<Depth_stencil_view> Rendering_device::create_depth_stencil_view(const Texture_description& description) const
@@ -673,7 +673,7 @@ void Rendering_device::generate_mip_maps(const Handle<Texture>& texture) const
 	__glewGenerateTextureMipmapEXT(texture->id_, texture->internal_type_);
 }
 
-void Rendering_device::copy(const Handle<Texture_transfer>& destination, const Handle<Render_tarview>& source) const
+void Rendering_device::copy(const Handle<Texture_transfer>& destination, const Handle<Render_target_view>& source) const
 {
 	const Texture_description& description = source->description_;
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);

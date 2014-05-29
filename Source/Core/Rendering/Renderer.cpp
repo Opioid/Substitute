@@ -91,7 +91,7 @@ bool Renderer::init(Application& app, Resource_manager& resource_manager, bool e
 		return false;
 	}
 
-	framebuffer_->set_render_targets(hdr_target_->render_tarview(), rendering_tool_.main_depth_stencil()->depth_stencil_view());
+	framebuffer_->set_render_targets(hdr_target_->render_target_view(), rendering_tool_.main_depth_stencil()->depth_stencil_view());
 
 	if (!framebuffer_->is_valid())
 	{

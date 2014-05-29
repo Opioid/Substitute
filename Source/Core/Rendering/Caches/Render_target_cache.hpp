@@ -44,7 +44,7 @@ private:
 
 	std::list<Resource_slot<Depth_stencil_shader_resource_view>> depth_stencil_shader_resource_views_;
 
-	std::list<Resource_slot<Render_target_shader_resource_view>> render_tarviews_;
+	std::list<Resource_slot<Render_target_shader_resource_view>> Render_target_views_;
 };
 
 }

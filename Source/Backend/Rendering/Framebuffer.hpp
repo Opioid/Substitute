@@ -9,7 +9,7 @@ namespace rendering
 {
 
 class Rendering_device;
-class Render_tarview;
+class Render_target_view;
 class Depth_stencil_view;
 
 class Framebuffer : public OpenGL_object
@@ -22,19 +22,19 @@ public:
 
 	bool is_valid() const;
 
-	void set_render_targets(const Handle<Render_tarview>& target);
+	void set_render_targets(const Handle<Render_target_view>& target);
 
 	void set_render_targets(const Handle<Depth_stencil_view>& depth_stencil);
 
-	void set_render_targets(const Handle<Render_tarview>& target, const Handle<Depth_stencil_view>& depth_stencil);
+	void set_render_targets(const Handle<Render_target_view>& target, const Handle<Depth_stencil_view>& depth_stencil);
 
-	void set_render_targets(std::initializer_list<Handle<Render_tarview>> targets, const Handle<Depth_stencil_view>& depth_stencil);
+	void set_render_targets(std::initializer_list<Handle<Render_target_view>> targets, const Handle<Depth_stencil_view>& depth_stencil);
 
 private:
 
 	void set_draw_buffers(uint32_t num_targets) const;
 
-	void set_target(const Handle<Render_tarview>& target, uint32_t slot) const;
+	void set_target(const Handle<Render_target_view>& target, uint32_t slot) const;
 
 	void set_depth_stencil(const Handle<Depth_stencil_view>& depth_stencil) const;
 

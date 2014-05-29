@@ -193,7 +193,7 @@ bool Light_probe_baker::allocate_targets()
 		return false;
 	}
 
-	framebuffer_->set_render_targets(filter_target_->render_tarview());
+	framebuffer_->set_render_targets(filter_target_->render_target_view());
 
 	if (framebuffer_->is_valid())
 	{
@@ -315,7 +315,7 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 
             rendering_tool_.render_fullscreen_effect();
 
-			device.copy(texture_transfer, filter_target_->render_tarview());
+			device.copy(texture_transfer, filter_target_->render_target_view());
 
 			unsigned char* buffer;
 			device.map(&buffer, texture_transfer);

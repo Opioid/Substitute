@@ -41,7 +41,7 @@ const float2& Camera::linear_depth_projection() const
 	return linear_depth_projection_;
 }
 
-float Camera::FOV() const
+float Camera::fov() const
 {
 	return fov_;
 }

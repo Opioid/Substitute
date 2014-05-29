@@ -196,7 +196,7 @@ void Deferred_lighting_renderer::render(const scene::Scene& scene, const Renderi
 				continue;
 			}
 
-			switch (light.get_type())
+			switch (light.type())
 			{
 			case scene::Light::Type::Directional:
 				render_directional_light(light, scene, context);
@@ -402,7 +402,7 @@ void Deferred_lighting_renderer::render_directional_light(const scene::Light& li
 	effect_->use(device);
 
 	auto& change_per_light_data = change_per_light_.data();
-	change_per_light_data.energy_and_range = float4(light.get_directional_energy(), 0.f);
+	change_per_light_data.energy_and_range = float4(light.directional_energy(), 0.f);
 	change_per_light_data.direction_vs = (float4(-light.world_direction(), 0.f) * camera.view()).xyz;
 	change_per_light_.update(device);
 
@@ -413,7 +413,7 @@ void Deferred_lighting_renderer::render_directional_light(const scene::Light& li
 
 void Deferred_lighting_renderer::render_point_light(const scene::Light& light, const scene::Scene& /*scene*/, const Rendering_context& context)
 {
-	float4 energy_and_range = light.get_point_energy_and_range();
+	float4 energy_and_range = light.point_energy_and_range();
 	float range = energy_and_range.w;
 
 	Sphere sphere(light.world_position(), range);
@@ -500,12 +500,12 @@ void Deferred_lighting_renderer::render_spot_light(const scene::Light& light, co
 
 		device.set_shader_resources(1, &spot_shadow_renderer_.shadow_map(), light_2D_texture_offset1_);
 
-		change_per_light_data.light_data = invert(camera.view()) * spot_shadow_renderer_.view_projection() * scene::Light::get_texture_transform();
+		change_per_light_data.light_data = invert(camera.view()) * spot_shadow_renderer_.view_projection() * scene::Light::texture_transform();
 		change_per_light_data.shadow_linear_depth_projection = spot_shadow_renderer_.linear_depth_projection();
 	}
 	else
 	{
-		change_per_light_data.light_data = invert(camera.view()) * view_projection * scene::Light::get_texture_transform();
+		change_per_light_data.light_data = invert(camera.view()) * view_projection * scene::Light::texture_transform();
 	}
 
 	device.set_framebuffer(context.framebuffer());
@@ -517,7 +517,7 @@ void Deferred_lighting_renderer::render_spot_light(const scene::Light& light, co
 	effect_->use(device);
 
 	change_per_light_data.world = float4x4::identity;
-	change_per_light_data.energy_and_range = light.get_spot_energy_and_range();
+	change_per_light_data.energy_and_range = light.spot_energy_and_range();
 	change_per_light_data.position_vs = light.world_position() * camera.view();
 
 	change_per_light_.update(device);

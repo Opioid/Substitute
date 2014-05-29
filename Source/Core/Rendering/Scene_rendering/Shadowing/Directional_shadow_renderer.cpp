@@ -49,7 +49,7 @@ void Directional_shadow_renderer::render(const scene::Light& light, const scene:
 		Cascade_data& cascade_data = cascade_data_[i];
 
 		scene::Camera cascade_camera = camera;
-		cascade_camera.set_projection(camera.FOV(), camera.ratio(), cascade_data.near_far.x, cascade_data.near_far.y);
+		cascade_camera.set_projection(camera.fov(), camera.ratio(), cascade_data.near_far.x, cascade_data.near_far.y);
 		cascade_camera.update_frustum();
 
 		calculate_optimized_light_view_projection(cascade_data.shadow_view_projection, cascade_data.depth_clamp, cascade_data.cascade_world, cascade_data.eye,

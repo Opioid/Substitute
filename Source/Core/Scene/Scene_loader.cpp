@@ -189,6 +189,10 @@ void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* paren
 
 		if (entity)
 		{
+			float3 position(float3::identity);
+			float3 scale(1.f, 1.f, 1.f);
+			Quaternion rotation(Quaternion::identity);
+
 			for (auto n = value.MemberBegin(); n != value.MemberEnd(); ++n)
 			{
 				const std::string property_name = n->name.GetString();
@@ -196,17 +200,21 @@ void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* paren
 
 				if ("position" == property_name)
 				{
-					entity->set_local_position(json::read_float3(property_value));
+					position = json::read_float3(property_value);
 				}
 				else if ("scale" == property_name)
 				{
-					entity->set_local_scale(json::read_float3(property_value));
+					scale = json::read_float3(property_value);
 				}
 				else if ("rotation" == property_name)
 				{
-					entity->set_local_rotation(json::read_local_rotation(property_value));
+					rotation = json::read_local_rotation(property_value);
 				}				
 			}
+
+			entity->set_local_position(position);
+			entity->set_local_scale(scale);
+			entity->set_local_rotation(rotation);
 
 			const rapidjson::Value::Member* children = value.FindMember("entities");
 
@@ -277,6 +285,13 @@ Entity* Scene_loader::load_light(const rapidjson::Value& entity)
 			else if ("texture" == node_name)
 			{
 				light->set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString()));
+			}
+			else if ("scripting" == node_name)
+			{
+				Scripting scripting;
+				load_scripting(node_value, scripting);
+
+				scripter_.register_script_class(*light, scripting.file_name, scripting.class_name);
 			}
 		}
 	}

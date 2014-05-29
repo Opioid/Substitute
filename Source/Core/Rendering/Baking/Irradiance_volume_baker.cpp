@@ -150,16 +150,16 @@ void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene
 		{
 			Handle<Framebuffer>& framebuffer = environment_map_renderer.framebuffer();
 
-			Handle<Render_tarview>& tarview = environment_map_renderer.color_target()->render_tarview(0);
+			Handle<Render_target_view>& render_target_view = environment_map_renderer.color_target()->render_target_view(0);
 
-			framebuffer->set_render_targets(tarview);
+			framebuffer->set_render_targets(render_target_view);
 			device.set_framebuffer(framebuffer);
 		//	glReadPixels(0, 0, dimensions.x, dimensions.y, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
 
-			device.copy(texture_transfer, tarview/*color_target->render_tarview()*/);
+			device.copy(texture_transfer, render_target_view/*color_target->Render_target_view()*/);
 			device.map(&data.buffer, texture_transfer);
 
-		//	glGetTextureImageEXT(color_target->render_tarview(1)->id(), GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
+		//	glGetTextureImageEXT(color_target->Render_target_view(1)->id(), GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
 		//	rendering::texture_storage::save("texture" + std::to_string(batch_count) + ".png", adapter, file::File_type::PNG);
 
 			for (uint32_t j = 0; j < batch_index; ++j)

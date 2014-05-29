@@ -24,7 +24,7 @@ public:
 
 	const float2& linear_depth_projection() const;
 
-	float FOV() const;
+	float fov() const;
 	float ratio() const;
 	float z_near() const;
 	float z_far() const;

@@ -10,6 +10,13 @@ Actor::Actor()
 Actor::~Actor()
 {}
 
+void Actor::clear()
+{
+	Prop::clear();
+
+	detach();
+}
+
 void Actor::on_finalized_world_transformation()
 {
 	model_->aabb().get_transformed(transformed_aabb_, world_transformation());

@@ -6,7 +6,7 @@ void main()
 	ivec2 pixel_coord = ivec2(gl_FragCoord.x, gl_FragCoord.y);
 
 	float depth  = texelFetch(g_depth_map, pixel_coord, 0).r;
-	vec3 normal  = decode_normal_spheremap(texelFetch(g_normal_map, pixel_coord, 0).xy);
+	vec3 normal  = decode_normal(texelFetch(g_normal_map, pixel_coord, 0).xy);
 	vec3 color   = texelFetch(g_color_map, pixel_coord, 0).rgb;
 	vec3 surface = texelFetch(g_surface_map, pixel_coord, 0).xyz;
 	
@@ -88,7 +88,7 @@ float specular_g(float n_dot_l, float n_dot_v, float a2)
 
 vec3 lighting(vec3 position, vec3 normal, vec3 light_direction, vec3 color, float metallic, float roughness, float cavity)
 {
-	vec3 view_direction = normalize(-position);	// eyePos is (0, 0, 0) in viewSpace
+	vec3 view_direction = normalize(-position);	// eyePos is (0, 0, 0) in view_space
 
 	vec3 half_vector = normalize(view_direction + light_direction);
 
@@ -107,12 +107,11 @@ vec3 lighting(vec3 position, vec3 normal, vec3 light_direction, vec3 color, floa
 
 	vec3 diffuse = (1.f - metallic) * color;
 
-/*	
-	if (isnan(normal.x))
+	
+/*	if (isnan(normal.x) || isnan(normal.y) || isnan(normal.z))
 	{
 		return vec3(1.f, 0.f, 0.f);
-	}
-*/
+	}*/
 
 	return cavity * n_dot_l * (diffuse + specular);
 }

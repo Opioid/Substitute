@@ -206,6 +206,16 @@ Entity* Scene::entity(const std::string& name) const
 	return e->second;
 }
 
+Actor* Scene::actor(const std::string& name) const
+{
+	return static_cast<Actor*>(entity(name));
+}
+
+Light* Scene::light(const std::string& name) const
+{
+	return static_cast<Light*>(entity(name));
+}
+
 const std::vector<Entity*>& Scene::entities() const
 {
 	return entities_;

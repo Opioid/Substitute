@@ -52,12 +52,12 @@ private:
 	friend Rendering_device;
 };
 
-class Render_tarview : public Texture_view
+class Render_target_view : public Texture_view
 {
 
 public:
 
-	Render_tarview(uint32_t id, const Texture_description& description, const Handle<Texture>& texture);
+	Render_target_view(uint32_t id, const Texture_description& description, const Handle<Texture>& texture);
 
 private:
 
@@ -70,17 +70,17 @@ class Render_target_shader_resource_view : public Reference_counter
 
 public:
 
-	Render_target_shader_resource_view(const Handle<Render_tarview>& render_tarview, const Handle<Shader_resource_view>& shader_resource_view);
+	Render_target_shader_resource_view(const Handle<Render_target_view>& Render_target_view, const Handle<Shader_resource_view>& shader_resource_view);
 
-	const Handle<Render_tarview>& render_tarview() const;
-	Handle<Render_tarview>& render_tarview();
+	const Handle<Render_target_view>& render_target_view() const;
+	Handle<Render_target_view>& render_target_view();
 
 	const Handle<Shader_resource_view>& shader_resource_view() const;
 	Handle<Shader_resource_view>& shader_resource_view();
 
 private:
 
-	Handle<Render_tarview>   render_tarview_;
+	Handle<Render_target_view>   render_target_view_;
 	Handle<Shader_resource_view> shader_resource_view_;
 
 	friend Rendering_device;
@@ -91,17 +91,17 @@ class Cube_render_target_shader_resource_view : public Reference_counter
 
 public:
 
-	Cube_render_target_shader_resource_view(const Handle<Render_tarview>* render_tarviews, const Handle<Shader_resource_view>& shader_resource_view);
+	Cube_render_target_shader_resource_view(const Handle<Render_target_view>* Render_target_views, const Handle<Shader_resource_view>& shader_resource_view);
 
-	const Handle<Render_tarview>& render_tarview(uint32_t face) const;
-	Handle<Render_tarview>& render_tarview(uint32_t face);
+	const Handle<Render_target_view>& render_target_view(uint32_t face) const;
+	Handle<Render_target_view>& render_target_view(uint32_t face);
 
 	const Handle<Shader_resource_view>& shader_resource_view() const;
 	Handle<Shader_resource_view>& shader_resource_view();
 
 private:
 
-	Handle<Render_tarview>   render_tarviews_[6];
+	Handle<Render_target_view>   Render_target_views_[6];
 	Handle<Shader_resource_view> shader_resource_view_;
 
 	friend Rendering_device;

@@ -11,7 +11,7 @@ const std::string& Message::get_text() const
 	return text_;
 }
 
-Message::Type Message::get_type() const
+Message::Type Message::type() const
 {
 	return type_;
 }

@@ -18,7 +18,6 @@ class Script_object_wrapper
 public:
 
 	Script_object_wrapper();
-	virtual ~Script_object_wrapper();
 
 	bool construct(const std::string& script_type, const std::string& native_type, void* native_object,
 				   const Script_engine& engine, Script_context* context, asIScriptModule* module);
@@ -29,9 +28,7 @@ public:
 
 	void execute_on_tick(Script_context* context, float time_slice);
 
-//private:
-
-	void* native_object_;
+private:
 
 	asIScriptObject* script_object_;
 

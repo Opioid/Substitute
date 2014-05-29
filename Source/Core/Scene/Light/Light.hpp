@@ -31,25 +31,25 @@ public:
     void init(Type type);
     void clear();
 
-	Type get_type() const;
+	Type type() const;
 
 	const rendering::Color3& color() const;
 	void set_color(const rendering::Color3& color);
 
-	float get_lumen() const;
+	float lumen() const;
 	void set_lumen(float lumen);
 
-	float get_falloff_epsilon() const;
+	float falloff_epsilon() const;
 	void set_falloff_epsilon(float falloff_epsilon);
 
-	float3 get_directional_energy() const;
-	float4 get_point_energy_and_range() const;
-	float4 get_spot_energy_and_range() const;
+	float3 directional_energy() const;
+	float4 point_energy_and_range() const;
+	float4 spot_energy_and_range() const;
 
 	bool casts_shadow() const;
 	void set_casts_shadow(bool shadow);
 
-	float FOV() const;
+	float fov() const;
 	void  set_fov(float fov);
 
 	const Handle<rendering::Shader_resource_view>& texture() const;
@@ -58,15 +58,11 @@ public:
 	float4x4 calculate_view_projection() const;
 	float4x4 calculate_view_projection(float z_near, float z_far) const;
 
-private:
-
-	float4 get_energy_and_range(float solid_angle) const;
-
-public:
-
-	static const float4x4& get_texture_transform();
+	static const float4x4& texture_transform();
 
 private:
+
+	float4 energy_and_range(float solid_angle) const;
 
 	static float calculate_fixed_range(float energy, float push_back);
 

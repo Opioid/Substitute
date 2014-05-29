@@ -154,7 +154,7 @@ void Directional_shadow_renderer_EVSM_MS::apply_shadow(const Rendering_context& 
     const auto& camera = context.camera();
 
     auto& change_per_cascade_data = apply_shadow_.change_per_cascade.data();
-    change_per_cascade_data.shadow_transform = invert(camera.view()) * cascade_data.shadow_view_projection * scene::Light::get_texture_transform();
+    change_per_cascade_data.shadow_transform = invert(camera.view()) * cascade_data.shadow_view_projection * scene::Light::texture_transform();
     change_per_cascade_data.depth_clamp = cascade_data.depth_clamp;
 
     if (cascade_data.last_cascade)
@@ -201,7 +201,7 @@ bool Directional_shadow_renderer_EVSM_MS::on_resize_targets(const uint2& dimensi
         return false;
     }
 
-    apply_shadow_.framebuffer->set_render_targets(white_buffer_->render_tarview(), depth_stencil->depth_stencil_view());
+	apply_shadow_.framebuffer->set_render_targets(white_buffer_->render_target_view(), depth_stencil->depth_stencil_view());
 
     if (!apply_shadow_.framebuffer->is_valid())
     {

@@ -61,7 +61,7 @@ public:
 
 	Script_context* create_context() const;
 
-	asIScriptModule* query_module(const std::string& name) const;
+	asIScriptModule* module(const std::string& name) const;
 
 	bool execute_string(const std::string& script, const Script_context* context) const;
 

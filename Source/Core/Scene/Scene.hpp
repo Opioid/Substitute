@@ -45,6 +45,8 @@ public:
 	AABB_tree& aabb_tree();
 
 	Entity* entity(const std::string& name) const;
+	Actor*  actor(const std::string& name) const;
+	Light*  light(const std::string& name) const;
 
 	const std::vector<Entity*>& entities() const;
 

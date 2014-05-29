@@ -8,6 +8,8 @@ namespace scene
 {
 
 class Scene;
+class Actor;
+class Light;
 
 }
 
@@ -33,12 +35,16 @@ public:
 	bool compile();
 
 	bool register_script_class(scene::Scene& scene, const std::string& file_name, const std::string& class_name);
+	bool register_script_class(scene::Actor& actor, const std::string& file_name, const std::string& class_name);
+	bool register_script_class(scene::Light& light, const std::string& file_name, const std::string& class_name);
 
 	void execute_on_scene_loaded();
 
 	void execute_on_tick(float time_slice);
 
 private:
+
+	bool register_script_class(void* native_object, const std::string& native_type, const std::string& file_name, const std::string& class_name);
 
 	Script_tool& script_tool_;
 
