@@ -20,6 +20,7 @@
 #include "Scene/Model.hpp"
 #include "Application/Application.hpp"
 #include "Resources/Resource_manager.hpp"
+#include "Math/Vector.inl"
 #include "Logging/Logging.hpp"
 #include <iostream>
 

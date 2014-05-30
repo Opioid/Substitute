@@ -1,5 +1,8 @@
 #include "Json.hpp"
 #include "Json_stream.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
+#include "Math/Quaternion.inl"
 #include <rapidjson/document.h>
 #include <sstream>
 
@@ -76,9 +79,9 @@ uint3 read_uint3(const rapidjson::Value& value)
     return uint3(value[0u].GetUint(), value[1].GetUint(), value[2].GetUint());
 }
 
-Quaternion read_quaternion(const rapidjson::Value& value)
+quaternion read_quaternion(const rapidjson::Value& value)
 {
-	 return Quaternion(float(value[0u].GetDouble()), float(value[1].GetDouble()), float(value[2].GetDouble()), float(value[3].GetDouble()));
+	 return quaternion(float(value[0u].GetDouble()), float(value[1].GetDouble()), float(value[2].GetDouble()), float(value[3].GetDouble()));
 }
 
 float3x3 read_rotation_matrix(const rapidjson::Value& value)
@@ -97,9 +100,9 @@ float3x3 read_rotation_matrix(const rapidjson::Value& value)
     return rot_z * rot_x * rot_y;
 }
 
-Quaternion read_local_rotation(const rapidjson::Value& value)
+quaternion read_local_rotation(const rapidjson::Value& value)
 {
-	return Quaternion(read_rotation_matrix(value));
+	return quaternion(read_rotation_matrix(value));
 }
 
 bool read_bool(const rapidjson::Value& value, const std::string& name, bool default_value)

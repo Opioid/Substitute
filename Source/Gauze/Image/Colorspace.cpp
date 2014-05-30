@@ -1,4 +1,5 @@
 #include "Colorspace.hpp"
+#include "Math/Vector.inl"
 
 rendering::Color4c to_color4c_alpha_one(const rendering::Color4& color)
 {

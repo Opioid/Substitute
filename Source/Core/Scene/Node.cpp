@@ -1,4 +1,6 @@
 #include "Node.hpp"
+#include "Math/Matrix.inl"
+#include "Math/Quaternion.inl"
 
 namespace scene
 {
@@ -26,12 +28,12 @@ void Node::set_local_scale(const float3& scale)
 	local_transformation_.scale = scale;
 }
 
-const Quaternion& Node::local_rotation() const
+const quaternion& Node::local_rotation() const
 {
 	return local_transformation_.rotation;
 }
 
-void Node::set_local_rotation(const Quaternion& rotation)
+void Node::set_local_rotation(const quaternion& rotation)
 {
 	local_transformation_.rotation = rotation;
 }

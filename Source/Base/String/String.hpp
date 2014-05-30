@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math/Vector.hpp"
 #include "Math/Matrix.hpp"
 #include <cstdint>
 #include <string>
@@ -27,31 +28,31 @@ bool ends_with(const std::string& full_string, const std::string& ending);
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream& stream, const tVector2<T>& v)
+std::ostream& operator<<(std::ostream& stream, const Vector2<T>& v)
 {
 	return stream << "[" << v.x << ", " << v.y << "]";
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream& stream, const tVector3<T>& v)
+std::ostream& operator<<(std::ostream& stream, const Vector3<T>& v)
 {
 	return stream << "[" << v.x << ", " << v.y << ", " << v.z << "]";
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream& stream, const tVector4<T>& v)
+std::ostream& operator<<(std::ostream& stream, const Vector4<T>& v)
 {
 	return stream << "[" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "]";
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream& stream, const tQuaternion<T>& q)
+std::ostream& operator<<(std::ostream& stream, const Quaternion<T>& q)
 {
 	return stream << "[" << q.x << ", " << q.y << ", " << q.z << ", " << q.w << "]";
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream& stream, const tMatrix3x3<T>& m)
+std::ostream& operator<<(std::ostream& stream, const Matrix3x3<T>& m)
 {
 	return stream << "[" << m.m00 << ", " << m.m01 << ", " <<  m.m02 << ", "
 						 << m.m10 << ", " << m.m11 << ", " <<  m.m12 << ", "
@@ -59,7 +60,7 @@ std::ostream& operator<<(std::ostream& stream, const tMatrix3x3<T>& m)
 }
 
 template<typename T>
-std::ostream& operator<<(std::ostream& stream, const tMatrix4x4<T>& m)
+std::ostream& operator<<(std::ostream& stream, const Matrix4x4<T>& m)
 {
 	return stream << "[" << m.m00 << ", " << m.m01 << ", " <<  m.m02 << ", " <<  m.m03 << "," << std::endl
 				  << " " << m.m10 << ", " << m.m11 << ", " <<  m.m12 << ", " <<  m.m13 << "," << std::endl

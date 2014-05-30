@@ -14,10 +14,12 @@
 #include "Scene/Camera.hpp"
 #include "Scene/Light/Light_probe.hpp"
 #include "Resources/Resource_manager.hpp"
-#include "Logging/Logging.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 #include "Math/Hammersley.hpp"
 #include "String/String.hpp"
 #include "File/File.hpp"
+#include "Logging/Logging.hpp"
 
 #include <iostream>
 
@@ -117,8 +119,8 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 
 	std::string cache_load_name_template = get_cache_load_name_template(scene.name());
 
-	Flags flags;
-	flags.set(rendering::Texture_provider::Options::Texture_Cube, true);
+	Flags<Texture_provider::Options, uint32_t> flags;
+	flags.set(Texture_provider::Options::Texture_Cube, true);
 
 	if (scene.surrounding_light_probe())
 	{
@@ -131,7 +133,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 			return false;
 		}
 
-		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name, flags);
+		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name, flags.data());
 
 		if (environment_map)
 		{
@@ -154,7 +156,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 			return false;
 		}
 
-		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name, flags);
+		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name, flags.data());
 
 		if (environment_map)
 		{
@@ -467,7 +469,7 @@ Handle<Shader_resource_view> Light_probe_baker::create_integrated_brdf(uint32_t 
 //	}
 
 	const float norm = float(0xffff);
-	typedef tVector2<unsigned short> ushort2;
+	typedef Vector2<unsigned short> ushort2;
 
 	Texture_description description;
 	description.type = Texture_description::Type::Texture_2D;

@@ -3,6 +3,7 @@
 #include "Image/Image.hpp"
 #include "Image/Colorspace.hpp"
 #include "Image/Filter/To_BGRA.hpp"
+#include "Math/Vector.inl"
 #include <QImage>
 
 Image_writer::Image_writer() : buffer_(rendering::Data_format::R8G8B8A8_Typeless, uint2(2048, 2048))

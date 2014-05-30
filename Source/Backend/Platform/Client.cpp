@@ -1,6 +1,7 @@
 #include "Client.hpp"
 #include "Input_signal.hpp"
 #include "Platform.hpp"
+#include "Math/Vector.inl"
 
 namespace platform
 {

@@ -1,7 +1,7 @@
 #include "Irradiance_volume.hpp"
 #include "Rendering/Resource_view.hpp"
+#include "Math/Matrix.inl"
 #include "Math/Quaternion.hpp"
-#include "Math/Matrix.hpp"
 
 namespace scene
 {
@@ -9,7 +9,7 @@ namespace scene
 Irradiance_volume::Irradiance_volume() : resolution_(uint3::identity), world_transformation_(float4x4::identity)
 {}
 
-void Irradiance_volume::init(const uint3& resolution, const float3& position, const float3& scale, const Quaternion& rotation)
+void Irradiance_volume::init(const uint3& resolution, const float3& position, const float3& scale, const quaternion& rotation)
 {
 	resolution_ = resolution;
 

@@ -22,8 +22,8 @@ public:
 	const float3& local_scale() const;
 	void set_local_scale(const float3& scale);
 
-	const Quaternion& local_rotation() const;
-	void set_local_rotation(const Quaternion& rotation);
+	const quaternion& local_rotation() const;
+	void set_local_rotation(const quaternion& rotation);
 
 	const Transformation& local_transformation() const;
 

@@ -6,8 +6,7 @@
 #include "Rendering/Vertex_format.hpp"
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Surface.hpp"
-
-#include <iostream>
+#include "Math/Matrix.inl"
 
 namespace rendering
 {

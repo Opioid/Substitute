@@ -6,277 +6,120 @@
 #include <algorithm>
 #include <cstdint>
 
-#undef min
-#undef max
-
 template<typename T>
-struct tVector3
+struct Vector3
 {
 	union
 	{
-		struct { T x, y, z; };
-		struct { T r, g, b; };
+		struct
+		{
+			T x;
+			T y;
+			T z;
+		};
 
-		struct { tVector2<T> xy; T _z; };
+		struct
+		{
+			T r;
+			T g;
+			T b;
+		};
+
+		struct
+		{
+			Vector2<T> xy;
+			T _z;
+		};
 
 		T v[3];
 	};
 
-	tVector3()
-	{}
+	Vector3();
 
-	tVector3(T x, T y, T z) : x(x), y(y), z(z)
-	{}
+	Vector3(T x, T y, T z);
 
-	explicit tVector3(const tVector2<T>& xy, T z = T(0)) : xy(xy), _z(z)
-	{}
+	explicit Vector3(const Vector2<T>& xy, T z = T(0));
 
-	explicit tVector3(const T* v) : x(v[0]), y(v[1]), z(v[2])
-	{}
+	explicit Vector3(const T* v);
 
-	tVector3 operator+(const tVector3& v) const
-	{
-		return tVector3(x + v.x, y + v.y, z + v.z);
-	}
+	Vector3 operator+(const Vector3& v) const;
 
-	tVector3 operator-(const tVector3& v) const
-	{
-		return tVector3(x - v.x, y - v.y, z - v.z);
-	}
+	Vector3 operator-(const Vector3& v) const;
 		
-	tVector3 operator*(const tVector3& v) const
-	{
-		return tVector3(x * v.x, y * v.y, z * v.z);
-	}
+	Vector3 operator*(const Vector3& v) const;
 		
-	tVector3 operator/(T s) const
-	{
-		T is = T(1) / s;
-		return tVector3(is * x, is * y, is * z);
-	}
+	Vector3 operator/(T s) const;
 
-	tVector3 operator-() const
-	{
-		return tVector3(-x, -y, -z);
-	}
+	Vector3 operator-() const;
 
-	tVector3 &operator+=(const tVector3& v)
-	{
-		x += v.x;
-		y += v.y;
-		z += v.z;
-		return *this;
-	}
+	Vector3& operator+=(const Vector3& v);
 
-	tVector3 &operator-=(const tVector3& v)
-	{
-		x -= v.x;
-		y -= v.y;
-		z -= v.z;
-		return *this;
-	}
+	Vector3& operator-=(const Vector3& v);
 
-	tVector3 &operator*=(const tVector3& v)
-	{
-		x *= v.x;
-		y *= v.y;
-		z *= v.z;
-		return *this;
-	}
+	Vector3& operator*=(const Vector3& v);
 
-	tVector3 &operator*=(T s)
-	{
-		x *= s;
-		y *= s;
-		z *= s;
-		return *this;
-	}
+	Vector3& operator*=(T s);
 
-	tVector3 &operator/=(T s)
-	{
-		T is = T(1) / s;
-		x *= is;
-		y *= is;
-		z *= is;
-		return *this;
-	}
+	Vector3& operator/=(T s);
 
-	bool operator==(const tVector3& v) const
-	{
-		return x == v.x && y == v.y && z == v.z;
-	}
+	bool operator==(const Vector3& v) const;
 
-	bool operator!=(const tVector3& v) const
-	{
-		return x != v.x || y != v.y || z != v.z;
-	}
+	bool operator!=(const Vector3& v) const;
 
-	explicit operator unsigned int() const
-	{
-	/*	const __m128 m4x255f = _mm_set_ps1(255.f);
+	explicit operator unsigned int() const;
 
-		__m128 m0 = _mm_set_ps(b, g, r, 0.f);
-		
-		m0 = _mm_mul_ps(m0, m4x255f);
+	T absolute_max(uint32_t& i) const;
 
-		__m128i m1 = _mm_cvtps_epi32(m0);
-
-		if (m1.m128i_i32[3] > 255) m1.m128i_i32[3] = 255;
-		if (m1.m128i_i32[2] > 255) m1.m128i_i32[2] = 255;
-		if (m1.m128i_i32[1] > 255) m1.m128i_i32[1] = 255;
-
-		return 0xff000000 | (m1.m128i_i32[3] << 16) | (m1.m128i_i32[2] << 8) | m1.m128i_i32[1];
-		*/
-
-		unsigned int red  (r * T(255));
-		unsigned int green(g * T(255));
-		unsigned int blue (b * T(255));
-
-		return 0xff000000 | (blue << 16) | (green << 8) | red;
-	}
-
-	T absolute_max(uint32_t& i) const
-	{
-		T ax = std::abs(x);
-		T ay = std::abs(y);
-		T az = std::abs(z);
-
-		if (ax >= ay && ax >= az)
-		{
-			i = 0;
-			return ax;
-		}
-		
-		if (ay >= ax && ay >= az)
-		{
-			i = 1;
-			return ay;
-		}
-
-		i = 2;
-		return az;
-	}
-
-	static const tVector3 identity;
+	static const Vector3 identity;
 };
 
-template<typename T>
-const tVector3<T> tVector3<T>::identity(T(0), T(0), T(0));
 
 template<typename T>
-inline tVector3<T> operator*(T s, const tVector3<T>& v)
-{
-	return tVector3<T>(s * v.x, s * v.y, s * v.z);
-}
+Vector3<T> operator*(T s, const Vector3<T>& v);
 
 template<typename T>
-inline T dot(const tVector3<T> &a, const tVector3<T> &b)
-{
-	return a.x * b.x + a.y * b.y + a.z * b.z;
-}
+T dot(const Vector3<T>& a, const Vector3<T>& b);
 
 template<typename T>
-inline T length(const tVector3<T>& v)
-{
-	return sqrt(dot(v, v));
-}
+T length(const Vector3<T>& v);
 
 template<typename T>
-inline T squared_length(const tVector3<T>& v)
-{
-	return dot(v, v);
-}
+T squared_length(const Vector3<T>& v);
 
 template<typename T>
-inline tVector3<T> normalize(const tVector3<T>& v)
-{
-	return v / length(v);
-}
+Vector3<T> normalize(const Vector3<T>& v);
 
 template<typename T>
-inline tVector3<T> reciprocal(const tVector3<T>& v)
-{
-	return tVector3<T>(1.f / v.x, 1.f / v.y, 1.f / v.z);
-}
+Vector3<T> reciprocal(const Vector3<T>& v);
 
 template<typename T>
-inline tVector3<T> absolute(const tVector3<T>& v)
-{
-	return tVector3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
-}
+Vector3<T> absolute(const Vector3<T>& v);
 
 template<typename T>
-inline tVector3<T> cross(const tVector3<T> &a, const tVector3<T> &b)
-{
-	return tVector3<T>(a.y * b.z - a.z * b.y,
-					   a.z * b.x - a.x * b.z,
-					   a.x * b.y - a.y * b.x);
-}
+Vector3<T> cross(const Vector3<T>& a, const Vector3<T>& b);
 
 template<typename T>
-inline tVector3<T> project(const tVector3<T> &a, const tVector3<T> &b)
-{
-	return dot(b, a) * b;
-}
+Vector3<T> project(const Vector3<T> &a, const Vector3<T> &b);
 
 template<typename T>
-inline T distance(const tVector3<T> &a, const tVector3<T> &b)
-{
-	return length(a - b);
-}
+T distance(const Vector3<T> &a, const Vector3<T> &b);
 
 template<typename T>
-inline T squared_distance(const tVector3<T> &a, const tVector3<T> &b)
-{
-	return squared_length(a - b);
-}
+T squared_distance(const Vector3<T> &a, const Vector3<T> &b);
 
 template<typename T>
-inline tVector3<T> saturate(const tVector3<T>& v)
-{
-	return tVector3<T>(std::min(std::max(v.x, T(0)), T(1)), std::min(std::max(v.y, T(0)), T(1)), std::min(std::max(v.z, T(0)), T(1)));
-}
+Vector3<T> saturate(const Vector3<T>& v);
 
 template<typename T>
-inline tVector3<T> lerp(const tVector3<T> &a, const tVector3<T> &b, T t)
-{
-	T u = T(1) - t;
-	return u * a + t * b;//tVector3<T>(a.x * u + b.x * t, a.y * u + b.y * t, a.z * u + b.z * t);
-}
+Vector3<T> lerp(const Vector3<T> &a, const Vector3<T> &b, T t);
 
 template<typename T>
-inline tVector3<T> reflect(const tVector3<T>& v, const tVector3<T> &normal)
-{
-	return v - 2.f * dot(v, normal) * normal;
-}
+Vector3<T> reflect(const Vector3<T>& v, const Vector3<T> &normal);
 
 namespace math
 {
 
-inline tVector3<float> min(const tVector3<float>& a, const tVector3<float>& b)
-{
-	/*
-	__m128 ma = _mm_set_ps(a.x, a.y, a.z, 0.f);
-	__m128 mb = _mm_set_ps(b.x, b.y, b.z, 0.f);
-
-	__m128 mm =_mm_min_ps(ma, mb);
-
-	return tVector3<float>(mm.m128_f32[3], mm.m128_f32[2], mm.m128_f32[1]);
-*/
-	return tVector3<float>(a.x < b.x ? a.x : b.x, a.y < b.y ? a.y : b.y, a.z < b.z ? a.z : b.z);
-}
-
-inline tVector3<float> max(const tVector3<float>& a, const tVector3<float>& b)
-{
-	/*
-	__m128 ma = _mm_set_ps(a.x, a.y, a.z, 0.f);
-	__m128 mb = _mm_set_ps(b.x, b.y, b.z, 0.f);
-
-	__m128 mm =_mm_max_ps(ma, mb);
-
-	return tVector3<float>(mm.m128_f32[3], mm.m128_f32[2], mm.m128_f32[1]);
-*/
-	return tVector3<float>(a.x > b.x ? a.x : b.x, a.y > b.y ? a.y : b.y, a.z > b.z ? a.z : b.z);
-}
+Vector3<float> min(const Vector3<float>& a, const Vector3<float>& b);
+Vector3<float> max(const Vector3<float>& a, const Vector3<float>& b);
 
 }

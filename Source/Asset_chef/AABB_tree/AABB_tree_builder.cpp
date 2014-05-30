@@ -1,7 +1,8 @@
 #include "AABB_tree_builder.hpp"
-#include "Model/Model.hpp"
 #include "AABB_tree.hpp"
 #include "AABB_node.hpp"
+#include "Model/Model.hpp"
+#include "Math/Vector.inl"
 #include <iostream>
 
 AABB_tree_builder::AABB_tree_builder(uint32_t max_triangles_per_node) :

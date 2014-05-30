@@ -3,119 +3,65 @@
 #include <cmath>
 
 template<typename T>
-struct tVector2
+struct Vector2
 {
 	union
 	{
-		struct { T x, y; };
+		struct
+		{
+			T x;
+			T y;
+		};
 
 		T v[2];
 	};
 
-	tVector2()
-	{}
+	Vector2();
 
-	tVector2(T x, T y) : x(x), y(y)
-	{}
+	Vector2(T x, T y);
 
 	template<typename U>
-	explicit tVector2(const tVector2<U> &v) : x(T(v.x)), y(T(v.y))
-	{}
+	explicit Vector2(const Vector2<U>& v);
 
-	tVector2 operator+(const tVector2& v) const
-	{
-		return tVector2(x + v.x, y + v.y);
-	}
+	Vector2 operator+(const Vector2& v) const;
 
-	tVector2 operator-(const tVector2& v) const
-	{
-		return tVector2(x - v.x, y - v.y);
-	}
+	Vector2 operator-(const Vector2& v) const;
 
-	tVector2 operator*(const tVector2& v) const
-	{
-		return tVector2(x * v.x, y * v.y);
-	}
+	Vector2 operator*(const Vector2& v) const;
 
-	tVector2 operator/(T s) const
-	{
-		return tVector2(x / s, y / s);
-	}
+	Vector2 operator/(T s) const;
 
-	tVector2 &operator+=(const tVector2& v)
-	{
-		x += v.x;
-		y += v.y;
-		return *this;
-	}
+	Vector2 &operator+=(const Vector2& v);
 
-	tVector2 &operator/=(T s)
-	{
-		x /= s;
-		y /= s;
-		return *this;
-	}
+	Vector2 &operator/=(T s);
 
-	bool operator==(const tVector2& v) const
-	{
-		return x == v.x && y == v.y;
-	}
+	bool operator==(const Vector2& v) const;
 
-	bool operator!=(const tVector2& v) const
-	{
-		return x != v.x || y != v.y;
-	}
+	bool operator!=(const Vector2& v) const;
 
-	static const tVector2 identity;
+	static const Vector2 identity;
 };
 
 template<typename T>
-const tVector2<T> tVector2<T>::identity(T(0), T(0));
+inline Vector2<T> operator*(T s, const Vector2<T>& v);
 
 template<typename T>
-inline tVector2<T> operator*(T s, const tVector2<T>& v)
-{
-	return tVector2<T>(s * v.x, s * v.y);
-}
+inline Vector2<T> operator/(T s, const Vector2<T>& v);
 
 template<typename T>
-inline tVector2<T> operator/(T s, const tVector2<T>& v)
-{
-	return tVector2<T>(s / v.x, s / v.y);
-}
+inline T dot(const Vector2<T>& a, const Vector2<T>& b);
 
 template<typename T>
-inline T dot(const tVector2<T>& a, const tVector2<T>& b)
-{
-	return a.x * b.x + a.y * b.y;
-}
+inline T length(const Vector2<T>& v);
 
 template<typename T>
-inline T length(const tVector2<T>& v)
-{
-	return sqrt(dot(v, v));
-}
+inline T squared_length(const Vector2<T>& v);
 
 template<typename T>
-inline T squared_length(const tVector2<T>& v)
-{
-	return dot(v, v);
-}
+inline Vector2<T> normalize(const Vector2<T>& v);
 
 template<typename T>
-inline tVector2<T> normalize(const tVector2<T>& v)
-{
-	return v / length(v);
-}
+inline Vector2<T> reciprocal(const Vector2<T>& v);
 
 template<typename T>
-inline tVector2<T> reciprocal(const tVector2<T>& v)
-{
-	return tVector2<T>(1.f / v.x, 1.f / v.y);
-}
-
-template<typename T>
-inline tVector2<T> round(const tVector2<T>& v)
-{
-	return tVector2<T>(std::floor(v.x >= T(0) ? v.x + T(0.5) : v.x - T(0.5)), std::floor(v.y >= T(0) ? v.y + T(0.5) : v.y - T(0.5)));
-}
+inline Vector2<T> round(const Vector2<T>& v);

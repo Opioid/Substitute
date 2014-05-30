@@ -1,6 +1,7 @@
 #include "Deferred_shadow_renderer.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Scene/Scene.hpp"
+#include "Math/Vector.inl"
 #include "Math/Intersection/Polyhedron.hpp"
 
 namespace rendering

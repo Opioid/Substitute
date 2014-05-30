@@ -11,6 +11,8 @@
 #include "Rendering/Texture_provider.hpp"
 #include "Timing/Stopwatch.hpp"
 #include "Parsing/Json.hpp"
+#include "Math/Matrix.inl"
+#include "Math/Quaternion.inl"
 #include "Logging/Logging.hpp"
 
 namespace scene
@@ -144,10 +146,10 @@ void Scene_loader::load_surrounding(const rapidjson::Value& surrounding)
 		}
 		else if (node_name == "texture")
 		{
-			Flags flags;
+			Flags<rendering::Texture_provider::Options> flags;
 			flags.set(rendering::Texture_provider::Options::Texture_Cube, true);
 
-			scene_.surrounding().set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString(), flags));
+			scene_.surrounding().set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString(), flags.data()));
 		}
 	}
 }
@@ -191,7 +193,7 @@ void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* paren
 		{
 			float3 position(float3::identity);
 			float3 scale(1.f, 1.f, 1.f);
-			Quaternion rotation(Quaternion::identity);
+			quaternion rotation(quaternion::identity);
 
 			for (auto n = value.MemberBegin(); n != value.MemberEnd(); ++n)
 			{
@@ -383,7 +385,7 @@ void Scene_loader::load_irradiance_volume(const rapidjson::Value& volume)
 	uint3 resolution(2, 2, 2);
 	float3 position(float3::identity);
 	float3 scale(float3::identity);
-	Quaternion rotation(Quaternion::identity);
+	quaternion rotation(quaternion::identity);
 
 	for (auto n = volume.MemberBegin(); n != volume.MemberEnd(); ++n)
 	{
@@ -428,7 +430,7 @@ void Scene_loader::load_light_probe(const rapidjson::Value& probe)
 {
 	float3 position(float3::identity);
 	float3 scale(float3::identity);
-	Quaternion rotation(Quaternion::identity);
+	quaternion rotation(quaternion::identity);
 
 	for (auto n = probe.MemberBegin(); n != probe.MemberEnd(); ++n)
 	{
@@ -472,7 +474,7 @@ void Scene_loader::load_static_prop(const rapidjson::Value& static_prop)
 
 	float3 position(float3::identity);
 	float3 scale(1.f, 1.f, 1.f);
-	Quaternion rotation(Quaternion::identity);
+	quaternion rotation(quaternion::identity);
 
 	for (auto n = static_prop.MemberBegin(); n != static_prop.MemberEnd(); ++n)
 	{

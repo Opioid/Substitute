@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Math/Vector.hpp"
 #include "Math/Matrix.hpp"
+#include "Math/Quaternion.hpp"
 #include "Resources/Handle.hpp"
 
 namespace rendering
@@ -20,7 +22,7 @@ public:
 
 	Irradiance_volume();
 
-	void init(const uint3& resolution, const float3& position, const float3& scale, const Quaternion& rotation);
+	void init(const uint3& resolution, const float3& position, const float3& scale, const quaternion& rotation);
 	void adjust(const float3& position, const float3& scale);
 	void clear();
 

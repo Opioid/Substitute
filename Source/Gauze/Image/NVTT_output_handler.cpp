@@ -1,7 +1,6 @@
 #include "NVTT_output_handler.hpp"
+#include "Math/Vector.inl"
 #include <algorithm>
-
-#include <iostream>
 
 NVTT_output_handler::NVTT_output_handler(Image_buffer<rendering::Color4c>& image_buffer) :
 	image_buffer_(image_buffer),

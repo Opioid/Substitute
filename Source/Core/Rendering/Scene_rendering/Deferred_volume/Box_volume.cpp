@@ -1,5 +1,6 @@
 #include "Box_volume.hpp"
-#include "../../Rendering_tool.hpp"
+#include "Rendering/Rendering_tool.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

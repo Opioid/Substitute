@@ -6,6 +6,7 @@
 #include "Light/Irradiance_volume.hpp"
 #include "AABB_tree/AABB_tree_builder.hpp"
 #include "Complex/Complex.hpp"
+#include "Math/Quaternion.inl"
 
 namespace scene
 {
@@ -109,7 +110,7 @@ void Scene::compile()
 			const AABB& aabb = aabb_tree_.get_root()->aabb();
 
             // make the volume slightly larger than the area to cover to avoid z-fighting when the volume is rendered
-			create_irradiance_volume(uint3(2, 2, 2), aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f), Quaternion::identity);
+			create_irradiance_volume(uint3(2, 2, 2), aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f), quaternion::identity);
         }
 		else if (irradiance_volumes_[0]->is_faulty())
 		{
@@ -286,7 +287,7 @@ Light* Scene::create_light(Light::Type type, const std::string& name)
 	return light;
 }
 
-Irradiance_volume* Scene::create_irradiance_volume(const uint3& resolution, const float3& position, const float3& scale, const Quaternion& rotation)
+Irradiance_volume* Scene::create_irradiance_volume(const uint3& resolution, const float3& position, const float3& scale, const quaternion& rotation)
 {
 	Irradiance_volume* irradiance_volume = irradiance_volumes_.add();
 
@@ -302,7 +303,7 @@ Light_probe* Scene::create_light_probe()
 	return &surrounding_light_probe_;
 }
 
-Light_probe* Scene::create_light_probe(const float3& position, const float3& scale, const Quaternion& rotation)
+Light_probe* Scene::create_light_probe(const float3& position, const float3& scale, const quaternion& rotation)
 {
 	Light_probe* light_probe = light_probes_.add();
 

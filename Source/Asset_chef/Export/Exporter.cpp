@@ -2,6 +2,7 @@
 #include "Vertex_writer.hpp"
 #include "Model/Model.hpp"
 #include "Rendering/Data_format.hpp"
+#include "Math/Vector.inl"
 
 Exporter::Exporter() : m_vertex_writer(nullptr)
 {}

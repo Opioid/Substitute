@@ -49,7 +49,7 @@ public:
 		Two_sided		   = 1 << 2
 	};
 
-	typedef tFlags<Property, uint32_t> Material_properties;
+	typedef Flags<Property, uint32_t> Material_properties;
 
 	Material(const std::string& name);
 	~Material();

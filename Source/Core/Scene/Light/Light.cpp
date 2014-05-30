@@ -1,5 +1,7 @@
 #include "Light.hpp"
 #include "Rendering/Resource_view.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 
 namespace scene
 {

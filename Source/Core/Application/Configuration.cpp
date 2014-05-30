@@ -1,4 +1,5 @@
 #include "Configuration.hpp"
+#include "Math/Vector.inl"
 
 namespace configuration
 {

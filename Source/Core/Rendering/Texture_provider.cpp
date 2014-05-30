@@ -3,7 +3,8 @@
 #include "Rendering/Texture.hpp"
 #include "Rendering/Storage/Texture_storage_load.hpp"
 #include "Rendering/Resource_view.hpp"
-#include "../Logging/Logging.hpp"
+#include "Flags/Flags.hpp"
+#include "Logging/Logging.hpp"
 
 namespace rendering
 {
@@ -11,13 +12,15 @@ namespace rendering
 Texture_provider::Texture_provider(rendering::Rendering_tool& rendering_tool) : Resource_provider("Texture"), rendering_tool_(rendering_tool)
 {}
 
-Handle<Shader_resource_view> Texture_provider::load(file::Input_stream& stream, Resource_manager& /*resource_manager*/, const Flags flags) const
+Handle<Shader_resource_view> Texture_provider::load(file::Input_stream& stream, Resource_manager& /*resource_manager*/, uint32_t flags) const
 {
 	std::string error_message;
 
-	bool treat_as_linear = flags.is_set(Options::Treat_as_linear);
-	bool texture_3D = flags.is_set(Options::Texture_3D);
-	bool texture_cube = flags.is_set(Options::Texture_Cube);
+	Flags<Options, uint32_t> texture_flags(flags);
+
+	bool treat_as_linear = texture_flags.is_set(Options::Treat_as_linear);
+	bool texture_3D		 = texture_flags.is_set(Options::Texture_3D);
+	bool texture_cube	 = texture_flags.is_set(Options::Texture_Cube);
 
 	Handle<Texture> texture;
 

@@ -1,8 +1,9 @@
 #include "scripting_Math.hpp"
 #include "Script_tool.hpp"
 #include "Math/Math.hpp"
-#include "Math/Vector.hpp"
-#include "Math/Quaternion.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
+#include "Math/Quaternion.inl"
 #include "Logging/Logging.hpp"
 #include "String/String.hpp"
 #include <angelscript.h>
@@ -13,14 +14,14 @@ namespace scripting
 	void init_constructor(int x, int y, int2* self);
 	void init_constructor(uint32_t x, uint32_t y, uint2* self);
 	void init_constructor(float x, float y, float z, float3* self);
-	void init_constructor(float x, float y, float z, float w, Quaternion* self);
-	void init_constructor(const Quaternion& q, float3x3* self);
+	void init_constructor(float x, float y, float z, float w, quaternion* self);
+	void init_constructor(const quaternion& q, float3x3* self);
 
 	void print(const float2& value);
 	void print(const int2& value);
 	void print(const uint2& value);
 	void print(const float3& value);
-	void print(const Quaternion& value);
+	void print(const quaternion& value);
 	void print(const float3x3& value);
 
 	float min(float a, float b);
@@ -104,26 +105,26 @@ namespace scripting
 
 		engine.register_function("void print(const float3 &in)", asFUNCTIONPR(print, (const float3&), void));
 
-		// Quaternion ----------------------------------------------
-		engine.register_object_type("Quaternion", sizeof(Quaternion), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
+		// quaternion ----------------------------------------------
+		engine.register_object_type("quaternion", sizeof(quaternion), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
 
-		engine.register_object_property("Quaternion", "float x", offsetof(Quaternion, x));
-		engine.register_object_property("Quaternion", "float y", offsetof(Quaternion, y));
-		engine.register_object_property("Quaternion", "float z", offsetof(Quaternion, z));
-		engine.register_object_property("Quaternion", "float w", offsetof(Quaternion, w));
+		engine.register_object_property("quaternion", "float x", offsetof(quaternion, x));
+		engine.register_object_property("quaternion", "float y", offsetof(quaternion, y));
+		engine.register_object_property("quaternion", "float z", offsetof(quaternion, z));
+		engine.register_object_property("quaternion", "float w", offsetof(quaternion, w));
 
-		engine.register_object_behavior("Quaternion", asBEHAVE_CONSTRUCT, "void f(float, float, float, float)",  asFUNCTIONPR(init_constructor, (float, float, float, float, Quaternion *), void), Script_engine::Calling_convention::C_decl_obj_last);
+		engine.register_object_behavior("quaternion", asBEHAVE_CONSTRUCT, "void f(float, float, float, float)",  asFUNCTIONPR(init_constructor, (float, float, float, float, quaternion *), void), Script_engine::Calling_convention::C_decl_obj_last);
 
-		engine.register_function("void set_rotation_x(Quaternion &out, float)", asFUNCTIONPR(set_rotation_x, (Quaternion&, float), void));
-		engine.register_function("void set_rotation_y(Quaternion &out, float)", asFUNCTIONPR(set_rotation_y, (Quaternion&, float), void));
-		engine.register_function("void set_rotation_z(Quaternion &out, float)", asFUNCTIONPR(set_rotation_z, (Quaternion&, float), void));
+		engine.register_function("void set_rotation_x(quaternion &out, float)", asFUNCTIONPR(set_rotation_x, (quaternion&, float), void));
+		engine.register_function("void set_rotation_y(quaternion &out, float)", asFUNCTIONPR(set_rotation_y, (quaternion&, float), void));
+		engine.register_function("void set_rotation_z(quaternion &out, float)", asFUNCTIONPR(set_rotation_z, (quaternion&, float), void));
 
-		engine.register_function("void print(const Quaternion &in)", asFUNCTIONPR(print, (const Quaternion&), void));
+		engine.register_function("void print(const quaternion &in)", asFUNCTIONPR(print, (const quaternion&), void));
 
 		// float3x3 ----------------------------------------------
 		engine.register_object_type("float3x3", sizeof(float3x3), asOBJ_VALUE | asOBJ_POD | asOBJ_APP_CLASS_CA | asOBJ_APP_CLASS_ALLFLOATS);
 
-		engine.register_object_behavior("float3x3", asBEHAVE_CONSTRUCT, "void f(const Quaternion &in)",  asFUNCTIONPR(init_constructor, (const Quaternion&, float3x3 *), void), Script_engine::Calling_convention::C_decl_obj_last);
+		engine.register_object_behavior("float3x3", asBEHAVE_CONSTRUCT, "void f(const quaternion &in)",  asFUNCTIONPR(init_constructor, (const quaternion&, float3x3 *), void), Script_engine::Calling_convention::C_decl_obj_last);
 
 		engine.register_object_method("float3", "float3 opMul(const float3x3 &in) const", asFUNCTIONPR(operator*, (const float3&, const float3x3&), float3), Script_engine::Calling_convention::C_decl_obj_first);
 
@@ -152,12 +153,12 @@ namespace scripting
 		new(self) float3(x, y, z);
 	}
 
-	void init_constructor(float x, float y, float z, float w, Quaternion* self)
+	void init_constructor(float x, float y, float z, float w, quaternion* self)
 	{
-		new(self) Quaternion(x, y, z, w);
+		new(self) quaternion(x, y, z, w);
 	}
 
-	void init_constructor(const Quaternion& q, float3x3* self)
+	void init_constructor(const quaternion& q, float3x3* self)
 	{
 		new(self) float3x3(q);
 	}
@@ -182,7 +183,7 @@ namespace scripting
 		logging::post("[" + string::to_string_short(value.x) + ", " + string::to_string_short(value.y) + ", " + string::to_string_short(value.z) + "]");
 	}
 
-	void print(const Quaternion& value)
+	void print(const quaternion& value)
 	{
 		logging::post("[" + string::to_string_short(value.x) + ", " + string::to_string_short(value.y) + ", " +
 							string::to_string_short(value.z) + ", " + string::to_string_short(value.w) + "]");

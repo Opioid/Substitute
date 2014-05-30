@@ -5,8 +5,8 @@
 #include "Material.hpp"
 #include <cstdint>
 
-template<typename T> struct tMatrix4x4;
-typedef tMatrix4x4<float> float4x4;
+template<typename T> struct Matrix4x4;
+typedef Matrix4x4<float> float4x4;
 
 namespace rendering
 {

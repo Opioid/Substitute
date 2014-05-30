@@ -1,4 +1,5 @@
 #include "Hammersley.hpp"
+#include "Math/Vector.inl"
 
 namespace math
 {

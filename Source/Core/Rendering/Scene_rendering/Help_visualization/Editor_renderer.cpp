@@ -8,6 +8,7 @@
 #include "Scene/Camera.hpp"
 #include "Scene/Scene.hpp"
 #include "Scene/Editor/Editor.hpp"
+#include "Math/Matrix.inl"
 
 namespace rendering
 {

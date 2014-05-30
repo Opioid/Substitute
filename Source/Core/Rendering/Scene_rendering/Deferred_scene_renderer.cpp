@@ -6,6 +6,8 @@
 #include "Rendering/Vertex_format.hpp"
 #include "Rendering/Input_layout.hpp"
 #include "Surrounding/Surrounding_renderer.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 #include "Math/Intersection/Sphere.hpp"
 #include "Math/Intersection/OBB.hpp"
 #include "Rendering/Rendering_context.hpp"
@@ -43,10 +45,10 @@ bool Deferred_scene_renderer::init(Resource_manager& resource_manager, Constant_
 		return false;
 	}
 
-	Flags flags;
+	Flags<Effect_provider::Options, uint32_t> flags;
 	flags.set(Effect_provider::Options::Use_custom_constant_buffers, true);
 
-	effect_ = resource_manager.load<Effect>("Effects/Deferred_renderer_base.effect", flags);
+	effect_ = resource_manager.load<Effect>("Effects/Deferred_renderer_base.effect", flags.data());
 	if (!effect_)
 	{
 		return false;

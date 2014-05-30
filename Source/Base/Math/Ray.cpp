@@ -1,5 +1,6 @@
 #include "Ray.hpp"
 #include "Plane.hpp"
+#include "Matrix.inl"
 #include "Intersection/Sphere.hpp"
 #include "Intersection/Cylinder.hpp"
 #include <cmath>

@@ -3,7 +3,6 @@
 #include "Identifiable.hpp"
 #include "Resources/Handle.hpp"
 #include "File/File_stream.hpp"
-#include "../Flags/Flags.hpp"
 
 class Resource_manager;
 
@@ -22,7 +21,7 @@ public:
 	virtual ~Resource_provider()
 	{}
 
-	virtual Handle<Resource_type> load(file::Input_stream& stream, Resource_manager& resource_manager, const Flags flags) const = 0;
+	virtual Handle<Resource_type> load(file::Input_stream& stream, Resource_manager& resource_manager, uint32_t flags) const = 0;
 
     virtual Handle<Resource_type> clone(const Handle<Resource_type>& /*resource*/, Resource_manager& /*resource_manager*/) const
 	{

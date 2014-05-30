@@ -1,5 +1,6 @@
 #include "Mip_map_generator.hpp"
 #include "Sampler/Point_sampler.hpp"
+#include "Math/Vector.inl"
 
 Image<rendering::Color4>* Mip_map_generator::create_mip_mapped_image(const Image_buffer<rendering::Color4>& source)
 {

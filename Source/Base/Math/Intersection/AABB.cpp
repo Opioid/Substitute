@@ -1,9 +1,8 @@
 #include "AABB.hpp"
-#include "../Plane.hpp"
-#include "../Math.hpp"
-
-#undef min
-#undef max
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
+#include "Math/Plane.hpp"
+#include "Math/Math.hpp"
 
 AABB::AABB()
 {}

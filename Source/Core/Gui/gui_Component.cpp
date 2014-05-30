@@ -1,5 +1,6 @@
 #include "gui_Component.hpp"
 #include "Rendering/Resource_view.hpp"
+#include "Math/Vector.inl"
 
 namespace gui
 {

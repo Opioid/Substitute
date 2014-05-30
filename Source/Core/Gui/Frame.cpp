@@ -1,11 +1,12 @@
 #include "Frame.hpp"
 #include "Gui_input.hpp"
-#include "../Application/Cursor.hpp"
+#include "Application/Cursor.hpp"
 #include "Frame_manager.hpp"
-#include "../Rendering/Printer.hpp"
+#include "Rendering/Printer.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Color.hpp"
-#include "../Controls/Input_state.hpp"
+#include "Controls/Input_state.hpp"
+#include "Math/Vector.inl"
 
 namespace gui
 {

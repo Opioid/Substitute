@@ -3,9 +3,10 @@
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Texture.hpp"
 #include "Rendering/Texture_data_adapter.hpp"
-#include "../Resources/Resource_manager.hpp"
+#include "Resources/Resource_manager.hpp"
 #include "Effect/Effect.hpp"
 #include "Fonts/Font_descriptor.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {
@@ -247,7 +248,7 @@ void Printer::set_position(const float2& position)
 
 void Printer::set_color(const rendering::Color4 &color)
 {
-	color_ = static_cast<unsigned int>(color); // using explicit tVector4 -> unsigned int cast operator
+	color_ = static_cast<unsigned int>(color); // using explicit Vector4 -> unsigned int cast operator
 }
 
 void Printer::set_texture_coordinates(const float2& left_top, const float2& right_bottom)

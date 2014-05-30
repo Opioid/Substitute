@@ -3,6 +3,7 @@
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Color.hpp"
 #include "Scripting/Script_tool.hpp"
+#include "Math/Vector.inl"
 #include "Logging/Message_server.hpp"
 
 namespace gui

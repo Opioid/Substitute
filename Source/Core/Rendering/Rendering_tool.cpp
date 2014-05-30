@@ -2,6 +2,7 @@
 #include "Rendering/Framebuffer.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Effect/Constant_buffer_adapter.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

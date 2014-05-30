@@ -1,4 +1,7 @@
 #include "Camera.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
+#include "Math/Quaternion.inl"
 
 namespace scene
 {
@@ -85,7 +88,7 @@ void Camera::update_view()
 
 	rot_ = float3::identity;
 
-	set_local_rotation(Quaternion(rot_mat_));
+	set_local_rotation(quaternion(rot_mat_));
 	fix_world_transformation();
 
 	set_look_at(view_, world_position(), world_position() + rot_mat_.z, rot_mat_.y);

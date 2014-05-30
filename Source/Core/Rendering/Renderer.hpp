@@ -4,8 +4,8 @@
 #include "Rendering_context.hpp"
 #include "Post_processing/Post_processing_pipeline.hpp"
 
-template<typename T> struct tVector2;
-typedef tVector2<uint32_t> uint2;
+template<typename T> struct Vector2;
+typedef Vector2<uint32_t> uint2;
 
 class Application;
 class Resource_manager;

@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Rendering/Effect/Constant_buffer_updater.hpp"
+#include "Math/Vector.hpp"
 #include "Math/Matrix.hpp"
 
 namespace scene
 {
-	class Material;
+
+class Material;
+
 }
 
 namespace rendering

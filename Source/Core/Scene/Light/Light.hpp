@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Entity.hpp"
+#include "Scene/Entity.hpp"
 #include "Rendering/Color.hpp"
 #include "Resources/Handle.hpp"
 

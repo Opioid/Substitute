@@ -1,5 +1,5 @@
 #include "Color.hpp"
-#include "Math/Vector.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

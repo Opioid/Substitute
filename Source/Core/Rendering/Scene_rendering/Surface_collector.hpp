@@ -3,8 +3,8 @@
 #include <vector>
 #include <cstdint>
 
-template<typename T> struct tVector3;
-typedef tVector3<float> float3;
+template<typename T> struct Vector3;
+typedef Vector3<float> float3;
 
 class Frustum;
 

@@ -3,6 +3,7 @@
 #include "Export/Exporter_bin.hpp"
 #include "Model/Model.hpp"
 #include "Math/Math.hpp"
+#include "Math/Matrix.inl"
 #include "String/String.hpp"
 #include <assimp/version.h>
 #include <iostream>

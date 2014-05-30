@@ -1,12 +1,9 @@
 #pragma once
 
+#include "Vector.hpp"
 #include <cmath>
 #include <cstdlib>
-#include "Vector.hpp"
 #include <algorithm>
-
-#undef min
-#undef max
 
 namespace math
 {
@@ -56,13 +53,13 @@ inline int sign(T val)
 template<typename T>
 inline T frac(T x)
 {
-	return x - floor(x);
+	return x - std::floor(x);
 }
 
 template<typename T>
 inline T round(T x)
 {
-	return floor(x >= T(0) ? x + T(0.5) : x - T(0.5));
+	return std::floor(x >= T(0) ? x + T(0.5) : x - T(0.5));
 }
 
 template<typename T>
@@ -87,7 +84,7 @@ inline T exp2(T x)
 template<typename T>
 inline T inverse_sqrt(T x)
 {
-	return T(1) / sqrt(x);
+	return T(1) / std::sqrt(x);
 }
 
 }

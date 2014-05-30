@@ -1,5 +1,6 @@
 #include "Border_button.hpp"
-#include "../Rendering/Printer.hpp"
+#include "Rendering/Printer.hpp"
+#include "Math/Vector.inl"
 
 namespace gui
 {

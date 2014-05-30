@@ -7,6 +7,7 @@
 #include "Resources/Resource_manager.hpp"
 #include "File/Text_stream.hpp"
 #include "Parsing/Json.hpp"
+#include "Flags/Flags.hpp"
 #include "Logging/Logging.hpp"
 #include <sstream>
 #include <fstream>
@@ -33,7 +34,7 @@ bool Effect_provider::load_constant_buffer_classes(const std::string& file_name)
 	return constant_buffer_description_cache_.load(stream);
 }
 
-Handle<Effect> Effect_provider::load(file::Input_stream& stream, Resource_manager& /*resource_manager*/, const Flags flags) const
+Handle<Effect> Effect_provider::load(file::Input_stream& stream, Resource_manager& /*resource_manager*/, uint32_t flags) const
 {
 	rapidjson::Document root;
 
@@ -96,7 +97,9 @@ Handle<Effect> Effect_provider::load(file::Input_stream& stream, Resource_manage
 	create_constant_buffers(*effect, constant_buffer_descriptions);
 	create_samplers(*effect, sampler_descriptions);
 
-	if (!flags.is_set(Options::Use_custom_constant_buffers))
+	Flags<Options> effect_flags(flags);
+
+	if (!effect_flags.is_set(Options::Use_custom_constant_buffers))
 	{
 		effect->create_default_constant_buffers(rendering_tool_.device());
 	}

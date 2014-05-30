@@ -1,8 +1,8 @@
 #include "Assign_node_data_job.hpp"
 #include "AABB_node.hpp"
+#include "Math/Vector.inl"
 #include <algorithm>
 #include <iostream>
-
 
 Assign_node_data_job::Assign_node_data_job(size_t maxTrianglesPerNode) : num_total_vertices_(0)
 {

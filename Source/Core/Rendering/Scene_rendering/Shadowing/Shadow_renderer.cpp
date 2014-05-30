@@ -1,4 +1,5 @@
 #include "Shadow_renderer.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

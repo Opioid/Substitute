@@ -7,6 +7,8 @@
 #include "Rendering/Scene_rendering/Shadowing/Directional_shadow_renderer.hpp"
 #include "Rendering/Scene_rendering/Shadowing/Spot_shadow_renderer.hpp"
 #include "Rendering/Constant_buffer_cache.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 #include "Math/Intersection/Sphere.hpp"
 #include "Math/Intersection/OBB.hpp"
 #include "Resources/Resource_manager.hpp"
@@ -27,10 +29,10 @@ Deferred_lighting_renderer::Deferred_lighting_renderer(Rendering_tool& rendering
 
 bool Deferred_lighting_renderer::init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache)
 {
-	Flags flags;
+	Flags<Effect_provider::Options, uint32_t> flags;
 	flags.set(Effect_provider::Options::Use_custom_constant_buffers, true);
 
-	effect_ = resource_manager.load<Effect>("Effects/Lighting/Deferred_renderer_lighting.effect", flags);
+	effect_ = resource_manager.load<Effect>("Effects/Lighting/Deferred_renderer_lighting.effect", flags.data());
 	if (!effect_)
 	{
 		return false;

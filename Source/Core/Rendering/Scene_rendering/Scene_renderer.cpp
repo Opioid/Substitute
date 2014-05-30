@@ -1,5 +1,6 @@
 #include "Scene_renderer.hpp"
 #include "Rendering/Resource_view.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

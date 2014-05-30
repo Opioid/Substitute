@@ -143,7 +143,7 @@ Intersection_type::Value Frustum::intersect(const OBB& obb) const
 
 		if (m < 0.f)
 		{
-			float n = std::abs(dot(planes_[i].normal(), obb.m_halfsize_x)) + std::abs(dot(planes_[i].normal(), obb.m_halfsize_y)) + std::abs(dot(planes_[i].normal(), obb.m_halfsize_z));
+			float n = std::abs(dot(planes_[i].normal(), obb.halfsize_x)) + std::abs(dot(planes_[i].normal(), obb.halfsize_y)) + std::abs(dot(planes_[i].normal(), obb.halfsize_z));
 
 			if (m < -n)
 			{

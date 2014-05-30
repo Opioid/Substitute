@@ -10,9 +10,8 @@
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Camera.hpp"
 #include "Scene/Scene.hpp"
-
-#include <String/String.hpp>
-#include <iostream>
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 
 namespace rendering
 {
@@ -50,10 +49,10 @@ bool Directional_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manage
         return false;
     }
 
-    Flags flags;
-    flags.set(Effect_provider::Options::Use_custom_constant_buffers, true);
+	Flags<Effect_provider::Options, uint32_t> flags;
+	flags.set(Effect_provider::Options::Use_custom_constant_buffers, true);
 
-    apply_shadow_.effect = resource_manager.load<Effect>("Effects/Shadowing/Apply_shadow_map_EVSM.effect", flags);
+	apply_shadow_.effect = resource_manager.load<Effect>("Effects/Shadowing/Apply_shadow_map_EVSM.effect", flags.data());
     if (!apply_shadow_.effect)
     {
         return false;

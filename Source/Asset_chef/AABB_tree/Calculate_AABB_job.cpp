@@ -1,6 +1,5 @@
 #include "Calculate_AABB_job.hpp"
-#undef min
-#undef max
+#include "Math/Vector.inl"
 
 AABB Calculate_AABB_job::calculate_AABB(const std::vector<Triangle>& triangles)
 {

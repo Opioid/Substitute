@@ -1,7 +1,8 @@
 #include "Image_viewer.hpp"
-#include "../Rendering/Printer.hpp"
+#include "Rendering/Printer.hpp"
 #include "Rendering/Color.hpp"
 #include "Rendering/Resource_view.hpp"
+#include "Math/Vector.inl"
 #include "File/File.hpp"
 
 namespace gui

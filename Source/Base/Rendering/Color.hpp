@@ -1,15 +1,15 @@
 #pragma once
 
-template<typename T> struct tVector3;
-template<typename T> struct tVector4;
+template<typename T> struct Vector3;
+template<typename T> struct Vector4;
 
 namespace rendering
 {
 
-typedef tVector3<unsigned char> Color3c;
-typedef tVector3<float> Color3;
-typedef tVector4<unsigned char> Color4c;
-typedef tVector4<float> Color4;
+typedef Vector3<unsigned char> Color3c;
+typedef Vector3<float> Color3;
+typedef Vector4<unsigned char> Color4c;
+typedef Vector4<float> Color4;
 
 namespace color3
 {

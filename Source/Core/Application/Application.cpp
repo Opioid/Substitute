@@ -9,6 +9,7 @@
 #include "Scene/Light/Irradiance_volume.hpp"
 #include "Scene/Light/Light_probe.hpp"
 #include "Gui/Gui_input.hpp"
+#include "Math/Vector.inl"
 #include "Logging/Logging.hpp"
 #include "String/String.hpp"
 #include <iostream>
@@ -207,7 +208,7 @@ bool Application::on_post_init()
 void Application::on_scene_loaded()
 {}
 
-void Application::on_tick(float time_slice)
+void Application::on_tick(float /*time_slice*/)
 {}
 
 void Application::on_input_signal(const platform::Input_signal& signal)

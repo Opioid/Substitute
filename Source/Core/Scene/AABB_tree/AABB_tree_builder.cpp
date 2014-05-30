@@ -1,7 +1,8 @@
 #include "AABB_tree_builder.hpp"
 #include "AABB_tree.hpp"
 #include "AABB_node.hpp"
-#include "../Static_prop.hpp"
+#include "Scene/Static_prop.hpp"
+#include "Math/Vector.inl"
 
 namespace scene
 {

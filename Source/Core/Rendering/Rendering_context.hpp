@@ -32,7 +32,7 @@ public:
 		Face_culling                = 1 << 6
 	};
 
-	typedef tFlags<Options, uint8_t> Rendering_options;
+	typedef Flags<Options, uint8_t> Rendering_options;
 
 	Rendering_context();
 

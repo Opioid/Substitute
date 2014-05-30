@@ -2,30 +2,35 @@
 
 #include <cstdint>
 
-template<typename Enum, typename T>
-class tFlags
+template<typename Enum, typename T = uint32_t>
+class Flags
 {
 
 public:
 
-	tFlags() : flags_(0)
+	Flags(T flags = T(0)) : flags_(flags)
 	{}
 
-	bool is_set(Enum flag) const
+	inline bool is_set(Enum flag) const
 	{
 		T f = static_cast<T>(flag);
 
 		return f == (flags_ & f);
 	}
 
-	void set(Enum flag, bool value)
+	inline void set(Enum flag, bool value)
 	{
 		T f = static_cast<T>(flag);
 
 		value ? flags_ |= f : flags_ &= ~f;
 	}
 
-    explicit operator T() const
+	inline explicit operator T() const
+	{
+		return flags_;
+	}
+
+	inline T data() const
 	{
 		return flags_;
 	}
@@ -34,7 +39,3 @@ private:
 
 	T flags_;
 };
-
-typedef tFlags<uint32_t, uint32_t> Flags;
-
-

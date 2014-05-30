@@ -193,7 +193,7 @@ public:
 	}
 
 	template<typename Type>
-	Handle<Type> load(const std::string& name, Flags flags = Flags())
+	Handle<Type> load(const std::string& name, uint32_t flags = 0)
 	{
 		if (!name.length())
 		{

@@ -1,4 +1,5 @@
-SOURCES += Scene/Actor.cpp \
+SOURCES += \
+	Scene/Actor.cpp \
 	Scene/Camera.cpp \
 	Scene/Entity.cpp \
 	Scene/Material.cpp \
@@ -15,10 +16,10 @@ SOURCES += Scene/Actor.cpp \
 	Scene/Surrounding.cpp \
 	Scene/Transformation_interpolator.cpp
 
-HEADERS += Scene/Actor.hpp \
+HEADERS += \
+	Scene/Actor.hpp \
 	Scene/Camera.hpp \
 	Scene/Entity.hpp \
-	Scene/Heap_cache.hpp \
 	Scene/Material.hpp \
 	Scene/Material_provider.hpp \
 	Scene/Model.hpp \
@@ -38,3 +39,4 @@ include(Complex/Complex.pri)
 include(Decal/Decal.pri)
 include(Editor/Editor.pri)
 include(Light/Light.pri)
+include(Particles/Particles.pri)

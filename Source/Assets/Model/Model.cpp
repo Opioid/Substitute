@@ -1,4 +1,6 @@
 #include "Model.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 
 Model::Model() : primitive_topology(rendering::Primitive_topology::Triangle_list)
 {}

@@ -1,5 +1,6 @@
 #include "Texture_description.hpp"
 #include "Math/Math.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Node.hpp"
+#include "Flags/Flags.hpp"
 
 namespace scene
 {
@@ -10,14 +11,13 @@ class Entity : public Node
 
 public:
 
-	struct Flags
+	enum class State
 	{
-		enum Value
-		{
-			Visible = 1,
-			Interpolated = 2
-		};
+		Visible		 = 1 << 0,
+		Interpolated = 1 << 1,
 	};
+
+	typedef Flags<State, uint8_t> Entity_state;
 	
 	Entity();
 
@@ -29,7 +29,7 @@ public:
 
 private:
 
-	unsigned char flags_;
+	Entity_state state_;
 };
 
 }

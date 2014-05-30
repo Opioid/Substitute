@@ -10,6 +10,8 @@
 #include "Image/Filter/Modulate.hpp"
 #include "Image/Filter/Copy.hpp"
 
+#include "Math/Vector.inl"
+
 #include <QFileDialog>
 #include <QColorDialog>
 

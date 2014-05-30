@@ -15,6 +15,7 @@
 #include "Scene/Scene.hpp"
 #include "Scene/Camera.hpp"
 #include "Scene/Light/Irradiance_volume.hpp"
+#include "Math/Vector.inl"
 #include "Logging/Logging.hpp"
 #include "String/String.hpp"
 #include "File/File.hpp"
@@ -45,8 +46,8 @@ bool Irradiance_volume_baker::load_cached_data(scene::Scene& scene, Resource_man
 
 	std::string cache_load_name_template = get_cache_load_name_template(scene.name()) + "_irradiance_volume_";
 
-	Flags flags;
-	flags.set(rendering::Texture_provider::Options::Texture_3D, true);
+	Flags<Texture_provider::Options, uint32_t> flags;
+	flags.set(Texture_provider::Options::Texture_3D, true);
 
 	uint32_t i = 0;
 	for (auto v : scene.irradiance_volumes())
@@ -62,7 +63,7 @@ bool Irradiance_volume_baker::load_cached_data(scene::Scene& scene, Resource_man
 				return false;
 			}
 
-			Handle<Shader_resource_view> irradiance_volume = resource_manager.load<Shader_resource_view>(cache_load_name, flags);
+			Handle<Shader_resource_view> irradiance_volume = resource_manager.load<Shader_resource_view>(cache_load_name, flags.data());
 
 			if (irradiance_volume)
 			{

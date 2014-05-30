@@ -1,8 +1,7 @@
 #include "Image_loader.hpp"
 #include "Image/Image.hpp"
+#include "Math/Vector.inl"
 #include <QImage>
-
-#include <iostream>
 
 Image<rendering::Color4c>* Image_loader::load(const std::string& file_name)
 {

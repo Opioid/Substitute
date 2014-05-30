@@ -1,11 +1,9 @@
 #include "Ambient_cube_integrator.hpp"
 #include "Ambient_cube.hpp"
+#include "Math/Vector.inl"
 #include "Math/Half_vector.hpp"
-
 #include "Rendering/Texture_data_adapter.hpp"
 #include "Rendering/Storage/Texture_storage_save.hpp"
-
-#include <iostream>
 
 namespace rendering
 {

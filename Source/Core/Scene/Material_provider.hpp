@@ -15,7 +15,7 @@ public:
 
 	Material_provider();
 
-	Handle<Material> load(file::Input_stream& stream, Resource_manager& resource_manager, const Flags flags = Flags()) const;
+	Handle<Material> load(file::Input_stream& stream, Resource_manager& resource_manager, uint32_t flags = 0) const;
 
 	Handle<Material> clone(const Handle<Material>& material, Resource_manager& resource_manager) const;
 

@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Math/Transformation.hpp"
 #include "Math/Vector.hpp"
 #include "Math/Quaternion.hpp"
-#include "Math/Transformation.hpp"
 
 namespace scene
 {

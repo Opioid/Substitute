@@ -14,7 +14,7 @@ namespace scene
 Model_provider::Model_provider(rendering::Rendering_tool& rendering_tool) : Resource_provider("Model"), rendering_tool_(rendering_tool)
 {}
 
-Handle<Model> Model_provider::load(file::Input_stream& stream, Resource_manager& /*resource_manager*/, const Flags /*flags*/) const
+Handle<Model> Model_provider::load(file::Input_stream& stream, Resource_manager& /*resource_manager*/, const uint32_t /*flags*/) const
 {
 	if (!stream)
 	{

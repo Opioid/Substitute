@@ -2,6 +2,7 @@
 #include "Rendering/Printer.hpp"
 #include "Rendering/Color.hpp"
 #include "Rendering/Resource_view.hpp"
+#include "Math/Vector.inl"
 #include <vector>
 // To suppress a warning originating somewhere in boost - problematic if we treat warnings as errors
 #define D_SCL_SECURE_NO_WARNINGS

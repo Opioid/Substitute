@@ -3,6 +3,7 @@
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Input_layout.hpp"
 #include "Rendering/Scene_rendering/Surface_collector.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

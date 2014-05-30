@@ -1,4 +1,5 @@
 #include "Viewport.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

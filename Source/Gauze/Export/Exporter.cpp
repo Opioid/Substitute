@@ -9,6 +9,7 @@
 #include "Image/Colorspace.hpp"
 #include "Image_storage/Image_writer.hpp"
 #include "Image_storage/Storage_options.hpp"
+#include "Math/Vector.inl"
 #include <algorithm>
 #include <nvtt/nvtt.h>
 

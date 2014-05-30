@@ -1,9 +1,8 @@
 #include "Clipping.hpp"
 #include "Math/Plane.hpp"
-
+#include "Math/Vector.inl"
 
 #define EPSILON	 1.0e-8f
-
 
 bool triangle_behind_plane(const Triangle &tri, const Plane &plane)
 {
@@ -13,7 +12,6 @@ bool triangle_behind_plane(const Triangle &tri, const Plane &plane)
 
 	else return false;
 }
-
 
 bool triangle_intersect_plane(const Triangle &tri, const Plane &plane)
 {
@@ -31,7 +29,6 @@ bool triangle_intersect_plane(const Triangle &tri, const Plane &plane)
 
 	return positive && negative;
 }
-
 
 void lineIntersection(const rendering::Vertex_position3x32_tex_coord2x32_normal3x32 &start, const rendering::Vertex_position3x32_tex_coord2x32_normal3x32 &end, rendering::Vertex_position3x32_tex_coord2x32_normal3x32& vertexOut, const Plane& plane)
 {
@@ -140,7 +137,6 @@ bool clipTriangle(std::vector<Triangle> &result, const Triangle &tri, const Plan
 		return true;
 	}
 }*/
-
 
 bool clipTriangle(std::vector<Triangle> &result, const Triangle &tri, const Plane &plane, std::vector<const rendering::Vertex_position3x32_tex_coord2x32_normal3x32*> &positive, std::vector<const rendering::Vertex_position3x32_tex_coord2x32_normal3x32*> &negative)
 {

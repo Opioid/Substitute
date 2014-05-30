@@ -1,6 +1,6 @@
 #include "Importer.hpp"
 #include "Model/Model.hpp"
-#include "Math/Math.hpp"
+#include "Math/Vector.inl"
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <iostream>

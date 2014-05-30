@@ -7,8 +7,8 @@
 #include "Rendering/Storage/Texture_storage_save.hpp"
 #include "Rendering/Scene_rendering/Main_scene_renderer.hpp"
 #include "Scene/Scene.hpp"
-
-#include <iostream>
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 
 namespace rendering
 {

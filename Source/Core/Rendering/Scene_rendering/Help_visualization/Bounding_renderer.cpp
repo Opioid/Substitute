@@ -5,6 +5,7 @@
 #include "Rendering/Rendering_context.hpp"
 #include "Rendering/Effect/Effect.hpp"
 #include "Resources/Resource_manager.hpp"
+#include "Math/Matrix.inl"
 #include "Math/Intersection/Sphere.hpp"
 #include "Scene/Camera.hpp"
 #include "Scene/Scene.hpp"

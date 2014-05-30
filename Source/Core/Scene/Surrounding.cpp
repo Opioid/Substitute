@@ -1,4 +1,5 @@
 #include "Surrounding.hpp"
+#include "Math/Vector.inl"
 
 namespace scene
 {

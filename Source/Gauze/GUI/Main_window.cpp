@@ -6,6 +6,8 @@
 #include "Image/Filter/To_BGRA.hpp"
 #include "Image_storage/Image_writer.hpp"
 
+#include "Math/Vector.inl"
+
 #include <QFileDialog>
 #include <QColorDialog>
 #include <QPixmap>

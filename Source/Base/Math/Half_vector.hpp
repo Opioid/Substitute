@@ -4,8 +4,8 @@
 #include "half.hpp"
 
 /*
-typedef tVector3<half_float::half> half3;
-typedef tVector4<half_float::half> half4;
+typedef Vector3<half_float::half> half3;
+typedef Vector4<half_float::half> half4;
 */
 
 struct half4
@@ -20,7 +20,7 @@ struct half4
 	{}
 
 	template<typename T>
-	explicit half4(const tVector3<T>& v)
+	explicit half4(const Vector3<T>& v)
 	{
 		x = v.x;
 		y = v.y;

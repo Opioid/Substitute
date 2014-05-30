@@ -62,12 +62,12 @@ Intersection_type::Value Sphere::intersect(const AABB& aabb) const
 
 Intersection_type::Value Sphere::intersect(const OBB& obb) const
 {
-	float3 nhx = normalize(obb.m_halfsize_x);
-	float3 nhy = normalize(obb.m_halfsize_y);
-	float3 nhz = normalize(obb.m_halfsize_z);
+	float3 nhx = normalize(obb.halfsize_x);
+	float3 nhy = normalize(obb.halfsize_y);
+	float3 nhz = normalize(obb.halfsize_z);
 
 	{
-		Plane plane(nhx, obb.position + obb.m_halfsize_x);
+		Plane plane(nhx, obb.position + obb.halfsize_x);
 		if (dot(plane, position) > radius)
 		{
 			return Intersection_type::Outside;
@@ -75,7 +75,7 @@ Intersection_type::Value Sphere::intersect(const OBB& obb) const
 	}
 
 	{
-		Plane plane(nhy, obb.position + obb.m_halfsize_y);
+		Plane plane(nhy, obb.position + obb.halfsize_y);
 		if (dot(plane, position) > radius)
 		{
 			return Intersection_type::Outside;
@@ -83,7 +83,7 @@ Intersection_type::Value Sphere::intersect(const OBB& obb) const
 	}
 
 	{
-		Plane plane(nhz, obb.position + obb.m_halfsize_z);
+		Plane plane(nhz, obb.position + obb.halfsize_z);
 		if (dot(plane, position) > radius)
 		{
 			return Intersection_type::Outside;
@@ -91,7 +91,7 @@ Intersection_type::Value Sphere::intersect(const OBB& obb) const
 	}
 
 	{
-		Plane plane(-nhx, obb.position - obb.m_halfsize_x);
+		Plane plane(-nhx, obb.position - obb.halfsize_x);
 		if (dot(plane, position) > radius)
 		{
 			return Intersection_type::Outside;
@@ -99,7 +99,7 @@ Intersection_type::Value Sphere::intersect(const OBB& obb) const
 	}
 
 	{
-		Plane plane(-nhy, obb.position - obb.m_halfsize_y);
+		Plane plane(-nhy, obb.position - obb.halfsize_y);
 		if (dot(plane, position) > radius)
 		{
 			return Intersection_type::Outside;
@@ -107,7 +107,7 @@ Intersection_type::Value Sphere::intersect(const OBB& obb) const
 	}
 
 	{
-		Plane plane(-nhz, obb.position - obb.m_halfsize_z);
+		Plane plane(-nhz, obb.position - obb.halfsize_z);
 		if (dot(plane, position) > radius)
 		{
 			return Intersection_type::Outside;

@@ -2,7 +2,7 @@
 
 #include "Image/Image_buffer.hpp"
 #include "Rendering/Color.hpp"
-#include <cstdint>
+#include "Math/Vector.inl"
 
 class RGBA_to_float
 {

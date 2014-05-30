@@ -42,7 +42,7 @@ protected:
 		Mixed_render_states =  1 << 0
 	};
 
-	typedef tFlags<Property, uint32_t> Renderable_properties;
+	typedef Flags<Property, uint32_t> Renderable_properties;
 
 	Renderable_properties properties_;
 };

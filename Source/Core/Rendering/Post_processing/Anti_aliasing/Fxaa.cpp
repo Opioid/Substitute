@@ -6,6 +6,7 @@
 #include "Rendering/Rendering_context.hpp"
 #include "Rendering/Effect/Effect.hpp"
 #include "Resources/Resource_manager.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

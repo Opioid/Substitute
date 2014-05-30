@@ -1,6 +1,7 @@
 #include "Material.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Math/Math.hpp"
+#include "Math/Vector.inl"
 
 namespace scene
 {

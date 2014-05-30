@@ -19,8 +19,8 @@ bool register_node(const std::string& type_name, const Script_engine& engine)
 	engine.register_object_method(type_name, "const float3& local_scale() const", asMETHODPR(Type, local_scale, () const, const float3&));
 	engine.register_object_method(type_name, "void set_local_scale(const float3 &in)", asMETHODPR(Type, set_local_scale, (const float3&), void));
 
-	engine.register_object_method(type_name, "const Quaternion& local_rotation() const", asMETHODPR(Type, local_rotation, () const, const Quaternion&));
-	engine.register_object_method(type_name, "void set_local_rotation(const Quaternion &in)", asMETHODPR(Type, set_local_rotation, (const Quaternion&), void));
+	engine.register_object_method(type_name, "const quaternion& local_rotation() const", asMETHODPR(Type, local_rotation, () const, const quaternion&));
+	engine.register_object_method(type_name, "void set_local_rotation(const quaternion &in)", asMETHODPR(Type, set_local_rotation, (const quaternion&), void));
 
 	engine.register_object_method(type_name, "float3 world_position() const", asMETHODPR(Type, world_position, () const, float3));
 	engine.register_object_method(type_name, "float3 world_scale() const", asMETHODPR(Type, world_scale, () const, float3));
@@ -32,23 +32,37 @@ bool register_node(const std::string& type_name, const Script_engine& engine)
 	return true;
 }
 
+template<typename Type>
+bool register_entity(const std::string& type_name, const Script_engine& engine)
+{
+	if (!register_node<Type>(type_name, engine))
+	{
+		return false;
+	}
+
+	engine.register_object_method(type_name, "bool is_visible() const", asMETHODPR(Type, is_visible, () const, bool));
+	engine.register_object_method(type_name, "void set_visible(bool)", asMETHODPR(Type, set_visible, (bool), void));
+
+	return true;
+}
+
 bool init_entity(Script_tool& tool)
 {
 	const Script_engine& engine = tool.engine();
 
 	engine.set_default_namespace("");
 
-	if (!register_node<scene::Entity>("Entity", engine))
+	if (!register_entity<scene::Entity>("Entity", engine))
 	{
 		return false;
 	}
 
-	if (!register_node<scene::Entity>("Actor", engine))
+	if (!register_entity<scene::Entity>("Actor", engine))
 	{
 		return false;
 	}
 
-	if (!register_node<scene::Light>("Light", engine))
+	if (!register_entity<scene::Light>("Light", engine))
 	{
 		return false;
 	}

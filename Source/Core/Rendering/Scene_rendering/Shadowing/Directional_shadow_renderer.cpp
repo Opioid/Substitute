@@ -4,6 +4,8 @@
 #include "Rendering/Scene_rendering/Surface_collector.hpp"
 #include "Scene/Scene.hpp"
 #include "Scene/Static_prop.hpp"
+#include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 #include "Math/Intersection/Polyhedron.hpp"
 
 #include <iostream>

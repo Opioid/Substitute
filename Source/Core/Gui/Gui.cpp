@@ -1,10 +1,10 @@
 #include "Gui.hpp"
 #include "Image_viewer.hpp"
-#include "../Application/Cursor.hpp"
+#include "Application/Cursor.hpp"
 #include "Rendering/Resource_view.hpp"
-#include "../Resources/Resource_manager.hpp"
-#include "../Rendering/Printer.hpp"
-
+#include "Resources/Resource_manager.hpp"
+#include "Rendering/Printer.hpp"
+#include "Math/Vector.inl"
 
 namespace gui
 {

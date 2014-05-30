@@ -1,5 +1,6 @@
 #include "Light_probe.hpp"
 #include "Rendering/Resource_view.hpp"
+#include "Math/Matrix.inl"
 
 namespace scene
 {
@@ -7,7 +8,7 @@ namespace scene
 Light_probe::Light_probe() : world_transformation_(float4x4::identity)
 {}
 
-void Light_probe::init(const float3& position, const float3& scale, const Quaternion& rotation)
+void Light_probe::init(const float3& position, const float3& scale, const quaternion& rotation)
 {
     world_transformation_ = float4x4::identity;
 

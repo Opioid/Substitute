@@ -1,4 +1,5 @@
 #include "Hdr_filter.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

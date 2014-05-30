@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Resources/Resource_provider.hpp"
+#include "Resources/Resource_provider.hpp"
 #include "Rendering/Vertex_layout_description.hpp"
 #include "Model.hpp"
 
@@ -16,7 +16,7 @@ public:
 
 	Model_provider(rendering::Rendering_tool& rendering_tool);
 
-	Handle<Model> load(file::Input_stream& stream, Resource_manager& resource_manager, const Flags flags = Flags()) const;
+	Handle<Model> load(file::Input_stream& stream, Resource_manager& resource_manager, uint32_t flags = 0) const;
 
 private:
 

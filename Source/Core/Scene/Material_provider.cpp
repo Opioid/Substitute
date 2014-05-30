@@ -1,10 +1,11 @@
 #include "Material_provider.hpp"
-#include "../Resources/Resource_manager.hpp"
+#include "Resources/Resource_manager.hpp"
 #include "Rendering/Resource_view.hpp"
-#include "../Rendering/Texture_provider.hpp"
+#include "Rendering/Texture_provider.hpp"
 #include "Math/Math.hpp"
+#include "Math/Vector.inl"
 #include "Parsing/Json.hpp"
-#include "../Logging/Logging.hpp"
+#include "Logging/Logging.hpp"
 
 namespace scene
 {
@@ -12,7 +13,7 @@ namespace scene
 Material_provider::Material_provider() : Resource_provider("Material")
 {}
  
-Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_manager& resource_manager, const Flags /*flags*/) const
+Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_manager& resource_manager, const uint32_t /*flags*/) const
 {
 	rapidjson::Document root;
 
@@ -71,7 +72,7 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 
 				Material::Sampler sampler = read_sampler(texture_value);
 
-				Flags flags;
+				Flags<rendering::Texture_provider::Options> flags;
 
 				if (Material::Sampler::Normals  == sampler
 				||  Material::Sampler::Surface0 == sampler
@@ -99,7 +100,7 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 					has_emissive = json::read_bool(texture_value, "emissive", false);
 				}
 
-				material->textures_[static_cast<size_t>(sampler)] = resource_manager.load<rendering::Shader_resource_view>(file_name, flags);
+				material->textures_[static_cast<size_t>(sampler)] = resource_manager.load<rendering::Shader_resource_view>(file_name, flags.data());
 			}
 		}
 		else if (node_name == "color")

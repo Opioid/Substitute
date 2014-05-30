@@ -18,20 +18,17 @@ class Effect_provider : public Resource_provider<Effect>
 
 public:
 
-	struct Options
+	enum class Options
 	{
-		enum Value
-		{
-			Unknown = 0,
-			Use_custom_constant_buffers = 1
-		};
+		Unknown = 0,
+		Use_custom_constant_buffers = 1
 	};
 
 	Effect_provider(Rendering_tool& rendering_tool);
 
 	bool load_constant_buffer_classes(const std::string& file_name);
 
-	virtual Handle<Effect> load(file::Input_stream& stream, Resource_manager& resource_manager, const Flags flags = Flags()) const;
+	virtual Handle<Effect> load(file::Input_stream& stream, Resource_manager& resource_manager, uint32_t flags = 0) const;
 
 private:
 

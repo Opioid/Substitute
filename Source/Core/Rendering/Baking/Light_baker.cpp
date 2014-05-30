@@ -4,6 +4,7 @@
 #include "Rendering/Scene_rendering/Main_scene_renderer.hpp"
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Scene.hpp"
+#include "Math/Vector.inl"
 #include "Timing/Stopwatch.hpp"
 #include "String/String.hpp"
 #include "File/File.hpp"

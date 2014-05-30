@@ -1,5 +1,6 @@
 #include "Importer.hpp"
 #include "Model/Model.hpp"
+#include "Math/Vector.inl"
 #include "Parsing/Json.hpp"
 #include <cstdint>
 #include <iostream>
