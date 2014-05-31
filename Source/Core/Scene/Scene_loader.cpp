@@ -147,10 +147,7 @@ void Scene_loader::load_surrounding(const rapidjson::Value& surrounding)
 		}
 		else if (node_name == "texture")
 		{
-			Flags<rendering::Texture_provider::Options> flags;
-			flags.set(rendering::Texture_provider::Options::Texture_Cube, true);
-
-			scene_.surrounding().set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString(), flags.data()));
+			scene_.surrounding().set_texture(resource_manager_.load<rendering::Shader_resource_view>(node_value.GetString()));
 		}
 	}
 }

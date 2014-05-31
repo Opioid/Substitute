@@ -1,6 +1,7 @@
 #include "Texture_provider.hpp"
 #include "Rendering_tool.hpp"
 #include "Rendering/Texture.hpp"
+#include "Rendering/Texture_data_adapter.hpp"
 #include "Rendering/Storage/Texture_storage_load.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Flags/Flags.hpp"
@@ -19,46 +20,33 @@ Handle<Shader_resource_view> Texture_provider::load(file::Input_stream& stream, 
 	Flags<Options, uint32_t> texture_flags(flags);
 
 	bool treat_as_linear = texture_flags.is_set(Options::Treat_as_linear);
-	bool texture_3D		 = texture_flags.is_set(Options::Texture_3D);
-	bool texture_cube	 = texture_flags.is_set(Options::Texture_Cube);
+
+	std::shared_ptr<Texture_data_adapter> texture_data = Texture_storage::load_texture(stream, treat_as_linear, error_message);
+
+	if (!texture_data)
+	{
+		logging::error(error_message);
+		return nullptr;
+	}
 
 	Handle<Texture> texture;
 
-	if (texture_3D)
+	switch (texture_data->description().type)
 	{
-		std::shared_ptr<Texture_data_adapter> texture_data = Texture_storage::load_texture_3D(stream, treat_as_linear, error_message);
-
-		if (!texture_data)
-		{
-			logging::error(error_message);
-			return nullptr;
-		}
-
-		texture = rendering_tool_.device().create_texture_3D(*texture_data);
-	}
-	else if (texture_cube)
-	{
-		std::shared_ptr<Texture_data_adapter> texture_data = Texture_storage::load_texture_cube(stream, treat_as_linear, error_message);
-
-		if (!texture_data)
-		{
-			logging::error(error_message);
-			return nullptr;
-		}
-
-		texture = rendering_tool_.device().create_texture_cube(*texture_data);
-	}
-	else
-	{
-		std::shared_ptr<Texture_data_adapter> texture_data = Texture_storage::load_texture_2D(stream, treat_as_linear, error_message);
-
-		if (!texture_data)
-		{
-			logging::error(error_message);
-			return nullptr;
-		}
-
+	case Texture_description::Type::Texture_2D:
 		texture = rendering_tool_.device().create_texture_2D(*texture_data);
+		break;
+
+	case Texture_description::Type::Texture_3D:
+		texture = rendering_tool_.device().create_texture_3D(*texture_data);
+		break;
+
+	case Texture_description::Type::Texture_cube:
+		texture = rendering_tool_.device().create_texture_cube(*texture_data);
+		break;
+
+	default:
+		return nullptr;
 	}
 
 	Handle<Shader_resource_view> view = rendering_tool_.device().create_shader_resource_view(texture, stream.name());

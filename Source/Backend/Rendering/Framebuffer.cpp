@@ -2,7 +2,6 @@
 #include "Resource_view.hpp"
 #include "Texture.hpp"
 #include <GL/glew.h>
-#include <iostream>
 
 namespace rendering
 {

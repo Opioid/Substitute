@@ -36,7 +36,9 @@ Data_format::Value GLI_texture_data_adapter::map(gli::format gli_format)
 
 GLI_texture_data_adapter_2D::GLI_texture_data_adapter_2D(const Texture_description& description, const gli::texture2D& texture) :
 	Texture_data_adapter(description), texture_(texture)
-{}
+{
+	description_.type = Texture_description::Type::Texture_2D;
+}
 
 GLI_texture_data_adapter_2D::~GLI_texture_data_adapter_2D()
 {}

@@ -119,9 +119,6 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 
 	std::string cache_load_name_template = get_cache_load_name_template(scene.name());
 
-	Flags<Texture_provider::Options, uint32_t> flags;
-	flags.set(Texture_provider::Options::Texture_Cube, true);
-
 	if (scene.surrounding_light_probe())
 	{
 		std::string cache_load_name = cache_load_name_template + "_surrounding_light_probe.sui";
@@ -133,7 +130,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 			return false;
 		}
 
-		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name, flags.data());
+		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name);
 
 		if (environment_map)
 		{
@@ -156,7 +153,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 			return false;
 		}
 
-		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name, flags.data());
+		Handle<Shader_resource_view> environment_map = resource_manager.load<Shader_resource_view>(cache_load_name);
 
 		if (environment_map)
 		{

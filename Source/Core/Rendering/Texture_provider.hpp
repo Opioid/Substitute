@@ -17,9 +17,7 @@ public:
 	enum class Options
 	{
 		Unknown			= 1 << 0,
-		Treat_as_linear = 1 << 1,
-		Texture_3D		= 1 << 2,
-		Texture_Cube	= 1 << 3
+		Treat_as_linear = 1 << 1
 	};
 
 	Texture_provider(rendering::Rendering_tool& rendering_tool);

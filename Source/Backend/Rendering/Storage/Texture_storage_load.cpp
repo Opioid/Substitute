@@ -11,15 +11,19 @@
 namespace rendering
 {
 
-std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_2D(file::Input_stream& stream, bool treat_as_linear, std::string& error_message)
+std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture(file::Input_stream& stream, bool treat_as_linear, std::string& error_message)
 {
 	file::File_type file_type = query_file_type(stream);
 
 	if (file::File_type::DDS == file_type)
 	{
-		return texture_storage::load_DDS_texture_2D(stream, treat_as_linear, error_message);
+		return texture_storage::load_DDS_texture(stream, treat_as_linear, error_message);
 	}
-
+	else if (file::File_type::SUI == file_type)
+	{
+		return texture_storage::load_SUI_texture(stream, error_message);
+	}
+/*
 	FreeImageIO io;
 	io.read_proc = fi::read; // pointer to function that calls fread
 	io.write_proc = nullptr; // not needed for loading
@@ -100,11 +104,7 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_2D(file::Inp
 	}
 
 	return std::make_shared<Generic_texture_data_adapter>(description, data, true);
-}
-
-std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_3D(file::Input_stream& stream, bool /*treat_as_linear*/, std::string& error_message)
-{
-	return texture_storage::load_SUI_texture(stream, error_message);
+	*/
 }
 
 std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_cube(file::Input_stream& stream, bool treat_as_linear, std::string& error_message)
@@ -113,7 +113,7 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_cube(file::I
 
 	if (file::File_type::DDS == file_type)
 	{
-		return texture_storage::load_DDS_texture_cube(stream, treat_as_linear, error_message);
+		return texture_storage::load_DDS_texture(stream, treat_as_linear, error_message);
 	}
 	else if (file::File_type::SUI == file_type)
 	{
@@ -161,7 +161,7 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_cube(file::I
 					return nullptr;
 				}
 
-				texture_data[i] = load_texture_2D(stream_2D, treat_as_linear, error_message);
+				texture_data[i] = load_texture(stream_2D, treat_as_linear, error_message);
 
 				if (!texture_data[i])
 				{
