@@ -2,6 +2,7 @@
 #include "File/File_stream.hpp"
 #include "Scene.hpp"
 #include "Model.hpp"
+#include "Actor.hpp"
 #include "Static_prop.hpp"
 #include "AABB_tree/AABB_tree_loader.hpp"
 #include "Complex/Complex.hpp"

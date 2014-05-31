@@ -22,7 +22,7 @@ public:
 
 private:
 
-	std::map<std::string, Complex_factory*> m_factories;
+	std::map<std::string, Complex_factory*> factories_;
 };
 
 }

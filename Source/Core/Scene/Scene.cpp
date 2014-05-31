@@ -5,6 +5,7 @@
 #include "Transformation_interpolator.hpp"
 #include "Light/Irradiance_volume.hpp"
 #include "AABB_tree/AABB_tree_builder.hpp"
+#include "Particles/Particle_effect.hpp"
 #include "Complex/Complex.hpp"
 #include "Math/Quaternion.inl"
 
@@ -312,6 +313,25 @@ Light_probe* Scene::create_light_probe(const float3& position, const float3& sca
 	return light_probe;
 }
 
+Particle_effect* Scene::create_particle_effect(const std::string& type, const std::string& name)
+{
+	Particle_effect* particle_effect = particle_scene_.create_particle_effect(type);
+
+	if (!particle_effect)
+	{
+		return nullptr;
+	}
+
+	add_entity(particle_effect, name);
+
+	return particle_effect;
+}
+
+Particle_scene& Scene::particle_scene()
+{
+	return particle_scene_;
+}
+
 const scene::Surrounding& Scene::surrounding() const
 {
 	return surrounding_;
@@ -324,7 +344,7 @@ scene::Surrounding& Scene::surrounding()
 
 Complex* Scene::create_complex(const std::string& type, Resource_manager& resource_manager)
 {
-	Complex* complex = m_complex_factories.create_complex(type, *this, resource_manager);
+	Complex* complex = complex_factories_.create_complex(type, *this, resource_manager);
 
 	if (!complex)
 	{
@@ -338,7 +358,7 @@ Complex* Scene::create_complex(const std::string& type, Resource_manager& resour
 
 Complex_factory_manager& Scene::complex_factories()
 {
-	return m_complex_factories;
+	return complex_factories_;
 }
 
 void Scene::add_entity(Entity* entity, const std::string& name)

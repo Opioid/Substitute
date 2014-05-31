@@ -10,9 +10,9 @@ void Polyhedron::add_plane(const Plane& plane)
 	planes_.push_back(plane);
 }
 
-Intersection_type::Value Polyhedron::intersect(const AABB& aabb) const
+Intersection_type Polyhedron::intersect(const AABB& aabb) const
 {
-	Intersection_type::Value result = Intersection_type::Inside;
+	Intersection_type result = Intersection_type::Inside;
 
 	for (size_t i = 0; i < planes_.size(); ++i) 
 	{
@@ -33,9 +33,9 @@ Intersection_type::Value Polyhedron::intersect(const AABB& aabb) const
 	return result;
 }
 
-Intersection_type::Value Polyhedron::intersect(const AABB& aabb, size_t& out) const
+Intersection_type Polyhedron::intersect(const AABB& aabb, size_t& out) const
 {
-	Intersection_type::Value result = Intersection_type::Inside;
+	Intersection_type result = Intersection_type::Inside;
 
 	for (size_t i = 0; i < planes_.size(); ++i) 
 	{
@@ -65,7 +65,7 @@ Polyhedron Polyhedron::create_point_shadow_caster_volume(const Frustum& frustum,
 	Polyhedron polyhedron;
 
 	// the point shadow caster is inside the frustum, thus the shadow caster volume IS the frustum
-	if (frustum.intersect(position))
+	if (Intersection_type::Outside != frustum.intersect(position))
 	{
 		for (size_t i = 0; i < 6; ++i)
 		{

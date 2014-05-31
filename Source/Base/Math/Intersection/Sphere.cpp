@@ -19,7 +19,7 @@ void Sphere::translate(const float3& v)
 	position += v;
 };
 
-Intersection_type::Value Sphere::intersect(const float3& point) const
+Intersection_type Sphere::intersect(const float3& point) const
 {
 	if (squared_distance(position, point) <= radius * radius)
 	{
@@ -29,7 +29,7 @@ Intersection_type::Value Sphere::intersect(const float3& point) const
 	return Intersection_type::Outside;
 }
 
-Intersection_type::Value Sphere::intersect(const AABB& aabb) const
+Intersection_type Sphere::intersect(const AABB& aabb) const
 {
 	float3 min = aabb.get_min();
 	float3 max = aabb.get_max();
@@ -60,7 +60,7 @@ Intersection_type::Value Sphere::intersect(const AABB& aabb) const
 	}
 }
 
-Intersection_type::Value Sphere::intersect(const OBB& obb) const
+Intersection_type Sphere::intersect(const OBB& obb) const
 {
 	float3 nhx = normalize(obb.halfsize_x);
 	float3 nhy = normalize(obb.halfsize_y);

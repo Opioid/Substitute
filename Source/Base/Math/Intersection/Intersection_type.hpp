@@ -1,12 +1,8 @@
 #pragma once
 
-
-struct Intersection_type
+enum class Intersection_type
 {
-	enum Value
-	{
-		Outside,
-		Inside,
-		Intersecting
-	};
+	Outside,
+	Inside,
+	Intersecting
 };

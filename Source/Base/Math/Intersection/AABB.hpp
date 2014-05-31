@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Intersection_type.hpp"
-#include "../Vector.hpp"
-#include "../Matrix.hpp"
+#include "Math/Vector.hpp"
+#include "Math/Matrix.hpp"
 
 struct Plane;
 
@@ -21,9 +21,9 @@ struct AABB
 
 	void get_corners(float3 corners[8]) const;
 
-	Intersection_type::Value intersect(const AABB& aabb) const;
-	Intersection_type::Value intersect(const float3& point) const;
-	Intersection_type::Value intersect(const Plane& plane) const;
+	Intersection_type intersect(const AABB& aabb) const;
+	Intersection_type intersect(const float3& point) const;
+	Intersection_type intersect(const Plane& plane) const;
 
 	float3 position;
 	float3 halfsize;

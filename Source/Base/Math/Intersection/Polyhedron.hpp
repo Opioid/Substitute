@@ -10,8 +10,8 @@ public:
 
 	void add_plane(const Plane& plane);
 
-	Intersection_type::Value intersect(const AABB& aabb) const;
-	Intersection_type::Value intersect(const AABB& aabb, size_t &out) const;
+	Intersection_type intersect(const AABB& aabb) const;
+	Intersection_type intersect(const AABB& aabb, size_t &out) const;
 
 	static Polyhedron create_point_shadow_caster_volume(const Frustum& frustum, const float3& position);
 	static Polyhedron create_directional_shadow_caster_volume(const Frustum& frustum, const float3& direction);

@@ -104,7 +104,7 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 
 	for (auto a : actors)
 	{
-		if (frustum.intersect(a->aabb()))
+		if (Intersection_type::Outside != frustum.intersect(a->aabb()))
 		{
 			render(a->aabb());
 		}
@@ -129,7 +129,7 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 			float radius = l->point_energy_and_range().w;
 			Sphere sphere(l->world_position(), radius);
 
-			if (frustum.intersect(sphere))
+			if (Intersection_type::Outside != frustum.intersect(sphere))
 			{
 				render(sphere);
 			}
@@ -138,7 +138,7 @@ void Bounding_renderer::render(const scene::Scene& scene, const Rendering_contex
 		{
 			Frustum frustum(light.calculate_view_projection());
 
-			if (camera.frustum().intersect(frustum))
+			if (Intersection_type::Outside != camera.frustum().intersect(frustum))
 			{
 				render(frustum);
 			}
@@ -158,7 +158,7 @@ void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frus
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(p->aabb()))
 			{
 				render(p->aabb());
 			}
@@ -169,7 +169,7 @@ void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frus
 
 	while (node)
 	{
-		if (!frustum.intersect(node->aabb()))
+		if (Intersection_type::Outside == frustum.intersect(node->aabb()))
 		{
 			node = node->get_skip_node();
 			continue;
@@ -182,7 +182,7 @@ void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frus
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(p->aabb()))
 			{
 				render(p->aabb());
 			}

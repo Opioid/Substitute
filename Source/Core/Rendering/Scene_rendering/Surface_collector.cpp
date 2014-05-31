@@ -42,7 +42,7 @@ void Surface_collector::collect(const scene::Scene& scene, const float3& eye_pos
 
 		for (auto a : actors)
 		{
-			if (frustum.intersect(a->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(a->aabb()))
 			{
 				add(a, eye_position);
 			}
@@ -67,7 +67,7 @@ void Surface_collector::collect_unified(const scene::Scene& scene, const float3&
 
 		for (auto a : actors)
 		{
-			if (frustum.intersect(a->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(a->aabb()))
 			{
 				add_unified(a, eye_position);
 			}
@@ -89,7 +89,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(p->aabb()))
 			{
 				add(p, eye_position);
 			}
@@ -100,7 +100,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 
 	while (node)
 	{
-		if (!frustum.intersect(node->aabb()))
+		if (Intersection_type::Outside == frustum.intersect(node->aabb()))
 		{
 			node = node->get_skip_node();
 			continue;
@@ -110,7 +110,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(p->aabb()))
 			{
 				add(p, eye_position);
 			}
@@ -136,7 +136,7 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(p->aabb()))
 			{
 				add_unified(p, eye_position);
 			}
@@ -147,7 +147,7 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 
 	while (node)
 	{
-		if (!frustum.intersect(node->aabb()))
+		if (Intersection_type::Outside == frustum.intersect(node->aabb()))
 		{
 			node = node->get_skip_node();
 			continue;
@@ -157,7 +157,7 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 
 		for (auto p : props)
 		{
-			if (frustum.intersect(p->aabb()))
+			if (Intersection_type::Outside != frustum.intersect(p->aabb()))
 			{
 				add_unified(p, eye_position);
 			}

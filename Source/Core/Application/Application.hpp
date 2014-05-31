@@ -102,6 +102,8 @@ private:
 
 	double simulation_frequency_;
 
+	const float time_slice_;
+
 	Mode mode_;
 
 	scripting::Script_tool script_tool_;

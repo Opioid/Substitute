@@ -3,6 +3,7 @@
 #include "Rendering/Rendering_context.hpp"
 #include "Rendering/Scene_rendering/Surface_collector.hpp"
 #include "Scene/Scene.hpp"
+#include "Scene/Actor.hpp"
 #include "Scene/Static_prop.hpp"
 #include "Math/Vector.inl"
 #include "Math/Matrix.inl"
@@ -170,7 +171,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 		for (auto a : actors)
 		{
 			auto& aabb = a->aabb();
-			if (shadow_volume.intersect(aabb))
+			if (Intersection_type::Outside != shadow_volume.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
 		//		relevantActors.push_back(a);
@@ -186,7 +187,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 		for (auto p : props)
 		{
 			auto& aabb = p->aabb();
-			if (shadow_volume.intersect(aabb))
+			if (Intersection_type::Outside != shadow_volume.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
 			}
@@ -201,7 +202,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 	{
 		auto& node_AABB = node->aabb();
 
-		const Intersection_type::Value intersection = shadow_volume.intersect(node_AABB);
+		const Intersection_type intersection = shadow_volume.intersect(node_AABB);
 
 		if (Intersection_type::Outside == intersection)
 		{
@@ -223,7 +224,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 		for (auto p : props)
 		{
 			auto& aabb = p->aabb();
-			if (shadow_volume.intersect(aabb))
+			if (Intersection_type::Outside != shadow_volume.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
 			}

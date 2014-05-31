@@ -3,6 +3,7 @@
 #include "Rendering/Rendering_context.hpp"
 #include "Rendering/Scene_rendering/Surface_collector.hpp"
 #include "Scene/Scene.hpp"
+#include "Scene/Actor.hpp"
 #include "Scene/Static_prop.hpp"
 #include "Math/Vector.inl"
 #include "Math/Matrix.inl"
@@ -102,7 +103,8 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 		for (auto a : actors)
 		{
 			auto& aabb = a->aabb();
-			if (shadow_volume.intersect(aabb) && light_frustum.intersect(aabb))
+			if (Intersection_type::Outside != shadow_volume.intersect(aabb)
+			&&  Intersection_type::Outside != light_frustum.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
 		//		relevantActors.push_back(a);
@@ -118,7 +120,8 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 		for (auto p : props)
 		{
 			auto& aabb = p->aabb();
-			if (shadow_volume.intersect(aabb) && light_frustum.intersect(aabb))
+			if (Intersection_type::Outside != shadow_volume.intersect(aabb)
+			&&  Intersection_type::Outside != light_frustum.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
 			}
@@ -133,8 +136,8 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 	{
 		auto& node_AABB = node->aabb();
 
-		const Intersection_type::Value intersection_v = shadow_volume.intersect(node_AABB);
-		const Intersection_type::Value intersection_f = light_frustum.intersect(node_AABB);
+		const Intersection_type intersection_v = shadow_volume.intersect(node_AABB);
+		const Intersection_type intersection_f = light_frustum.intersect(node_AABB);
 
 		if (Intersection_type::Outside == intersection_v || Intersection_type::Outside == intersection_f)
 		{
@@ -156,7 +159,8 @@ AABB Spot_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scene& scen
 		for (auto p : props)
 		{
 			auto& aabb = p->aabb();
-			if (shadow_volume.intersect(aabb) && light_frustum.intersect(aabb))
+			if (Intersection_type::Outside != shadow_volume.intersect(aabb)
+			&&  Intersection_type::Outside != light_frustum.intersect(aabb))
 			{
 				shadow_caster_aabb = shadow_caster_aabb.merge(aabb);
 			}

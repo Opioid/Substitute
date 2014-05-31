@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Intersection_type.hpp"
-#include "../Plane.hpp"
+#include "Math/Plane.hpp"
 
 struct Ray3;
 
 struct Sphere;
 struct AABB;
-class OBB;
+struct OBB;
 
 class Frustum
 {
@@ -36,17 +36,17 @@ public:
 
 	void calculate_points();
 
-	Intersection_type::Value intersect(const float3& point) const;
+	Intersection_type intersect(const float3& point) const;
 
-	Intersection_type::Value intersect(const Sphere& sphere) const;
+	Intersection_type intersect(const Sphere& sphere) const;
 
-	Intersection_type::Value intersect(const AABB& aabb) const;
+	Intersection_type intersect(const AABB& aabb) const;
 
-	Intersection_type::Value intersect(const OBB& obb) const;
+	Intersection_type intersect(const OBB& obb) const;
 
-	Intersection_type::Value intersect(const float3& p0, const float3& p1) const;
+	Intersection_type intersect(const float3& p0, const float3& p1) const;
 
-	Intersection_type::Value intersect(const Frustum& frustum) const;
+	Intersection_type intersect(const Frustum& frustum) const;
 
 	AABB calculate_AABB() const;
 

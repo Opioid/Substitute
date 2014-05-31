@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Camera.hpp"
-#include "Actor.hpp"
 //#include "Decal/Decal_provider.hpp"
 #include "Light/Light.hpp"
 #include "Light/Light_probe.hpp"
 #include "AABB_tree/AABB_tree.hpp"
+#include "Particles/Particle_scene.hpp"
 #include "Surrounding.hpp"
 #include "Complex/Complex_factory_manager.hpp"
 #include "Memory/Heap_cache.hpp"
@@ -15,9 +15,11 @@ namespace scene
 {
 
 class Entity;
+class Actor;
 class Transformation_interpolator;
 class Static_prop;
 class Irradiance_volume;
+class Particle_effect;
 
 class Scene
 {
@@ -71,6 +73,10 @@ public:
 	Light_probe* create_light_probe();
 	Light_probe* create_light_probe(const float3& position, const float3& scale, const quaternion& rotation);
 
+	Particle_effect* create_particle_effect(const std::string& type, const std::string& name = "");
+
+	Particle_scene& particle_scene();
+
 	const Surrounding& surrounding() const;
 	Surrounding& surrounding();
 
@@ -108,9 +114,11 @@ private:
 
     Heap_cache<Light_probe> light_probes_;
 
+	Particle_scene particle_scene_;
+
 	Surrounding surrounding_;
 
-	Complex_factory_manager m_complex_factories;
+	Complex_factory_manager complex_factories_;
 	std::vector<Complex*> complexes_;
 };
 

@@ -69,7 +69,7 @@ void AABB::get_corners(float3 corners[8]) const
 	corners[7] = float3(max.x, max.y, max.z);
 }
 
-Intersection_type::Value AABB::intersect(const AABB& aabb) const
+Intersection_type AABB::intersect(const AABB& aabb) const
 {
 	float3 amin = get_min();
 	float3 amax = get_max();
@@ -87,7 +87,7 @@ Intersection_type::Value AABB::intersect(const AABB& aabb) const
 	return Intersection_type::Outside;
 }
 
-Intersection_type::Value AABB::intersect(const float3& point) const
+Intersection_type AABB::intersect(const float3& point) const
 {
 	float3 min = get_min();
 	float3 max = get_max();
@@ -101,7 +101,7 @@ Intersection_type::Value AABB::intersect(const float3& point) const
 	return Intersection_type::Outside;
 }
 
-Intersection_type::Value AABB::intersect(const Plane& plane) const
+Intersection_type AABB::intersect(const Plane& plane) const
 {
 	float m = dot(plane, position);
 	float n = halfsize.x * std::abs(plane.a) + halfsize.y * std::abs(plane.b) + halfsize.z * std::abs(plane.c);

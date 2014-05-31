@@ -86,7 +86,7 @@ void Frustum::calculate_points()
 	points_[7] = Plane::intersection(planes_[1], planes_[2], planes_[5]);	//Right Upper Far
 }
 
-Intersection_type::Value Frustum::intersect(const float3& point) const
+Intersection_type Frustum::intersect(const float3& point) const
 {
 	for (size_t i = 0; i < 6; ++i)
 	{
@@ -99,7 +99,7 @@ Intersection_type::Value Frustum::intersect(const float3& point) const
 	return Intersection_type::Inside;
 }
 
-Intersection_type::Value Frustum::intersect(const Sphere& sphere) const
+Intersection_type Frustum::intersect(const Sphere& sphere) const
 {
 	for (size_t i = 0; i < 6; ++i)
 	{
@@ -112,9 +112,9 @@ Intersection_type::Value Frustum::intersect(const Sphere& sphere) const
 	return Intersection_type::Intersecting;
 }
 
-Intersection_type::Value Frustum::intersect(const AABB& aabb) const
+Intersection_type Frustum::intersect(const AABB& aabb) const
 {
-	Intersection_type::Value result = Intersection_type::Inside;
+	Intersection_type result = Intersection_type::Inside;
 
 	for (size_t i = 0; i < 6; ++i)
 	{
@@ -135,7 +135,7 @@ Intersection_type::Value Frustum::intersect(const AABB& aabb) const
 	return result;
 }
 
-Intersection_type::Value Frustum::intersect(const OBB& obb) const
+Intersection_type Frustum::intersect(const OBB& obb) const
 {
 	for (size_t i = 0; i < 6; ++i)
 	{
@@ -156,9 +156,9 @@ Intersection_type::Value Frustum::intersect(const OBB& obb) const
 }
 
 // Line-frustum intersection
-Intersection_type::Value Frustum::intersect(const float3& p0, const float3& p1) const
+Intersection_type Frustum::intersect(const float3& p0, const float3& p1) const
 {
-	Intersection_type::Value result = Intersection_type::Inside;
+	Intersection_type result = Intersection_type::Inside;
 
 	for (size_t i = 0; i < 6; ++i)
 	{	
@@ -179,7 +179,7 @@ Intersection_type::Value Frustum::intersect(const float3& p0, const float3& p1) 
 	return result;
 }
 
-Intersection_type::Value Frustum::intersect(const Frustum& frustum) const
+Intersection_type Frustum::intersect(const Frustum& frustum) const
 {
 	for (size_t i = 0; i < 6; ++i)
 	{

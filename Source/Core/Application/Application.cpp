@@ -4,6 +4,7 @@
 #include "Scripting/Script_object_wrapper.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Rendering/Baking/Light_baker.hpp"
+#include "Scene/Actor.hpp"
 #include "Scene/Static_prop.hpp"
 #include "Scene/Transformation_interpolator.hpp"
 #include "Scene/Light/Irradiance_volume.hpp"
@@ -15,7 +16,9 @@
 #include <iostream>
 
 Application::Application() :
-	request_close_(false), simulation_frequency_(1.0 / 60.0), mode_(Mode::Simulation),
+	request_close_(false),
+	simulation_frequency_(1.0 / 60.0), time_slice_(static_cast<float>(simulation_frequency_)),
+	mode_(Mode::Simulation),
 	script_tool_(logging::server), scripter_(script_tool_),
 	texture_provider_(rendering_tool_), effect_provider_(rendering_tool_), model_provider_(rendering_tool_),
 	renderer_(rendering_tool_), printer_(rendering_tool_), gui_(logging::server, script_tool_),
@@ -58,13 +61,11 @@ bool Application::run(const std::string& name, const uint2& dimensions, bool win
 				t += dt;
 				*/
 
-				float time_slice = static_cast<float>(simulation_frequency_);
+				scene_.on_tick(time_slice_);
 
-				scene_.on_tick(time_slice);
+				scripter_.execute_on_tick(time_slice_);
 
-				scripter_.execute_on_tick(time_slice);
-
-				on_tick(time_slice);
+				on_tick(time_slice_);
 
 				accumulator -= simulation_frequency_;
 			}

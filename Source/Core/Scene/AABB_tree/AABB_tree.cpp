@@ -94,7 +94,7 @@ bool AABB_tree::add_static_prop(Static_prop* prop, AABB_node* node)
 
 	while (node)
 	{
-		Intersection_type::Value intersection = node->aabb().intersect(aabb);
+		Intersection_type intersection = node->aabb().intersect(aabb);
 
 		if (Intersection_type::Inside == intersection)
 		{

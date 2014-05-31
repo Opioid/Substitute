@@ -265,7 +265,7 @@ void Deferred_lighting_renderer::render_irradiance_volume(const scene::Irradianc
 
 	techniques_.irradiance_volume->use();
 
-	if (Sphere(camera.world_position(), camera.greatest_distance_to_near_plane()).intersect(obb))
+	if (Intersection_type::Outside != Sphere(camera.world_position(), camera.greatest_distance_to_near_plane()).intersect(obb))
 	{
 		// camera is inside the light volume
 
@@ -352,7 +352,7 @@ void Deferred_lighting_renderer::render_light_probe(const scene::Light_probe& li
 
 	techniques_.volume_light_probe_specular->use();
 
-	if (Sphere(camera.world_position(), camera.greatest_distance_to_near_plane()).intersect(obb))
+	if (Intersection_type::Outside != Sphere(camera.world_position(), camera.greatest_distance_to_near_plane()).intersect(obb))
 	{
 		// camera is inside the light volume
 
@@ -453,7 +453,7 @@ void Deferred_lighting_renderer::render_point_light(const scene::Light& light, c
 	light_AABB.position = light.world_position();
 	light_AABB.halfsize = float3(range, range, range);
 
-	if (Sphere(camera.world_position(), camera.greatest_distance_to_near_plane()).intersect(light_AABB))
+	if (Intersection_type::Outside != Sphere(camera.world_position(), camera.greatest_distance_to_near_plane()).intersect(light_AABB))
 	{
 		// camera is inside the light volume
 
@@ -530,7 +530,7 @@ void Deferred_lighting_renderer::render_spot_light(const scene::Light& light, co
 
 	frustum_volume_.setup(light.world_position(), light_frustum, rendering_tool_);
 
-	if (light_frustum.intersect(Sphere(camera.world_position(), camera.greatest_distance_to_near_plane())))
+	if (Intersection_type::Outside != light_frustum.intersect(Sphere(camera.world_position(), camera.greatest_distance_to_near_plane())))
 	{
 		// camera is inside the light volume
 
