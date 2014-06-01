@@ -4,6 +4,7 @@
 #include "Model.hpp"
 #include "Actor.hpp"
 #include "Static_prop.hpp"
+#include "Particles/Particle_effect.hpp"
 #include "AABB_tree/AABB_tree_loader.hpp"
 #include "Complex/Complex.hpp"
 #include "Scripting/Scripter.hpp"
@@ -19,7 +20,7 @@
 namespace scene
 {
 
-Scene_loader::Scene_loader(Scene &scene, scripting::Scripter& scripter, rendering::Rendering_tool& rendering_tool, Resource_manager& resource_manager) :
+Scene_loader::Scene_loader(Scene& scene, scripting::Scripter& scripter, rendering::Rendering_tool& rendering_tool, Resource_manager& resource_manager) :
 	scene_(scene), scripter_(scripter), rendering_tool_(rendering_tool), resource_manager_(resource_manager)
 {}
 
@@ -181,6 +182,10 @@ void Scene_loader::load_entities(const rapidjson::Value& entities, Entity* paren
 		else if ("Actor" == class_name)
 		{
 			entity = load_actor(value);
+		}
+		else if ("Particle_effect" == class_name)
+		{
+			entity = load_particle_effect(value);
 		}
 		else if ("Complex" == class_name)
 		{
@@ -349,6 +354,56 @@ Entity* Scene_loader::load_actor(const rapidjson::Value& entity)
 	actor->create_surfaces(model, static_cast<uint32_t>(materials.size()), materials.data());
 
 	return actor;
+}
+
+Entity* Scene_loader::load_particle_effect(const rapidjson::Value& entity)
+{
+	std::string type;
+	std::string name;
+	std::vector<Handle<Material>> materials;
+
+	for (auto n = entity.MemberBegin(); n != entity.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if ("type" == node_name)
+		{
+			type = node_value.GetString();
+		}
+		if ("name" == node_name)
+		{
+			name = node_value.GetString();
+		}
+		else if ("materials" == node_name)
+		{
+			if (!node_value.IsArray())
+			{
+				continue;
+			}
+
+			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
+			{
+				const rapidjson::Value& material_value = node_value[i];
+
+				Handle<Material> material = resource_manager_.load<Material>(material_value.GetString());
+
+				if (material)
+				{
+					materials.push_back(material);
+				}
+			}
+		}
+	}
+
+	if (type.empty() || materials.empty())
+	{
+		return nullptr;
+	}
+
+	Particle_effect* particle_effect = scene_.create_particle_effect(type, true, name);
+
+	return particle_effect;
 }
 
 Entity* Scene_loader::load_complex(const rapidjson::Value& entity)

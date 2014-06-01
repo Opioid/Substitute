@@ -16,6 +16,7 @@ namespace scripting
 
 void exit();
 void build_info();
+void set_simulation_frequency(double frequency);
 void resource_info();
 void resource_info(const std::string& type);
 void mount(const std::string& path);
@@ -63,6 +64,8 @@ bool init(Application& application)
 	engine.register_function("void exit()", asFUNCTION(exit));
 
 	engine.register_function("void build_info()", asFUNCTION(build_info));
+
+	engine.register_function("void set_simulation_frequency(double)", asFUNCTION(set_simulation_frequency));
 
 	engine.register_function("void resource_info()", asFUNCTIONPR(resource_info, (), void));
 	engine.register_function("void resource_info(const string &in)", asFUNCTIONPR(resource_info, (const std::string&), void));
@@ -113,6 +116,11 @@ void exit()
 void build_info()
 {
 	logging::post(app->build_info());
+}
+
+void set_simulation_frequency(double frequency)
+{
+	app->set_simulation_frequency(frequency);
 }
 
 void resource_info()

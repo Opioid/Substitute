@@ -70,7 +70,7 @@ float3 Node::world_right() const
 
 float3x3 Node::world_rotation() const
 {
-	return get_unscaled_basis(world_transformation_);
+	return extract_unscaled_basis(world_transformation_);
 }
 
 const float4x4& Node::world_transformation() const

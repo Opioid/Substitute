@@ -85,6 +85,16 @@ bool Application::run(const std::string& name, const uint2& dimensions, bool win
 	return true;
 }
 
+double Application::simulation_frequency() const
+{
+	return simulation_frequency_;
+}
+
+void Application::set_simulation_frequency(double frequency)
+{
+	simulation_frequency_ = frequency;
+}
+
 void Application::request_close()
 {
 	request_close_ = true;

@@ -36,6 +36,9 @@ public:
 
 	bool run(const std::string& name, const uint2& dimensions, bool windowed);
 
+	double simulation_frequency() const;
+	void set_simulation_frequency(double frequency);
+
 	void request_close();
 
 	platform::Client& client();

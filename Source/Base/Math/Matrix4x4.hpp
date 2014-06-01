@@ -64,7 +64,7 @@ template<typename T>
 void get_basis(Matrix3x3<T>& basis, const Matrix4x4<T>& m);
 
 template<typename T>
-Matrix3x3<T> get_unscaled_basis(const Matrix4x4<T>& m);
+Matrix3x3<T> extract_unscaled_basis(const Matrix4x4<T>& m);
 
 template<typename T>
 void set_basis(Matrix4x4<T>& m, const Matrix3x3<T>& basis);

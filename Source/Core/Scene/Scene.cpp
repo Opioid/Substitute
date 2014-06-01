@@ -313,7 +313,7 @@ Light_probe* Scene::create_light_probe(const float3& position, const float3& sca
 	return light_probe;
 }
 
-Particle_effect* Scene::create_particle_effect(const std::string& type, const std::string& name)
+Particle_effect* Scene::create_particle_effect(const std::string& type, bool interpolated, const std::string& name)
 {
 	Particle_effect* particle_effect = particle_scene_.create_particle_effect(type);
 
@@ -323,6 +323,8 @@ Particle_effect* Scene::create_particle_effect(const std::string& type, const st
 	}
 
 	add_entity(particle_effect, name);
+
+	interpolators_.push_back(Transformation_interpolator(particle_effect));
 
 	return particle_effect;
 }

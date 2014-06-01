@@ -147,7 +147,7 @@ inline void get_basis(Matrix3x3<T>& basis, const Matrix4x4<T>& m)
 }
 
 template<typename T>
-inline Matrix3x3<T> get_unscaled_basis(const Matrix4x4<T>& m)
+inline Matrix3x3<T> extract_unscaled_basis(const Matrix4x4<T>& m)
 {
 	return Matrix3x3<T>(normalize(m.rows[0].xyz),
 						normalize(m.rows[1].xyz),

@@ -73,7 +73,7 @@ public:
 	Light_probe* create_light_probe();
 	Light_probe* create_light_probe(const float3& position, const float3& scale, const quaternion& rotation);
 
-	Particle_effect* create_particle_effect(const std::string& type, const std::string& name = "");
+	Particle_effect* create_particle_effect(const std::string& type, bool interpolated, const std::string& name = "");
 
 	Particle_scene& particle_scene();
 

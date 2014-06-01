@@ -42,6 +42,7 @@ private:
 
 	Entity* load_light(const rapidjson::Value& entity);
 	Entity* load_actor(const rapidjson::Value& entity);
+	Entity* load_particle_effect(const rapidjson::Value& entity);
 	Entity* load_complex(const rapidjson::Value& entity);
 
 	void load_irradiance_volumes(const rapidjson::Value& volumes);
