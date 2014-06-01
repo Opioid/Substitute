@@ -9,6 +9,7 @@
 #include "Scene/Transformation_interpolator.hpp"
 #include "Scene/Light/Irradiance_volume.hpp"
 #include "Scene/Light/Light_probe.hpp"
+#include "Scene/Particles/Particle_effect.hpp"
 #include "Gui/Gui_input.hpp"
 #include "Math/Vector.inl"
 #include "Logging/Logging.hpp"

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Memory/Heap_cache.hpp"
 #include <string>
 #include <map>
 
@@ -21,6 +22,8 @@ public:
 private:
 
 	std::map<std::string, Particle_effect_factory*> factories_;
+
+	Heap_cache<Particle_effect> particle_effects_;
 };
 
 }
