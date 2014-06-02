@@ -1,11 +1,13 @@
 #include "AABB_tree.hpp"
 #include "AABB_node.hpp"
-#include "../Static_prop.hpp"
+#include "Scene/Static_prop.hpp"
 
 namespace scene
 {
 
-AABB_tree::AABB_tree() : num_geometry_clusters_(0), geometry_clusters_(nullptr), geometry_clusters_size_(0), num_nodes_(0), nodes_(nullptr), nodes_size_(0)
+AABB_tree::AABB_tree() :
+	num_geometry_clusters_(0), geometry_clusters_(nullptr), geometry_clusters_size_(0),
+	num_nodes_(0), nodes_(nullptr), nodes_size_(0)
 {}
 
 AABB_tree::~AABB_tree()
@@ -38,12 +40,12 @@ bool AABB_tree::is_empty() const
     return 0 == num_nodes_;
 }
 
-const AABB_node* AABB_tree::get_root() const
+const AABB_node* AABB_tree::root() const
 {
 	return nodes_;
 }
 
-const std::vector<Static_prop*>& AABB_tree::get_static_props() const
+const std::vector<Static_prop*>& AABB_tree::static_props() const
 {
 	return props_;
 }
@@ -113,7 +115,7 @@ bool AABB_tree::add_static_prop(Static_prop* prop, AABB_node* node)
 		}
 		else if (Intersection_type::Outside == intersection)
 		{
-			node = node->get_skip_node();
+			node = node->skip_node();
 		}
 		else
 		{

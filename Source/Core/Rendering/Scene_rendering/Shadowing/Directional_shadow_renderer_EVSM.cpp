@@ -9,6 +9,7 @@
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Camera.hpp"
 #include "Scene/Scene.hpp"
+#include "Scene/Material.hpp"
 #include "Math/Matrix.inl"
 #include "Math/Intersection/Polyhedron.hpp"
 

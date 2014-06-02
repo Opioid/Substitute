@@ -182,7 +182,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 	const scene::AABB_tree& tree = scene.aabb_tree();
 
 	{
-		auto& props = tree.get_static_props();
+		auto& props = tree.static_props();
 
 		for (auto p : props)
 		{
@@ -194,7 +194,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 		}
 	}
 
-	const scene::AABB_node* node = tree.get_root();
+	const scene::AABB_node* node = tree.root();
 
 //	*firstRelevantNode = node;
 
@@ -206,7 +206,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 
 		if (Intersection_type::Outside == intersection)
 		{
-			node = node->get_skip_node();
+			node = node->skip_node();
 			continue;
 		}
 		else if (Intersection_type::Inside == intersection)
@@ -215,11 +215,11 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 
 			//*firstRelevantNode = node;
 
-			node = node->get_skip_node();
+			node = node->skip_node();
 			continue;
 		}
 
-		auto& props = node->get_static_props();
+		auto& props = node->static_props();
 
 		for (auto p : props)
 		{
@@ -237,7 +237,7 @@ AABB Directional_shadow_renderer::calculate_shadow_caster_AABB(const scene::Scen
 				shadow_caster_aabb = shadow_caster_aabb.merge(node_AABB);
 			}
 
-			node = node->get_skip_node();
+			node = node->skip_node();
 		}
 		else
 		{

@@ -42,7 +42,7 @@ void AABB_tree_builder::serialize(Temp_aabb_node* node)
 		n->set_has_children(true);
 	}
 
-	n->set_skip_node(get_skip_node());
+	n->set_skip_node(skip_node());
 }
 
 AABB_node* AABB_tree_builder::get_new_node()
@@ -50,7 +50,7 @@ AABB_node* AABB_tree_builder::get_new_node()
 	return &nodes_[current_node_++];
 }
 
-AABB_node* AABB_tree_builder::get_skip_node() const
+AABB_node* AABB_tree_builder::skip_node() const
 {
 	if (current_node_ >= num_nodes_)
 	{

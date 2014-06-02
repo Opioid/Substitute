@@ -105,7 +105,7 @@ namespace gui
 					break;
 			}
 
-			print(entry.m_message.get_text(), entryOffset, printer);
+			print(entry.m_message.text(), entryOffset, printer);
 
 			if (m_printed_rows >= m_num_rows)
 			{
@@ -127,7 +127,7 @@ namespace gui
 
 	void Message_viewer::on_receive(const logging::Message &message)
 	{
-		Entry entry(message, count_rows(message.get_text()));
+		Entry entry(message, count_rows(message.text()));
 
 		m_entries.push_back(entry);
 

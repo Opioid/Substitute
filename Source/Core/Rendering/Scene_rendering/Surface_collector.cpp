@@ -3,6 +3,7 @@
 #include "Scene/Scene.hpp"
 #include "Scene/Actor.hpp"
 #include "Scene/Static_prop.hpp"
+#include "Scene/Material.hpp"
 #include "Scene/Model.hpp"
 #include "Scene/AABB_tree/AABB_node.hpp"
 #include <algorithm>
@@ -85,7 +86,7 @@ const std::vector<Render_surface>& Surface_collector::get_surfaces() const
 void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_position, const Frustum& frustum)
 {
 	{
-		auto& props = tree.get_static_props();
+		auto& props = tree.static_props();
 
 		for (auto p : props)
 		{
@@ -96,17 +97,17 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 		}
 	}
 
-	const scene::AABB_node* node = tree.get_root();
+	const scene::AABB_node* node = tree.root();
 
 	while (node)
 	{
 		if (Intersection_type::Outside == frustum.intersect(node->aabb()))
 		{
-			node = node->get_skip_node();
+			node = node->skip_node();
 			continue;
 		}
 
-		auto& props = node->get_static_props();
+		auto& props = node->static_props();
 
 		for (auto p : props)
 		{
@@ -120,7 +121,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 		{
 			add(node, eye_position);
 
-			node = node->get_skip_node();
+			node = node->skip_node();
 		}
 		else
 		{
@@ -132,7 +133,7 @@ void Surface_collector::collect(const scene::AABB_tree& tree, const float3& eye_
 void Surface_collector::collect_unified(const scene::AABB_tree& tree, const float3& eye_position, const Frustum& frustum)
 {
 	{
-		auto& props = tree.get_static_props();
+		auto& props = tree.static_props();
 
 		for (auto p : props)
 		{
@@ -143,17 +144,17 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 		}
 	}
 
-	const scene::AABB_node* node = tree.get_root();
+	const scene::AABB_node* node = tree.root();
 
 	while (node)
 	{
 		if (Intersection_type::Outside == frustum.intersect(node->aabb()))
 		{
-			node = node->get_skip_node();
+			node = node->skip_node();
 			continue;
 		}
 
-		auto& props = node->get_static_props();
+		auto& props = node->static_props();
 
 		for (auto p : props)
 		{
@@ -167,7 +168,7 @@ void Surface_collector::collect_unified(const scene::AABB_tree& tree, const floa
 		{
 			add_unified(node, eye_position);
 
-			node = node->get_skip_node();
+			node = node->skip_node();
 		}
 		else
 		{

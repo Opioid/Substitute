@@ -4,44 +4,46 @@
 
 namespace logging
 {
-	Html_log_writer log_writer;
 
-	bool init(const Application& application)
-	{
-		log_writer.start(application);
+Html_log_writer log_writer;
 
-		server.add_receiver(&log_writer);
+bool init(const Application& application)
+{
+	log_writer.start(application);
 
-		return true;
-	}
+	server.add_receiver(&log_writer);
 
-	void release()
-	{}
+	return true;
+}
 
-	void input(const std::string& text)
-	{
-		server.send(Message(text, Message::Type::Input));
-	}
+void release()
+{}
 
-	void output(const std::string& text)
-	{
-		server.send(Message(text, Message::Type::Output));
-	}
+void input(const std::string& text)
+{
+	server.send(Message(text, Message::Type::Input));
+}
 
-	void post(const std::string& text)
-	{
-		server.send(Message(text, Message::Type::Ok));
-	}
+void output(const std::string& text)
+{
+	server.send(Message(text, Message::Type::Output));
+}
 
-	void warning(const std::string& text)
-	{
-		server.send(Message(text, Message::Type::Warning));
-	}
+void post(const std::string& text)
+{
+	server.send(Message(text, Message::Type::Ok));
+}
 
-	void error(const std::string& text)
-	{
-		server.send(Message(text, Message::Type::Error));
-	}
+void warning(const std::string& text)
+{
+	server.send(Message(text, Message::Type::Warning));
+}
 
-	Message_server server;
+void error(const std::string& text)
+{
+	server.send(Message(text, Message::Type::Error));
+}
+
+Message_server server;
+
 }

@@ -1,4 +1,5 @@
 #include "AABB_node.hpp"
+#include "Scene/Material.hpp"
 #include "Rendering/Vertex_layout_description.hpp"
 
 namespace scene
@@ -100,13 +101,13 @@ bool AABB_node::has_children() const
 	return (skip_offset_ & s_has_children) == s_has_children;
 }
 
-const AABB_node* AABB_node::get_skip_node() const
+const AABB_node* AABB_node::skip_node() const
 {
 	const uint32_t o = skip_offset_ & ~s_has_children;
     return o ? this + o : nullptr;
 }
 
-AABB_node* AABB_node::get_skip_node()
+AABB_node* AABB_node::skip_node()
 {
 	const uint32_t o = skip_offset_ & ~s_has_children;
 	return o ? this + o : nullptr; 
@@ -122,7 +123,7 @@ const AABB_node::Geometry* AABB_node::get_geometry() const
 	return geometry_;
 }
 
-const std::vector<Static_prop*>& AABB_node::get_static_props() const
+const std::vector<Static_prop*>& AABB_node::static_props() const
 {
 	return props_;
 }

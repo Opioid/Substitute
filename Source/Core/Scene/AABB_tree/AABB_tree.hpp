@@ -22,9 +22,9 @@ public:
 
 	bool is_empty() const;
 
-	const AABB_node* get_root() const;
+	const AABB_node* root() const;
 
-	const std::vector<Static_prop*>& get_static_props() const;
+	const std::vector<Static_prop*>& static_props() const;
 
 	AABB_node::Geometry* allocate_geometry_clusters(uint32_t num_geometry_clusters);
 	AABB_node*           allocate_nodes(uint32_t num_nodes);

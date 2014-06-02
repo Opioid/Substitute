@@ -1,9 +1,10 @@
 #include "Scene_loader.hpp"
 #include "File/File_stream.hpp"
 #include "Scene.hpp"
-#include "Model.hpp"
 #include "Actor.hpp"
 #include "Static_prop.hpp"
+#include "Model.hpp"
+#include "Material.hpp"
 #include "Particles/Particle_effect.hpp"
 #include "AABB_tree/AABB_tree_loader.hpp"
 #include "Complex/Complex.hpp"
@@ -402,6 +403,11 @@ Entity* Scene_loader::load_particle_effect(const rapidjson::Value& entity)
 	}
 
 	Particle_effect* particle_effect = scene_.create_particle_effect(type, true, name);
+
+	if (particle_effect)
+	{
+		particle_effect->set_materials(static_cast<uint32_t>(materials.size()), materials.data());
+	}
 
 	return particle_effect;
 }

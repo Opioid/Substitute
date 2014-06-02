@@ -6,7 +6,7 @@ namespace logging
 Message::Message(const std::string& text, Type type, const void* source) : text_(text), type_(type), source_(source)
 {}
 
-const std::string& Message::get_text() const
+const std::string& Message::text() const
 {
 	return text_;
 }

@@ -13,5 +13,6 @@ Rendering/Scene_rendering/Scene_renderer.hpp
 include(Deferred_volume/Deferred_volume.pri)
 include(Help_visualization/Help_visualization.pri)
 include(Lighting/Lighting.pri)
+include(Particle_rendering/Particle_rendering.pri)
 include(Shadowing/Shadowing.pri)
 include(Surrounding/Surrounding.pri)

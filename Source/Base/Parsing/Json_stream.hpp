@@ -18,19 +18,19 @@ public:
     typedef char Char;	//!< Character type (byte).
 
     Input_stream(std::istream& stream, size_t buffer_size = 4096)
-        : m_stream(&stream),  m_buffer_size(buffer_size), buffer_(new Char[buffer_size]),
+        : stream_(&stream),  m_buffer_size(buffer_size), buffer_(new Char[buffer_size]),
           m_buffer_last(0), m_current(buffer_), m_count(0),  m_owns_buffer(false)
     {
-        RAPIDJSON_ASSERT(m_stream != nullptr);
+        RAPIDJSON_ASSERT(stream_ != nullptr);
         RAPIDJSON_ASSERT(buffer_size >= 4);
         Read();
     }
 
     Input_stream(std::istream& stream, size_t buffer_size, Char* buffer)
-        : m_stream(&stream),  m_buffer_size(buffer_size), buffer_(buffer),
+        : stream_(&stream),  m_buffer_size(buffer_size), buffer_(buffer),
           m_buffer_last(0), m_current(buffer_), m_count(0), m_owns_buffer(false)
     {
-        RAPIDJSON_ASSERT(m_stream != nullptr);
+        RAPIDJSON_ASSERT(stream_ != nullptr);
         RAPIDJSON_ASSERT(buffer_size >= 4);
         Read();
     }
@@ -80,25 +80,25 @@ private:
         {
             ++m_current;
         }
-        else if (*m_stream)
+        else if (*stream_)
         {
-            m_count += m_stream->gcount();
+            m_count += stream_->gcount();
 
-            m_stream->read(buffer_, m_buffer_size);
+            stream_->read(buffer_, m_buffer_size);
 
-            m_buffer_last = buffer_ + m_stream->gcount() - 1;
+            m_buffer_last = buffer_ + stream_->gcount() - 1;
             m_current = buffer_;
 
 
-            if (static_cast<size_t>(m_stream->gcount()) < m_buffer_size)
+            if (static_cast<size_t>(stream_->gcount()) < m_buffer_size)
             {
-                buffer_[m_stream->gcount()] = '\0';
+                buffer_[stream_->gcount()] = '\0';
                 ++m_buffer_last;
             }
         }
     }
 
-    std::istream* m_stream;
+    std::istream* stream_;
     size_t m_buffer_size;
     Char* buffer_;
     Char* m_buffer_last;

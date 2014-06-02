@@ -25,7 +25,7 @@ private:
 	void serialize(Temp_aabb_node* node);
 
 	AABB_node* get_new_node();
-	AABB_node* get_skip_node() const;
+	AABB_node* skip_node() const;
 
 	AABB_node* nodes_;
 	

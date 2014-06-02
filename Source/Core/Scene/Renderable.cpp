@@ -1,4 +1,5 @@
 #include "Renderable.hpp"
+#include "Scene/Material.hpp"
 
 namespace scene
 {

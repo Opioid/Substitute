@@ -19,6 +19,8 @@ public:
 
 	void register_factory(Particle_effect_factory* factory, const std::string& type);
 
+	void on_tick(float time_slice);
+
 private:
 
 	std::map<std::string, Particle_effect_factory*> factories_;

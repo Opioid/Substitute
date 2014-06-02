@@ -24,7 +24,7 @@ public:
 
 	const uint2& target_dimensions() const;
 
-	const Handle<Depth_stencil_shader_resource_view>& get_depth_stencil() const;
+	const Handle<Depth_stencil_shader_resource_view>& depth_stencil() const;
 
 	bool resize_targets(const uint2& dimensions, const Handle<Depth_stencil_shader_resource_view>& depth_stencil);
 

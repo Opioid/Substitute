@@ -52,14 +52,14 @@ public:
 
 	bool has_children() const;
 
-    const AABB_node* get_skip_node() const;
-	AABB_node* get_skip_node();
+    const AABB_node* skip_node() const;
+	AABB_node* skip_node();
 
 	const AABB& aabb() const;
 
 	const Geometry* get_geometry() const;
 
-	const std::vector<Static_prop*>& get_static_props() const;
+	const std::vector<Static_prop*>& static_props() const;
 
 private:
 

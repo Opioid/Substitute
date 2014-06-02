@@ -31,4 +31,12 @@ void Particle_scene::register_factory(Particle_effect_factory* factory, const st
 	factories_[type] = factory;
 }
 
+void Particle_scene::on_tick(float time_slice)
+{
+	for (auto particle_effect : particle_effects_)
+	{
+		particle_effect->on_tick(time_slice);
+	}
+}
+
 }

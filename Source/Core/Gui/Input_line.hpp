@@ -27,7 +27,7 @@ public:
 
 	virtual void render(rendering::Printer& printer);
 
-	const std::string& get_text() const;
+	const std::string& text() const;
 	void set_text(const std::string& text);
 		
 	Event m_on_accept;

@@ -2,12 +2,13 @@
 
 
 #include "Resources/Handle.hpp"
-#include "Material.hpp"
 #include "Surface.hpp"
 #include "Flags/Flags.hpp"
 
 namespace scene
 {
+
+class Material;
 
 class Renderable
 {

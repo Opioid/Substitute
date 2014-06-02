@@ -21,8 +21,6 @@
 #include "Scene/Light/Irradiance_volume.hpp"
 #include "Scene/Light/Light_probe.hpp"
 
-#include <iostream>
-
 namespace rendering
 {
 
@@ -33,6 +31,7 @@ Deferred_scene_renderer::Deferred_scene_renderer(Rendering_tool& rendering_tool,
 												 Spot_shadow_renderer& spot_shadow_renderer) :
 	Main_scene_renderer(rendering_tool, surface_collector, surrounding_renderer),
 	lighting_renderer_(rendering_tool, directional_shadow_renderer, spot_shadow_renderer),
+	particle_renderer_(rendering_tool),
 	previous_material_(nullptr)
 {}
 
@@ -86,6 +85,11 @@ bool Deferred_scene_renderer::init(Resource_manager& resource_manager, Constant_
 	effect_->create_default_constant_buffers(device);
 
 	if (!lighting_renderer_.init(resource_manager, constant_buffer_cache_))
+	{
+		return false;
+	}
+
+	if (!particle_renderer_.init(resource_manager, constant_buffer_cache_))
 	{
 		return false;
 	}

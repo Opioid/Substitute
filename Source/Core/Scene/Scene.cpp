@@ -108,14 +108,14 @@ void Scene::compile()
     {
 		if (irradiance_volumes_.empty())
         {
-			const AABB& aabb = aabb_tree_.get_root()->aabb();
+			const AABB& aabb = aabb_tree_.root()->aabb();
 
             // make the volume slightly larger than the area to cover to avoid z-fighting when the volume is rendered
 			create_irradiance_volume(uint3(2, 2, 2), aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f), quaternion::identity);
         }
 		else if (irradiance_volumes_[0]->is_faulty())
 		{
-			const AABB& aabb = aabb_tree_.get_root()->aabb();
+			const AABB& aabb = aabb_tree_.root()->aabb();
 
 			irradiance_volumes_[0]->adjust(aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f));
 		}
@@ -126,7 +126,7 @@ void Scene::compile()
         }
 		else if (light_probes_[0]->is_faulty())
 		{
-			const AABB& aabb = aabb_tree_.get_root()->aabb();
+			const AABB& aabb = aabb_tree_.root()->aabb();
 
 			light_probes_[0]->adjust(aabb.position, aabb.halfsize + float3(0.01f, 0.01f, 0.01f));
 		}
@@ -154,6 +154,8 @@ void Scene::on_tick(float time_slice)
 	{
 		c->on_tick(time_slice);
 	}
+
+	particle_scene_.on_tick(time_slice);
 }
 
 void Scene::update(float delta)

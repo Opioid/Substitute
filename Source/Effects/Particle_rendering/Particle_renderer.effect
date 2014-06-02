@@ -1,0 +1,60 @@
+{
+	"buffers":
+	[
+
+	],
+	
+	"data_layouts":
+	[
+		{
+			"name": "Vertex_input0",
+			"data":
+			[
+				{ "type": "float3", "name": "position", "semantic": "Position" }
+			]
+		},
+		{
+			"name": "Vertex_output0",
+			"data":
+			[
+				{ "type": "float2", "name": "position" }
+			]
+		},
+		{
+			"name": "Pixel_output",
+			"data":
+			[
+				{ "type": "float4", "name": "color" }
+			]
+		}
+	],
+
+	"techniques":
+	[
+		{
+			"name": "Particle",
+			"input": "Vertex_input0",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Particle_renderer.vs.glsl" ],
+					"output": "Vertex_input0"
+				},
+				{
+					"type": "geometry",
+					"sources": [ "Particle_renderer.gs.glsl" ],
+					"output": "Vertex_output0",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"sources": [ "Particle_renderer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		}
+	]
+}

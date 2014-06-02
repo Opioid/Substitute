@@ -2,7 +2,6 @@
 
 #include "Resources/Handle.hpp"
 #include "Rendering/Data_buffer.hpp"
-#include "Material.hpp"
 #include <cstdint>
 
 template<typename T> struct Matrix4x4;
@@ -19,6 +18,8 @@ class Index_buffer;
 
 namespace scene
 {
+
+class Material;
 
 struct Surface
 {

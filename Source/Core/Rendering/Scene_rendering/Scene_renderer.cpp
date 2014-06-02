@@ -16,7 +16,7 @@ const uint2& Scene_renderer::target_dimensions() const
 	return target_dimensions_;
 }
 
-const Handle<Depth_stencil_shader_resource_view>& Scene_renderer::get_depth_stencil() const
+const Handle<Depth_stencil_shader_resource_view>& Scene_renderer::depth_stencil() const
 {
 	return depth_stencil_;
 }

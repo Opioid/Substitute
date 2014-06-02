@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Stopwatch.hpp"
-#include <cstddef>
 
 namespace timing
 {
@@ -19,19 +18,19 @@ public:
 
 	double frame_time() const;
 
-	size_t fps() const;
+	uint32_t fps() const;
 
 private:
 
-    Stopwatch m_watch;
+	Stopwatch watch_;
 
-	bool m_first_call;
+	bool first_call_;
 
-	double m_frame_time;
-	double m_frame_time_counter;
+	double frame_time_;
+	double frame_time_counter_;
 
-	size_t m_frame_counter;
-	size_t m_fps;
+	uint32_t frame_counter_;
+	uint32_t fps_;
 };
 
 }

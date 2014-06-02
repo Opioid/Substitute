@@ -32,7 +32,7 @@ bool Deferred_lighting_renderer::init(Resource_manager& resource_manager, Consta
 	Flags<Effect_provider::Options, uint32_t> flags;
 	flags.set(Effect_provider::Options::Use_custom_constant_buffers, true);
 
-	effect_ = resource_manager.load<Effect>("Effects/Lighting/Deferred_renderer_lighting.effect", flags.data());
+	effect_ = resource_manager.load<Effect>("Effects/Lighting/Deferred_lighting_renderer.effect", flags.data());
 	if (!effect_)
 	{
 		return false;

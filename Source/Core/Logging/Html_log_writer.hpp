@@ -20,6 +20,6 @@ namespace logging
 
 	private:
 
-		std::ofstream m_stream;
+		std::ofstream stream_;
 	};
 }

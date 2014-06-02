@@ -34,9 +34,9 @@ Message_viewer& Console::message_viewer()
 
 void Console::on_input_line_accept(Component* /*source*/)
 {
-	send(input_line_.get_text(), logging::Message::Type::Input);
+	send(input_line_.text(), logging::Message::Type::Input);
 
-	script_tool_.execute_string(input_line_.get_text());
+	script_tool_.execute_string(input_line_.text());
 
 	input_line_.set_text("");
 }

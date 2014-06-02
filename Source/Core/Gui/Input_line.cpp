@@ -114,7 +114,7 @@ void Input_line::render(rendering::Printer& printer)
 	printer.flush();
 }
 
-const std::string& Input_line::get_text() const
+const std::string& Input_line::text() const
 {
 	return text_;
 }

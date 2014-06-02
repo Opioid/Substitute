@@ -3,44 +3,44 @@
 namespace timing
 {
 
-Fps_counter::Fps_counter() : m_first_call(true), m_frame_time(0.0), m_frame_time_counter(0.0), m_frame_counter(0), m_fps(0)
+Fps_counter::Fps_counter() : first_call_(true), frame_time_(0.0), frame_time_counter_(0.0), frame_counter_(0), fps_(0)
 {}
 
 void Fps_counter::reset()
 {
-	m_first_call = true;
+	first_call_ = true;
 }
 
 void Fps_counter::update()
 {
-	m_frame_time = m_watch.update();
+	frame_time_ = watch_.update();
 
-	if (m_first_call)
+	if (first_call_)
 	{
-		m_frame_time = 0.0;
-		m_first_call = false;
+		frame_time_ = 0.0;
+		first_call_ = false;
 	}
 
-	m_frame_time_counter += m_frame_time;
+	frame_time_counter_ += frame_time_;
 
-	if (m_frame_time_counter >= 1.0)
+	if (frame_time_counter_ >= 1.0)
 	{
-		m_frame_time_counter = 0.0;
-		m_fps = m_frame_counter;
-		m_frame_counter = 0;
+		frame_time_counter_ = 0.0;
+		fps_ = frame_counter_;
+		frame_counter_ = 0;
 	}
 
-	++m_frame_counter;
+	++frame_counter_;
 }
 
 double Fps_counter::frame_time() const
 {
-	return m_frame_time;
+	return frame_time_;
 }
 
-size_t Fps_counter::fps() const
+uint32_t Fps_counter::fps() const
 {
-	return m_fps;
+	return fps_;
 }
 
 }

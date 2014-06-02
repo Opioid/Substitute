@@ -1,5 +1,6 @@
 #include "Prop.hpp"
 #include "Model.hpp"
+#include "Material.hpp"
 #include "Rendering/Data_buffer.hpp"
 
 namespace scene

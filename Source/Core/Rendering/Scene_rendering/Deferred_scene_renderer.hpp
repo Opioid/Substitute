@@ -2,6 +2,7 @@
 
 #include "Main_scene_renderer.hpp"
 #include "Lighting/Deferred_lighting_renderer.hpp"
+#include "Particle_rendering/Particle_renderer.hpp"
 #include "Math/Matrix.hpp"
 #include "Rendering/Effect/Constant_buffer_updater.hpp"
 #include "Rendering/Constant_buffer_cache.hpp"
@@ -51,6 +52,8 @@ private:
 	bool create_render_states();
 
 	Deferred_lighting_renderer lighting_renderer_;
+
+	Particle_renderer particle_renderer_;
 
 	Handle<Render_target_shader_resource_view> normal_target_;
 	Handle<Render_target_shader_resource_view> color_target_;

@@ -154,7 +154,7 @@ void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frus
 		change_per_color_.data().color = color3::red;
 		change_per_color_.update(device);
 
-		auto& props = tree.get_static_props();
+		auto& props = tree.static_props();
 
 		for (auto p : props)
 		{
@@ -165,20 +165,20 @@ void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frus
 		}
 	}
 
-	const scene::AABB_node* node = tree.get_root();
+	const scene::AABB_node* node = tree.root();
 
 	while (node)
 	{
 		if (Intersection_type::Outside == frustum.intersect(node->aabb()))
 		{
-			node = node->get_skip_node();
+			node = node->skip_node();
 			continue;
 		}
 
 		change_per_color_.data().color = color3::red;
 		change_per_color_.update(device);
 
-		auto& props = node->get_static_props();
+		auto& props = node->static_props();
 
 		for (auto p : props)
 		{
@@ -195,7 +195,7 @@ void Bounding_renderer::render(const scene::AABB_tree& tree, const Frustum& frus
 
 			render(node->aabb());
 
-			node = node->get_skip_node();
+			node = node->skip_node();
 		}
 		else
 		{

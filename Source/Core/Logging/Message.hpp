@@ -21,7 +21,7 @@ public:
 
 	Message(const std::string& text, Type type, const void* source = nullptr);
 
-	const std::string& get_text() const;
+	const std::string& text() const;
 	Type type() const;
 	const void* get_source() const;
 
