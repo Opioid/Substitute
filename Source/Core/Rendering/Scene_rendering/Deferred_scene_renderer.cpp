@@ -20,6 +20,7 @@
 #include "Scene/Material.hpp"
 #include "Scene/Light/Irradiance_volume.hpp"
 #include "Scene/Light/Light_probe.hpp"
+#include "Logging/Logging.hpp"
 
 namespace rendering
 {
@@ -86,11 +87,15 @@ bool Deferred_scene_renderer::init(Resource_manager& resource_manager, Constant_
 
 	if (!lighting_renderer_.init(resource_manager, constant_buffer_cache_))
 	{
+		logging::error("Deferred lighting renderer could not be initialized.");
+
 		return false;
 	}
 
 	if (!particle_renderer_.init(resource_manager, constant_buffer_cache_))
 	{
+		logging::error("Particle renderer could not be initialized.");
+
 		return false;
 	}
 

@@ -99,7 +99,7 @@ private:
 	Handle<Blend_state> lighting_blend_state_;
 	Handle<Blend_state> z_only_blend_state_;
 
-	struct Lighting_techniques
+	struct
 	{
 		Effect_technique* emissive_light;
 		Effect_technique* irradiance_volume;
@@ -110,9 +110,8 @@ private:
 		Effect_technique* point_light;
 		Effect_technique* spot_light;
 		Effect_technique* spot_light_with_shadow;
-	};
-
-	Lighting_techniques techniques_;
+	}
+	techniques_;
 
 	struct Filter_kernel
 	{

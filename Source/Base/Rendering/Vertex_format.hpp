@@ -1,12 +1,13 @@
 #pragma once
 
-#include "../Math/Normalized_vector.hpp"
-#include "../Math/Matrix.hpp"
-#include "Vertex_layout_description.hpp"
+#include "Math/Normalized_vector.hpp"
+#include "Math/Matrix.hpp"
 #include <cstdint>
 
 namespace rendering
 {
+
+class Vertex_layout_description;
 
 struct Vertex_position2x32
 {

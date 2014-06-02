@@ -10,7 +10,7 @@
 			"name": "Vertex_input0",
 			"data":
 			[
-				{ "type": "float3", "name": "position", "semantic": "Position" }
+				{ "type": "float4", "name": "position", "semantic": "Position" }
 			]
 		},
 		{

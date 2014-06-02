@@ -38,8 +38,8 @@ private:
 		Handle<Input_layout> input_layout;
 	};
 
-	std::list<const Vertex_layout_description*> m_vertex_descriptions;
-	std::list<const Input_layout_slot*> m_input_layouts;
+	std::list<const Vertex_layout_description*> vertex_descriptions_;
+	std::list<const Input_layout_slot*> input_layouts_;
 };
 
 }

@@ -1,5 +1,9 @@
 #include "Particle_renderer.hpp"
+#include "Rendering/Rendering_tool.hpp"
+#include "Rendering/Vertex_format.hpp"
+#include "Rendering/Input_layout.hpp"
 #include "Resources/Resource_manager.hpp"
+#include "Scene/Particles/Particle_system.hpp"
 
 namespace rendering
 {
@@ -14,6 +18,14 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 	{
 		return false;
 	}
+
+	techniques_.particle = effect_->technique("Particle");
+
+//	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(*scene::Particle_system::Vertex::vertex_layout_description(), techniques_.particle->program()->signature());
+//	if (!input_layout_)
+//	{
+//		return false;
+//	}
 
 	return true;
 }

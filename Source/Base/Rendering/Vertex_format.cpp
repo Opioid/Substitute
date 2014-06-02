@@ -1,4 +1,5 @@
 #include "Vertex_format.hpp"
+#include "Vertex_layout_description.hpp"
 
 namespace rendering
 {

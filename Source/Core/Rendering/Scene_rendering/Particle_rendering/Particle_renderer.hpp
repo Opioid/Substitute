@@ -31,6 +31,14 @@ public:
 private:
 
 	Handle<Effect> effect_;
+
+	Handle<Input_layout> input_layout_;
+
+	struct
+	{
+		Effect_technique* particle;
+	}
+	techniques_;
 };
 
 }

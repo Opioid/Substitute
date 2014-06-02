@@ -18,8 +18,6 @@
 #include "Scene/Light/Light_probe.hpp"
 #include "Logging/Logging.hpp"
 
-#include <iostream>
-
 namespace rendering
 {
 
