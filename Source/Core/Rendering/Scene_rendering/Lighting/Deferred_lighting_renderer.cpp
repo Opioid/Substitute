@@ -249,7 +249,7 @@ void Deferred_lighting_renderer::render_irradiance_volume(const scene::Irradianc
 
 	const auto& camera = context.camera();
 
-	if (!camera.frustum().intersect(obb))
+	if (Intersection_type::Outside == camera.frustum().intersect(obb))
 	{
 		return;
 	}
@@ -335,7 +335,7 @@ void Deferred_lighting_renderer::render_light_probe(const scene::Light_probe& li
 
 	const auto& camera = context.camera();
 
-	if (!camera.frustum().intersect(obb))
+	if (Intersection_type::Outside == camera.frustum().intersect(obb))
 	{
 		return;
 	}
@@ -422,7 +422,7 @@ void Deferred_lighting_renderer::render_point_light(const scene::Light& light, c
 
 	const auto& camera = context.camera();
 
-	if (!camera.frustum().intersect(sphere))
+	if (Intersection_type::Outside == camera.frustum().intersect(sphere))
 	{
 		return;
 	}
@@ -487,7 +487,7 @@ void Deferred_lighting_renderer::render_spot_light(const scene::Light& light, co
 
 	const auto& camera = context.camera();
 
-	if (!camera.frustum().intersect(light_frustum))
+	if (Intersection_type::Outside == camera.frustum().intersect(light_frustum))
 	{
 		return;
 	}

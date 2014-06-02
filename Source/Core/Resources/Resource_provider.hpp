@@ -3,6 +3,7 @@
 #include "Identifiable.hpp"
 #include "Resources/Handle.hpp"
 #include "File/File_stream.hpp"
+#include <cstdint>
 
 class Resource_manager;
 
