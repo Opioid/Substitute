@@ -58,13 +58,10 @@ bool Deferred_lighting_renderer::init(Resource_manager& resource_manager, Consta
 		return false;
 	}
 
-	Handle<Constant_buffer> change_per_camera_buffer = constant_buffer_cache.constant_buffer("Change_per_camera");
-	if (!change_per_camera_buffer)
+	if (!constant_buffer_cache.connect(change_per_camera_adapter, "Change_per_camera"))
 	{
 		return false;
 	}
-
-	change_per_camera_adapter->set_constant_buffer(change_per_camera_buffer);
 
 	if (!filter_kernel_.init(effect_, "Filter_kernel"))
 	{
@@ -256,7 +253,7 @@ void Deferred_lighting_renderer::render_irradiance_volume(const scene::Irradianc
 
 	auto& change_per_light_data = change_per_light_.data();
 	change_per_light_data.world = world;
-	change_per_light_data.light_data = invert(camera.view()) * invert(world);
+	change_per_light_data.light_data = invert(world * camera.view());
 	change_per_light_.update(device);
 
 	device.set_shader_resources(scene::Irradiance_volume::get_num_textures(), volume.textures(), irradiance_volume_texture_offset_);
@@ -342,7 +339,7 @@ void Deferred_lighting_renderer::render_light_probe(const scene::Light_probe& li
 
 	auto& change_per_light_data = change_per_light_.data();
 	change_per_light_data.world = world;
-	change_per_light_data.light_data = invert(camera.view()) * invert(world);
+	change_per_light_data.light_data = invert(world * camera.view());
 	change_per_light_data.position_vs = light_probe.world_position() * camera.view();
 	change_per_light_.update(device);
 
@@ -558,23 +555,26 @@ void Deferred_lighting_renderer::render_spot_light(const scene::Light& light, co
 
 bool Deferred_lighting_renderer::create_render_states()
 {
+	auto& cache = rendering_tool_.render_state_cache();
+
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_cull_back_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
+
+	rasterizer_state_cull_back_ = cache.rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_back_)
 	{
 		return false;
 	}
 
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Front;
-	rasterizer_state_cull_front_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
+
+	rasterizer_state_cull_front_ = cache.rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_front_)
 	{
 		return false;
 	}
 
 	Depth_stencil_state::Description ds_description;
-
 	ds_description.depth_enable = false;
 	ds_description.depth_write_mask = false;
 	ds_description.comparison_func = Depth_stencil_state::Description::Comparison::Less;
@@ -587,7 +587,8 @@ bool Deferred_lighting_renderer::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
-	lighting_ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+
+	lighting_ds_state_ = cache.depth_stencil_state(ds_description);
 	if (!lighting_ds_state_)
 	{
 		return false;
@@ -605,7 +606,8 @@ bool Deferred_lighting_renderer::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Increment;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
-	outside_lighting_volume_ds_state_prepare_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+
+	outside_lighting_volume_ds_state_prepare_ = cache.depth_stencil_state(ds_description);
 	if (!outside_lighting_volume_ds_state_prepare_)
 	{
 		return false;
@@ -623,7 +625,8 @@ bool Deferred_lighting_renderer::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Decrement;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Decrement;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
-	outside_lighting_volume_ds_state_light_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+
+	outside_lighting_volume_ds_state_light_ = cache.depth_stencil_state(ds_description);
 	if (!outside_lighting_volume_ds_state_light_)
 	{
 		return false;
@@ -641,14 +644,14 @@ bool Deferred_lighting_renderer::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
-	inside_lighting_volume_ds_state_light_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+
+	inside_lighting_volume_ds_state_light_ = cache.depth_stencil_state(ds_description);
 	if (!inside_lighting_volume_ds_state_light_)
 	{
 		return false;
 	}
 
 	Blend_state::Description blend_description;
-
 	blend_description.independent_blend_enable = false;
 	blend_description.render_targets[0].blend_enable            = true;
 	blend_description.render_targets[0].source_blend            = Blend_state::Description::Blend::One;
@@ -659,7 +662,7 @@ bool Deferred_lighting_renderer::create_render_states()
 	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
 	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	lighting_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	lighting_blend_state_ = cache.blend_state(blend_description);
 	if (!lighting_blend_state_)
 	{
 		return false;
@@ -669,7 +672,7 @@ bool Deferred_lighting_renderer::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = 0;
 
-	z_only_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	z_only_blend_state_ = cache.blend_state(blend_description);
 	if (!z_only_blend_state_)
 	{
 		return false;

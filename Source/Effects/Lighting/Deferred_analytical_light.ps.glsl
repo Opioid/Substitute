@@ -106,13 +106,12 @@ vec3 lighting(vec3 position, vec3 normal, vec3 light_direction, vec3 color, floa
 	vec3 specular = specular_f(v_dot_h, f0) * specular_d(n_dot_h, a2) * specular_g(n_dot_l, n_dot_v, a2);
 
 	vec3 diffuse = (1.f - metallic) * color;
-
-	
+/*
 	if (isnan(normal.x) || isnan(normal.y) || isnan(normal.z))
 	{
 		return vec3(1.f, 0.f, 0.f);
 	}
-
+*/
 	return cavity * n_dot_l * (diffuse + specular);
 }
 

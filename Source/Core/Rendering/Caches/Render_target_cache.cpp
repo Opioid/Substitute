@@ -15,7 +15,7 @@ void Render_target_cache::release()
 }
 
 Handle<Depth_stencil_view> Render_target_cache::depth_stencil_view(const Texture_description& description,
-																	   std::initializer_list<Handle<Depth_stencil_view>> must_not_match)
+																   std::initializer_list<Handle<Depth_stencil_view>> must_not_match)
 {
 	for (const auto& t : depth_stencil_views_)
 	{
@@ -50,8 +50,8 @@ Handle<Depth_stencil_view> Render_target_cache::depth_stencil_view(const Texture
 	return depth_stencil;
 }
 
-Handle<Depth_stencil_shader_resource_view> Render_target_cache::get_depth_stencil_shader_resource_view(const Texture_description& description,
-																									   std::initializer_list<Handle<Depth_stencil_shader_resource_view>> must_not_match)
+Handle<Depth_stencil_shader_resource_view> Render_target_cache::depth_stencil_shader_resource_view(const Texture_description& description,
+																								   std::initializer_list<Handle<Depth_stencil_shader_resource_view>> must_not_match)
 {
 	for (const auto& t : depth_stencil_shader_resource_views_)
 	{
@@ -86,8 +86,8 @@ Handle<Depth_stencil_shader_resource_view> Render_target_cache::get_depth_stenci
 	return depth_stencil_shader_resource;
 }
 
-Handle<Render_target_shader_resource_view> Render_target_cache::get_render_target_shader_resource_view(const Texture_description& description,
-																									   std::initializer_list<Handle<Render_target_shader_resource_view>> must_not_match)
+Handle<Render_target_shader_resource_view> Render_target_cache::render_target_shader_resource_view(const Texture_description& description,
+																								   std::initializer_list<Handle<Render_target_shader_resource_view>> must_not_match)
 {
 	for (const auto& t : Render_target_views_)
 	{

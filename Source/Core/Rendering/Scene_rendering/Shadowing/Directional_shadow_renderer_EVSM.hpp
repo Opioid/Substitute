@@ -27,8 +27,6 @@ public:
 
 private:
 
-	virtual void prepare_rendering(const Rendering_context& context);
-
 	virtual void render_cascade(const Rendering_context& context, const Cascade_data& cascade_data);
 
 	void generate_shadow(const Cascade_data& cascade_data);

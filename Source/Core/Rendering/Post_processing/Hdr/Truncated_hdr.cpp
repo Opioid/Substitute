@@ -61,7 +61,7 @@ bool Truncated_hdr::create_render_states()
 	ds_description.depth_write_mask = false;
 	ds_description.stencil_enable = false;
 
-	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -72,7 +72,7 @@ bool Truncated_hdr::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;

@@ -140,7 +140,7 @@ void Environment_map_renderer::render(const scene::Scene& scene, const float3& p
 		camera_.set_view(view);
 		camera_.update_frustum();
 
-		scene_renderer_.render(scene, context_);
+		scene_renderer_.render(scene, 0.f, context_);
 	}
 
 	device.set_framebuffer(nullptr);
@@ -173,7 +173,7 @@ void Environment_map_renderer::render(const scene::Scene& scene, const float3& p
 		camera_.set_view(view);
 		camera_.update_frustum();
 
-		scene_renderer_.render(scene, context_);
+		scene_renderer_.render(scene, 0.f, context_);
 	}
 
 	device.set_framebuffer(nullptr);

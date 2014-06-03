@@ -17,9 +17,9 @@ public:
 
 	virtual void release();
 
-	Handle<Rasterizer_state>    get_rasterizer_state(const Rasterizer_state::Description& description);
-	Handle<Depth_stencil_state> get_depth_stencil_state(const Depth_stencil_state::Description& description);
-	Handle<Blend_state>         get_blend_state(const Blend_state::Description& description);
+	Handle<Rasterizer_state>    rasterizer_state(const Rasterizer_state::Description& description);
+	Handle<Depth_stencil_state> depth_stencil_state(const Depth_stencil_state::Description& description);
+	Handle<Blend_state>         blend_state(const Blend_state::Description& description);
 
 private:
 

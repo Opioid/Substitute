@@ -5,6 +5,9 @@
 namespace scene
 {
 
+Particle_scene::Particle_scene()
+{}
+
 Particle_effect* Particle_scene::create_particle_effect(const std::string& type)
 {
 	auto factory = factories_.find(type);
@@ -37,6 +40,11 @@ void Particle_scene::on_tick(float time_slice)
 	{
 		particle_effect->on_tick(time_slice);
 	}
+}
+
+const Heap_cache<Particle_effect>& Particle_scene::particle_effects() const
+{
+	return particle_effects_;
 }
 
 }

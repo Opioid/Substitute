@@ -331,7 +331,7 @@ void Effect_provider::create_samplers(Effect& effect, const std::vector<Effect_s
 	{
 		effect.samplers_[descriptions[i].name] = Effect_sampler(&effect, uint32_t(i));
 
-		effect.sampler_states_[i] = rendering_tool_.sampler_state_cache().get_sampler_state(descriptions[i].state_description);
+		effect.sampler_states_[i] = rendering_tool_.sampler_state_cache().sampler_state(descriptions[i].state_description);
 	}
 }
 

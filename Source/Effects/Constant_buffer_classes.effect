@@ -2,13 +2,20 @@
 	"buffers":
 	[
 		{
+			"name": "Change_per_frame",
+			"data":
+			[
+				{ "type": "float2",   "name": "g_time" }
+			]
+		},
+		{
 			"name": "Change_per_camera",
 			"data":
 			[
 				{ "type": "float4",   "name": "g_view_rays", "array_size": 3 },
 				{ "type": "float4x4", "name": "g_view_projection" },
 				{ "type": "float4x4", "name": "g_view" },
-				{ "type": "float4x4", "name": "g_inverse_view" }
+				{ "type": "float4x4", "name": "g_projection" }
 			],
 			"circular_size": 1
 		}

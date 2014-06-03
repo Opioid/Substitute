@@ -55,7 +55,6 @@ private:
 
 	void draw_all(uint32_t count);
 
-	bool create_buffers();
 	bool create_render_states();
 
     Rendering_tool& rendering_tool_;
@@ -71,9 +70,9 @@ private:
 	fonts::Font_factory m_font_factory;
 
 	Handle<Effect> effect_;
-	Effect_technique* color__technique;
-	Effect_technique* texture__technique;
-	Effect_technique* m_font_technique;
+	Effect_technique* color_technique_;
+	Effect_technique* texture_technique_;
+	Effect_technique* font_technique_;
 
 	Handle<Input_layout> input_layout_;
 
@@ -87,7 +86,7 @@ private:
 	uint32_t     num_vertices_;
 	Rect_vertex* vertices_;
 
-	uint32_t     m_current_vertex;
+	uint32_t     current_vertex_;
 
 	Handle<Vertex_buffer> vertex_buffer_;
 

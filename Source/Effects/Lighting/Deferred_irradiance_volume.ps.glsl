@@ -12,7 +12,7 @@ void main()
 
 	vec3 position_vs = get_position_vs(pixel_in.view_ray, depth, vec2(g_view_rays[0].w, g_view_rays[1].w));
 
-	vec3 normal_ws = (g_inverse_view * vec4(normal_vs, 0.f)).xyz;
+	vec3 normal_ws = (vec4(normal_vs, 0.f) * g_view).xyz;
 
 	vec3 lighting = evaluate_ambient_cube(position_vs, normal_ws);
 

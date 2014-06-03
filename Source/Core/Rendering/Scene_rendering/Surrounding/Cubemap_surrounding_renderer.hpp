@@ -43,6 +43,7 @@ private:
 
 	Handle<Input_layout> input_layout_;
 
+	Handle<Rasterizer_state> rasterizer_state_;
 	Handle<Depth_stencil_state> ds_state_;
 	Handle<Blend_state> blend_state_;
 };

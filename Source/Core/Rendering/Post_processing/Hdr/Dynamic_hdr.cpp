@@ -94,7 +94,7 @@ bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 	texture_description.dimensions.xy = luminance_dimensions;
 	texture_description.num_mip_levels = Texture_description::calculate_num_mip_levels(texture_description.dimensions);
 	texture_description.format = Data_format::R16_Float;
-	luminance_target_ = cache.get_render_target_shader_resource_view(texture_description);
+	luminance_target_ = cache.render_target_shader_resource_view(texture_description);
 
 	if (!luminance_target_)
 	{
@@ -123,13 +123,13 @@ bool Dynamic_hdr::on_resize_targets(const uint2& dimensions)
 	texture_description.num_mip_levels = 1;
 	texture_description.format = hdr_format_;
 
-	bloom_targets_[0] = cache.get_render_target_shader_resource_view(texture_description);
+	bloom_targets_[0] = cache.render_target_shader_resource_view(texture_description);
 	if (!bloom_targets_[0])
 	{
 		return false;
 	}
 
-	bloom_targets_[1] =  cache.get_render_target_shader_resource_view(texture_description, { bloom_targets_[0] });
+	bloom_targets_[1] =  cache.render_target_shader_resource_view(texture_description, { bloom_targets_[0] });
 	if (!bloom_targets_[1])
 	{
 		return false;
@@ -224,7 +224,7 @@ bool Dynamic_hdr::create_render_states()
 	ds_description.depth_write_mask = false;
 	ds_description.stencil_enable = false;
 
-	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -235,7 +235,7 @@ bool Dynamic_hdr::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	compose_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	compose_blend_state_ = rendering_tool_.render_state_cache().blend_state(blend_description);
 	if (!compose_blend_state_)
 	{
 		return false;
@@ -243,7 +243,7 @@ bool Dynamic_hdr::create_render_states()
 
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red;
 
-	luminance_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	luminance_blend_state_ = rendering_tool_.render_state_cache().blend_state(blend_description);
 	if (!luminance_blend_state_)
 	{
 		return false;
@@ -251,7 +251,7 @@ bool Dynamic_hdr::create_render_states()
 
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	bloom_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	bloom_blend_state_ = rendering_tool_.render_state_cache().blend_state(blend_description);
 	if (!bloom_blend_state_)
 	{
 		return false;

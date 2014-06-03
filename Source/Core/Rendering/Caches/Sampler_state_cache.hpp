@@ -17,7 +17,7 @@ public:
 
 	virtual void release();
 
-	Handle<Sampler_state> get_sampler_state(const Sampler_state::Description& description);
+	Handle<Sampler_state> sampler_state(const Sampler_state::Description& description);
 
 private:
 

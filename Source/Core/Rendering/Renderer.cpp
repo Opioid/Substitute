@@ -192,7 +192,7 @@ baking::Light_baker* Renderer::light_baker()
 	return light_baker_;
 }
 
-void Renderer::render(Application& app, float /*speed*/)
+void Renderer::render(Application& app, float interpolation_delta)
 {
 	Rendering_device& device = rendering_tool_.device();
 
@@ -205,7 +205,7 @@ void Renderer::render(Application& app, float /*speed*/)
 	options.set(Rendering_context::Options::Render_image_based_lighting, render_image_based_lighting_);
 
 	const auto& scene = app.scene();
-	scene_renderer_->render(scene, hdr_context_);
+	scene_renderer_->render(scene, interpolation_delta, hdr_context_);
 
 	const auto& camera = hdr_context_.camera();
 	hdr_filter_->set_exposure(camera.exposure());

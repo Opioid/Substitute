@@ -124,9 +124,6 @@ Handle<Shader_resource_view>& Directional_shadow_renderer_EVSM_MS::white_buffer(
     return white_buffer_->shader_resource_view();
 }
 
-void Directional_shadow_renderer_EVSM_MS::prepare_rendering(const Rendering_context& /*context*/)
-{}
-
 void Directional_shadow_renderer_EVSM_MS::render_cascade(const Rendering_context& context, const Cascade_data& cascade_data)
 {
     generate_shadow(cascade_data.shadow_view_projection, surface_collector_.get_surfaces(), viewport_, rendering_tool_.device());
@@ -193,7 +190,7 @@ bool Directional_shadow_renderer_EVSM_MS::on_resize_targets(const uint2& dimensi
     texture_description.type = Texture_description::Type::Texture_2D;
     texture_description.dimensions.xy = dimensions;
     texture_description.format = Data_format::R8_UNorm;
-    white_buffer_ = cache.get_render_target_shader_resource_view(texture_description);
+    white_buffer_ = cache.render_target_shader_resource_view(texture_description);
 
     if (!white_buffer_)
     {
@@ -217,7 +214,7 @@ bool Directional_shadow_renderer_EVSM_MS::create_render_states()
     Rasterizer_state::Description rasterizer_description;
 
     rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-    apply_shadow_.rasterizer_state = cache.get_rasterizer_state(rasterizer_description);
+    apply_shadow_.rasterizer_state = cache.rasterizer_state(rasterizer_description);
     if (!apply_shadow_.rasterizer_state)
     {
         return false;
@@ -226,7 +223,7 @@ bool Directional_shadow_renderer_EVSM_MS::create_render_states()
     resolve_shadow_.rasterizer_state = apply_shadow_.rasterizer_state;
 
     rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Front;
-    apply_shadow_.rasterizer_state_upside_down = cache.get_rasterizer_state(rasterizer_description);
+    apply_shadow_.rasterizer_state_upside_down = cache.rasterizer_state(rasterizer_description);
     if (!apply_shadow_.rasterizer_state_upside_down)
     {
         return false;
@@ -246,7 +243,7 @@ bool Directional_shadow_renderer_EVSM_MS::create_render_states()
     ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
     ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
     ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Always;
-    apply_shadow_.ds_state = cache.get_depth_stencil_state(ds_description);
+    apply_shadow_.ds_state = cache.depth_stencil_state(ds_description);
     if (!apply_shadow_.ds_state)
     {
         return false;
@@ -264,7 +261,7 @@ bool Directional_shadow_renderer_EVSM_MS::create_render_states()
     ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
     ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
     ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Always;
-    apply_shadow_.volume_ds_state = cache.get_depth_stencil_state(ds_description);
+    apply_shadow_.volume_ds_state = cache.depth_stencil_state(ds_description);
     if (!apply_shadow_.volume_ds_state)
     {
         return false;
@@ -281,7 +278,7 @@ bool Directional_shadow_renderer_EVSM_MS::create_render_states()
     blend_description.render_targets[0].destination_blend_alpha = Blend_state::Description::Blend::Zero;
     blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
     blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::Red;
-    apply_shadow_.blend_state = cache.get_blend_state(blend_description);
+    apply_shadow_.blend_state = cache.blend_state(blend_description);
     if (!apply_shadow_.blend_state)
     {
         return false;

@@ -31,7 +31,7 @@ Printer::Font::~Font()
 
 Printer::Printer(Rendering_tool& rendering_tool) :
 	rendering_tool_(rendering_tool), m_column(0), m_has_texture(false),
-	color_(0xFFFFFFFF), num_vertices_(1024), m_current_vertex(0), m_current_font_instance(nullptr)
+	color_(0xFFFFFFFF), num_vertices_(1024), current_vertex_(0), m_current_font_instance(nullptr)
 {
     vertices_ = new Rect_vertex[num_vertices_];
 }
@@ -61,9 +61,9 @@ bool Printer::init(Resource_manager& resource_manager)
 		return false;
 	}
 
-	color__technique   = effect_->technique("Color");
-	texture__technique = effect_->technique("Texture");
-	m_font_technique    = effect_->technique("Font");
+	color_technique_   = effect_->technique("Color");
+	texture_technique_ = effect_->technique("Texture");
+	font_technique_    = effect_->technique("Font");
 
 	Vertex_layout_description::Element layout[] =
 	{
@@ -74,7 +74,7 @@ bool Printer::init(Resource_manager& resource_manager)
 
 	Vertex_layout_description description(3, layout);
 
-	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(description, m_font_technique->program()->signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(description, font_technique_->program()->signature());
 
 	if (!input_layout_)
 	{
@@ -297,15 +297,15 @@ void Printer::print(const std::string& text)
 
 		const Font::Instance::Glyph_info& g = m_current_font_instance->glyph_infos[fonts::Font_descriptor::s_character_mappings[(unsigned char)(*chars)]];
 
-		vertices_[m_current_vertex].pos_and_size = float4(position + g.offset, g.size);
-		vertices_[m_current_vertex].tex_coord = g.tex_coord;
-		vertices_[m_current_vertex].color = color_;
+		vertices_[current_vertex_].pos_and_size = float4(position + g.offset, g.size);
+		vertices_[current_vertex_].tex_coord = g.tex_coord;
+		vertices_[current_vertex_].color = color_;
 
 		position.x += g.advance;
 
 		++m_column;
 
-		if (++m_current_vertex == num_vertices_)
+		if (++current_vertex_ == num_vertices_)
 		{
 			flush();
 		}
@@ -316,36 +316,36 @@ void Printer::print(const std::string& text)
 
 void Printer::flush(bool draw_as_font)
 {
-	if (0 == m_current_vertex)
+	if (0 == current_vertex_)
 	{
 		return;
 	}
 
 	if (draw_as_font)
 	{
-		m_font_technique->use();
+		font_technique_->use();
 	}
 	else if (m_has_texture)
 	{
-		texture__technique->use();
+		texture_technique_->use();
 	}
 	else
 	{
-		color__technique->use();
+		color_technique_->use();
 	}
 
-	draw_all(m_current_vertex);
+	draw_all(current_vertex_);
 
-	m_current_vertex = 0;
+	current_vertex_ = 0;
 }
 
 void Printer::draw_quad(const float2& size)
 {
-	vertices_[m_current_vertex].pos_and_size = float4(position_, size);
-	vertices_[m_current_vertex].tex_coord = texture_coordinates_;
-	vertices_[m_current_vertex].color = color_;
+	vertices_[current_vertex_].pos_and_size = float4(position_, size);
+	vertices_[current_vertex_].tex_coord = texture_coordinates_;
+	vertices_[current_vertex_].color = color_;
 
-	if (++m_current_vertex == num_vertices_)
+	if (++current_vertex_ == num_vertices_)
 	{
 		flush(false);
 	}
@@ -364,7 +364,7 @@ bool Printer::create_render_states()
 {
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_ = rendering_tool_.render_state_cache().rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_)
 	{
 		return false;
@@ -373,7 +373,7 @@ bool Printer::create_render_states()
 	Depth_stencil_state::Description ds_description;
 	ds_description.depth_enable = false;
 	ds_description.depth_write_mask = false;
-	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = rendering_tool_.render_state_cache().depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -389,7 +389,7 @@ bool Printer::create_render_states()
 	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
 	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::All;
 
-	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	blend_state_ = rendering_tool_.render_state_cache().blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;

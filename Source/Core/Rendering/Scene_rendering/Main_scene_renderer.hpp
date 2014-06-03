@@ -24,7 +24,7 @@ public:
 	Main_scene_renderer(Rendering_tool& rendering_tool, Surface_collector& surface_collector, Surrounding_renderer& surrounding_renderer);
 	virtual ~Main_scene_renderer();
 
-	virtual void render(const scene::Scene& scene, const Rendering_context& context) = 0;
+	virtual void render(const scene::Scene& scene, float interpolation_delta, const Rendering_context& context) = 0;
 
 protected:
 

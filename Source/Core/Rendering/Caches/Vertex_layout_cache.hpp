@@ -29,7 +29,7 @@ private:
 
 	struct Input_layout_slot
 	{
-		bool is_compatible(const Vertex_layout_description& vd, const Shader_program::Signature& sig) const;
+		bool is_compatible(const Vertex_layout_description& vd, const Shader_program::Signature& signature) const;
 
 		Vertex_layout_description vertex_description;
 

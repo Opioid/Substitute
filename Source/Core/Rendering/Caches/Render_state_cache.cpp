@@ -12,7 +12,7 @@ void Render_state_cache::release()
 	m_rasterizer_states.clear();
 }
 
-Handle<Rasterizer_state> Render_state_cache::get_rasterizer_state(const Rasterizer_state::Description& description)
+Handle<Rasterizer_state> Render_state_cache::rasterizer_state(const Rasterizer_state::Description& description)
 {
 	for (const auto& s : m_rasterizer_states)
 	{
@@ -31,7 +31,7 @@ Handle<Rasterizer_state> Render_state_cache::get_rasterizer_state(const Rasteriz
 	return state;
 }
 
-Handle<Depth_stencil_state> Render_state_cache::get_depth_stencil_state(const Depth_stencil_state::Description& description)
+Handle<Depth_stencil_state> Render_state_cache::depth_stencil_state(const Depth_stencil_state::Description& description)
 {
 	for (const auto& s : m_depth_stencil_states)
 	{
@@ -50,7 +50,7 @@ Handle<Depth_stencil_state> Render_state_cache::get_depth_stencil_state(const De
 	return state;
 }
 
-Handle<Blend_state> Render_state_cache::get_blend_state(const Blend_state::Description& description)
+Handle<Blend_state> Render_state_cache::blend_state(const Blend_state::Description& description)
 {
 	for (const auto& s : blend_state_s)
 	{

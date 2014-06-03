@@ -15,11 +15,15 @@ class Particle_scene
 
 public:
 
+	Particle_scene();
+
 	Particle_effect* create_particle_effect(const std::string& type);
 
 	void register_factory(Particle_effect_factory* factory, const std::string& type);
 
 	void on_tick(float time_slice);
+
+	const Heap_cache<Particle_effect>& particle_effects() const;
 
 private:
 

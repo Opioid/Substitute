@@ -59,6 +59,7 @@ void Cubemap_surrounding_renderer::render(const scene::Scene& scene, const Rende
 	device.set_viewports(1, &context.viewport());
 	device.set_framebuffer(context.framebuffer());
 
+	device.set_rasterizer_state(rasterizer_state_);
 	device.set_depth_stencil_state(ds_state_);
 	device.set_blend_state(blend_state_);
 
@@ -89,6 +90,7 @@ void Cubemap_surrounding_renderer::clear(const Color3& color, const Rendering_co
 	device.set_viewports(1, &context.viewport());
 	device.set_framebuffer(context.framebuffer());
 
+	device.set_rasterizer_state(rasterizer_state_);
 	device.set_depth_stencil_state(ds_state_);
 	device.set_blend_state(blend_state_);
 
@@ -106,6 +108,18 @@ void Cubemap_surrounding_renderer::clear(const Color3& color, const Rendering_co
 
 bool Cubemap_surrounding_renderer::create_render_states()
 {
+	auto& cache = rendering_tool_.render_state_cache();
+
+	Rasterizer_state::Description rasterizer_description;
+	rasterizer_description.front_ccw = false;
+	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
+
+	rasterizer_state_ = cache.rasterizer_state(rasterizer_description);
+	if (!rasterizer_state_)
+	{
+		return false;
+	}
+
 	Depth_stencil_state::Description ds_description;
 	ds_description.depth_enable = false;
 	ds_description.depth_write_mask = false;
@@ -119,7 +133,7 @@ bool Cubemap_surrounding_renderer::create_render_states()
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Equal;
 
-	ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+	ds_state_ = cache.depth_stencil_state(ds_description);
 	if (!ds_state_)
 	{
 		return false;
@@ -129,7 +143,7 @@ bool Cubemap_surrounding_renderer::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::Red | Blend_state::Description::Color_write_mask::Green | Blend_state::Description::Color_write_mask::Blue;
 
-	blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	blend_state_ = cache.blend_state(blend_description);
 	if (!blend_state_)
 	{
 		return false;

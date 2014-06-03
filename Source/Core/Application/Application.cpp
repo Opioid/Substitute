@@ -71,9 +71,11 @@ bool Application::run(const std::string& name, const uint2& dimensions, bool win
 				accumulator -= simulation_frequency_;
 			}
 
-			scene_.update(static_cast<float>(accumulator / simulation_frequency_));
+			float interpolation_delta = static_cast<float>(accumulator / simulation_frequency_);
 
-			on_render();
+			scene_.update(interpolation_delta);
+
+			on_render(interpolation_delta);
 
 			//---
 			controls_.cleanup_update();
@@ -228,9 +230,9 @@ void Application::on_input_signal(const platform::Input_signal& signal)
 	controls_.on_input_signal(signal);
 }
 
-void Application::on_render()
+void Application::on_render(float interpolation_delta)
 {
-	renderer_.render(*this, 0.f);
+	renderer_.render(*this, interpolation_delta);
 
 	printer_.begin();
 

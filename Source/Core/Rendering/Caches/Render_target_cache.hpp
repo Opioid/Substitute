@@ -25,11 +25,11 @@ public:
 	Handle<Depth_stencil_view> depth_stencil_view(const Texture_description& description,
 													  std::initializer_list<Handle<Depth_stencil_view>> must_not_match = {});
 
-	Handle<Depth_stencil_shader_resource_view> get_depth_stencil_shader_resource_view(const Texture_description& description,
-																					  std::initializer_list<Handle<Depth_stencil_shader_resource_view>> must_not_match = {});
+	Handle<Depth_stencil_shader_resource_view> depth_stencil_shader_resource_view(const Texture_description& description,
+																				  std::initializer_list<Handle<Depth_stencil_shader_resource_view>> must_not_match = {});
 
-	Handle<Render_target_shader_resource_view> get_render_target_shader_resource_view(const Texture_description& description,
-																					  std::initializer_list<Handle<Render_target_shader_resource_view>> must_not_match = {});
+	Handle<Render_target_shader_resource_view> render_target_shader_resource_view(const Texture_description& description,
+																				  std::initializer_list<Handle<Render_target_shader_resource_view>> must_not_match = {});
 
 private:
 

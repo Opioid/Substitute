@@ -39,13 +39,13 @@ void main()
 	
 	//This is supposed to happen in world space, but the multiplication with distance seems to look the same in view space and is more convenient in our pipeline
 	vec3 intersection_vs = position_vs + dist * ray_vs;
-	vec3 reflection_ws = (g_inverse_view * vec4(g_light_position_vs - intersection_vs, 0.f)).xyz;
+	vec3 reflection_ws = (vec4(g_light_position_vs - intersection_vs, 0.f) * g_view).xyz;
 
 #else
 
 	vec3 reflection_vs = reflect(view_direction, normal);
 
-	vec3 reflection_ws = (g_inverse_view * vec4(reflection_vs, 0.f)).xyz;
+	vec3 reflection_ws = (vec4(reflection_vs, 0.f) * g_view).xyz;
 
 #endif // VOLUME
 

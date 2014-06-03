@@ -1,27 +1,21 @@
 #include "Particle_system.hpp"
 #include "Scene/Material.hpp"
-#include "Rendering/Vertex_layout_description.hpp"
+#include <algorithm>
 
 namespace scene
 {
 
-const rendering::Vertex_layout_description* Particle_system::Vertex::vertex_layout_description()
+Particle_system::Particle_system(uint32_t num_particles) : num_particles_(num_particles)
 {
-	rendering::Vertex_layout_description::Element elements[] =
-	{
-		rendering::Vertex_layout_description::Element("Position", 0, rendering::Data_format::R32G32B32A32_Float)
-	};
-
-	static const rendering::Vertex_layout_description desc(1, elements);
-
-	return &desc;
+	previous_vertices_ = new Vertex[num_particles_];
+	current_vertices_  = new Vertex[num_particles_];
 }
 
-Particle_system::Particle_system(uint32_t num_particles) : num_particles_(num_particles)
-{}
-
 Particle_system::~Particle_system()
-{}
+{
+	delete [] current_vertices_;
+	delete [] previous_vertices_;
+}
 
 void Particle_system::set_material(const Handle<Material>& material)
 {
@@ -31,6 +25,28 @@ void Particle_system::set_material(const Handle<Material>& material)
 uint32_t Particle_system::num_particles() const
 {
 	return num_particles_;
+}
+
+const Particle_system::Vertex* Particle_system::previous_vertices() const
+{
+	return previous_vertices_;
+}
+
+const Particle_system::Vertex* Particle_system::current_vertices() const
+{
+	return current_vertices_;
+}
+
+Particle_system::Vertex* Particle_system::current_vertices()
+{
+	return current_vertices_;
+}
+
+void Particle_system::on_tick(const Particle_effect& effect, float time_slice)
+{
+	std::copy(current_vertices_, current_vertices_ + num_particles_, previous_vertices_);
+
+	private_on_tick(effect, time_slice);
 }
 
 }

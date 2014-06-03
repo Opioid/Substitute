@@ -33,7 +33,7 @@ bool Spot_shadow_renderer_EVSM_MS::init(Resource_manager& resource_manager, Cons
 
 	auto& render_target_cache = rendering_tool_.render_target_cache();
 
-	shadow_map_ = render_target_cache.get_render_target_shader_resource_view(texture_description);
+	shadow_map_ = render_target_cache.render_target_shader_resource_view(texture_description);
 	if (!shadow_map_)
 	{
 		return false;

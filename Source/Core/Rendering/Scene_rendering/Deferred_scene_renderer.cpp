@@ -111,7 +111,7 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 	texture_description.dimensions.xy = size;
 	texture_description.format = Data_format::R16G16_UNorm;
 	texture_description.shader_resource = true;
-	normal_target_ = cache.get_render_target_shader_resource_view(texture_description);
+	normal_target_ = cache.render_target_shader_resource_view(texture_description);
 
 	if (!normal_target_)
 	{
@@ -119,7 +119,7 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 	}
 
 	texture_description.format = Data_format::R8G8B8A8_UNorm_sRGB;
-	color_target_ = cache.get_render_target_shader_resource_view(texture_description);
+	color_target_ = cache.render_target_shader_resource_view(texture_description);
 
 	if (!color_target_)
 	{
@@ -127,7 +127,7 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 	}
 
 	texture_description.format = Data_format::R8G8B8A8_UNorm;
-	surface_target_ = cache.get_render_target_shader_resource_view(texture_description);
+	surface_target_ = cache.render_target_shader_resource_view(texture_description);
 
 	if (!surface_target_)
 	{
@@ -155,7 +155,7 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 	return true;
 }
 
-void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_context& context)
+void Deferred_scene_renderer::render(const scene::Scene& scene, float interpolation_delta, const Rendering_context& context)
 {
 	auto& device = rendering_tool_.device();
 
@@ -198,7 +198,7 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_
 		change_per_camera_data.rays[2] = float4(rays[2], 1.f);
 		change_per_camera_data.view_projection = camera.view_projection();
 		change_per_camera_data.view = camera.view();
-		change_per_camera_data.inverse_view = invert(camera.view());
+		change_per_camera_data.projection = camera.projection();
 		change_per_camera_.update(device);
 
 		previous_material_ = nullptr;
@@ -243,8 +243,6 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_
 		render_deferred_effects(scene, context);
 	}
 
-	device.set_rasterizer_state(rasterizer_state_cull_back_);
-
 	if (options.is_set(Rendering_context::Options::Render_surrounding))
 	{
 		surrounding_renderer_.render(scene, context);
@@ -253,6 +251,8 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, const Rendering_
 	{
 		surrounding_renderer_.clear(color3::black, context);
 	}
+
+	particle_renderer_.render(scene.particle_scene(), interpolation_delta, context);
 }
 
 void Deferred_scene_renderer::render_deferred_effects(const scene::Scene& scene, const Rendering_context& context)
@@ -296,10 +296,13 @@ void Deferred_scene_renderer::prepare_material(const scene::Material* material)
 
 bool Deferred_scene_renderer::create_render_states()
 {
+	auto& cache = rendering_tool_.render_state_cache();
+
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.front_ccw = false;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_cull_back_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
+
+	rasterizer_state_cull_back_ = cache.rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_back_)
 	{
 		return false;
@@ -307,7 +310,8 @@ bool Deferred_scene_renderer::create_render_states()
 
 	rasterizer_description.front_ccw = true;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_cull_front_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
+
+	rasterizer_state_cull_front_ = cache.rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_front_)
 	{
 		return false;
@@ -315,7 +319,8 @@ bool Deferred_scene_renderer::create_render_states()
 
 	rasterizer_description.front_ccw = false;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::None;
-	rasterizer_state_cull_none_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
+
+	rasterizer_state_cull_none_ = cache.rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_none_)
 	{
 		return false;
@@ -334,7 +339,8 @@ bool Deferred_scene_renderer::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Replace;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Greater_equal;
-	base_ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+
+	base_ds_state_ = cache.depth_stencil_state(ds_description);
 	if (!base_ds_state_)
 	{
 		return false;
@@ -349,7 +355,7 @@ bool Deferred_scene_renderer::create_render_states()
 	blend_description.render_targets[2].blend_enable     = false;
 	blend_description.render_targets[2].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	base_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	base_blend_state_ = cache.blend_state(blend_description);
 	if (!base_blend_state_)
 	{
 		return false;

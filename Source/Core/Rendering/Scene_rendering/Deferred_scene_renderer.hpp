@@ -39,7 +39,7 @@ public:
 
 	virtual bool init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache);
 
-	virtual void render(const scene::Scene& scene, const Rendering_context& context);
+	virtual void render(const scene::Scene& scene, float interpolation_delta, const Rendering_context& context);
 
 private:
 
@@ -92,7 +92,7 @@ private:
 		float4   rays[3];
 		float4x4 view_projection;
 		float4x4 view;
-		float4x4 inverse_view;
+		float4x4 projection;
 	};
 
 	Constant_buffer_updater<Change_per_camera> change_per_camera_;

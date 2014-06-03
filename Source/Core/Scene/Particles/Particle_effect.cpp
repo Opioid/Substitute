@@ -31,6 +31,16 @@ void Particle_effect::reserve(uint32_t num_systems)
 	num_systems_ = num_systems;
 }
 
+uint32_t Particle_effect::num_systems() const
+{
+	return num_systems_;
+}
+
+const Particle_system* Particle_effect::system(uint32_t index) const
+{
+	return systems_[index];
+}
+
 void Particle_effect::set_system(uint32_t index, Particle_system* system)
 {
 	systems_[index] = system;
@@ -60,7 +70,7 @@ void Particle_effect::on_tick(float time_slice)
 {
 	for (uint32_t i = 0; i < num_systems_; ++i)
 	{
-		systems_[i]->on_tick(time_slice);
+		systems_[i]->on_tick(*this, time_slice);
 	}
 }
 

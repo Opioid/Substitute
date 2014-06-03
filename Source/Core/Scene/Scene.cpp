@@ -91,6 +91,11 @@ void Scene::compile()
 		}
 	}
 
+	for (auto& i : interpolators_)
+	{
+		i.copy_previous_state();
+	}
+
 	if (aabb_tree_.is_empty())
 	{
 		AABB_tree_builder tree_builder;
@@ -329,6 +334,11 @@ Particle_effect* Scene::create_particle_effect(const std::string& type, bool int
 	interpolators_.push_back(Transformation_interpolator(particle_effect));
 
 	return particle_effect;
+}
+
+const Particle_scene& Scene::particle_scene() const
+{
+	return particle_scene_;
 }
 
 Particle_scene& Scene::particle_scene()

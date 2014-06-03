@@ -1,23 +1,39 @@
 {
 	"buffers":
 	[
-
+		{
+			"name": "Change_per_frame"
+		},
+		{
+			"name": "Change_per_camera"
+		}
 	],
 	
 	"data_layouts":
 	[
 		{
-			"name": "Vertex_input0",
+			"name": "Vertex_input",
 			"data":
 			[
-				{ "type": "float4", "name": "position", "semantic": "Position" }
+				{ "type": "float3", "name": "previous_position",   "semantic": "Previous_position" },
+				{ "type": "float4", "name": "previous_properties", "semantic": "Previous_properties" },
+				{ "type": "float3", "name": "current_position",    "semantic": "Current_position" },
+				{ "type": "float4", "name": "current_properties",  "semantic": "Current_properties" }
 			]
 		},
 		{
-			"name": "Vertex_output0",
+			"name": "Vertex_output",
 			"data":
 			[
-				{ "type": "float2", "name": "position" }
+				{ "type": "float3", "name": "position" },
+				{ "type": "float4", "name": "properties" }
+			]
+		},
+		{
+			"name": "Geometry_output",
+			"data":
+			[
+				{ "type": "float2", "name": "tex_coord" }
 			]
 		},
 		{
@@ -33,18 +49,18 @@
 	[
 		{
 			"name": "Particle",
-			"input": "Vertex_input0",
+			"input": "Vertex_input",
 			"shaders": 
 			[
 				{
 					"type": "vertex",
 					"sources": [ "Particle_renderer.vs.glsl" ],
-					"output": "Vertex_input0"
+					"output": "Vertex_output"
 				},
 				{
 					"type": "geometry",
 					"sources": [ "Particle_renderer.gs.glsl" ],
-					"output": "Vertex_output0",
+					"output": "Geometry_output",
 					"input_primitive_topology": "Point_list",
 					"output_primitive_topology": "Triangle_strip",
 					"max_vertex_count": 4

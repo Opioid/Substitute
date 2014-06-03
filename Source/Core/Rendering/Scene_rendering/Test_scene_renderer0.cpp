@@ -136,7 +136,7 @@ bool Test_scene_renderer0::create_render_states()
 {
 	Rasterizer_state::Description rasterizer_description;
 	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
-	rasterizer_state_cull_back_ = rendering_tool_.render_state_cache().get_rasterizer_state(rasterizer_description);
+	rasterizer_state_cull_back_ = rendering_tool_.render_state_cache().rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_cull_back_)
 	{
 		return false;
@@ -155,7 +155,7 @@ bool Test_scene_renderer0::create_render_states()
 	ds_description.back_face.depth_fail_op = Depth_stencil_state::Description::Stencil::Stencil_op::Keep;
 	ds_description.back_face.pass_op = Depth_stencil_state::Description::Stencil::Stencil_op::Replace;
 	ds_description.back_face.comparison_func = Depth_stencil_state::Description::Comparison::Greater_equal;
-	base_ds_state_ = rendering_tool_.render_state_cache().get_depth_stencil_state(ds_description);
+	base_ds_state_ = rendering_tool_.render_state_cache().depth_stencil_state(ds_description);
 	if (!base_ds_state_)
 	{
 		return false;
@@ -166,7 +166,7 @@ bool Test_scene_renderer0::create_render_states()
 	blend_description.render_targets[0].blend_enable     = false;
 	blend_description.render_targets[0].color_write_mask = Blend_state::Description::Color_write_mask::All;
 
-	base_blend_state_ = rendering_tool_.render_state_cache().get_blend_state(blend_description);
+	base_blend_state_ = rendering_tool_.render_state_cache().blend_state(blend_description);
 	if (!base_blend_state_)
 	{
 		return false;

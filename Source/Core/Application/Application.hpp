@@ -83,7 +83,7 @@ protected:
 
 	virtual void on_input_signal(const platform::Input_signal& signal);
 
-	virtual void on_render();
+	virtual void on_render(float interpolation_delta);
 
 	virtual void on_render_gui(rendering::Printer& printer);
 

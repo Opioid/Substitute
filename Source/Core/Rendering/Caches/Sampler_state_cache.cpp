@@ -17,7 +17,7 @@ void Sampler_state_cache::release()
 	sampler_states_.clear();
 }
 
-Handle<Sampler_state> Sampler_state_cache::get_sampler_state(const Sampler_state::Description& description)
+Handle<Sampler_state> Sampler_state_cache::sampler_state(const Sampler_state::Description& description)
 {
 	for (auto s : sampler_states_)
 	{

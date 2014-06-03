@@ -75,6 +75,7 @@ public:
 
 	Particle_effect* create_particle_effect(const std::string& type, bool interpolated, const std::string& name = "");
 
+	const Particle_scene& particle_scene() const;
 	Particle_scene& particle_scene();
 
 	const Surrounding& surrounding() const;

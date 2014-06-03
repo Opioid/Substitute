@@ -35,38 +35,39 @@ const Vertex_layout_description* Vertex_layout_cache::vertex_layout_description(
 		}
 	}
 
-	Vertex_layout_description* desc = new Vertex_layout_description(num_elements_, elements);
+	Vertex_layout_description* description = new Vertex_layout_description(num_elements_, elements);
 
-	vertex_descriptions_.push_back(desc);
+	vertex_descriptions_.push_back(description);
 
-	return desc;
+	return description;
 }
 
-Handle<Input_layout> Vertex_layout_cache::input_layout(const Vertex_layout_description& vd, const Shader_program::Signature& sig)
+Handle<Input_layout> Vertex_layout_cache::input_layout(const Vertex_layout_description& vd, const Shader_program::Signature& signature)
 {
 	for (auto l : input_layouts_)
 	{
-		if (l->is_compatible(vd, sig))
+		if (l->is_compatible(vd, signature))
 		{
 			return l->input_layout;
 		}
 	}
 
-	Handle<Input_layout> input_layout = device_.create_input_layout(vd, sig);
+	Handle<Input_layout> input_layout = device_.create_input_layout(vd, signature);
 
 	if (!input_layout)
 	{
 		return nullptr;
 	}
 
-	input_layouts_.push_back(new Input_layout_slot{ vd, sig, input_layout });
+	input_layouts_.push_back(new Input_layout_slot{ vd, signature, input_layout });
 
 	return input_layout;
 }
 
-bool Vertex_layout_cache::Input_layout_slot::is_compatible(const Vertex_layout_description& vd, const Shader_program::Signature& sig) const
+bool Vertex_layout_cache::Input_layout_slot::is_compatible(const Vertex_layout_description& vd, const Shader_program::Signature& signature) const
 {
-	return vertex_description == vd && signature == sig;
+	return this->vertex_description == vd
+		&& this->signature          == signature;
 }
 
 }

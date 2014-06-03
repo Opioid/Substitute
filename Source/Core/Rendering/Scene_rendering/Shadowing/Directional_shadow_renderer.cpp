@@ -34,8 +34,6 @@ Directional_shadow_renderer::Directional_shadow_renderer(Rendering_tool &renderi
 
 void Directional_shadow_renderer::render(const scene::Light& light, const scene::Scene& scene, const Rendering_context& context)
 {
-	prepare_rendering(context);
-
 	const auto& camera = context.camera();
 
 	cascade_data_[0].near_far = float2(camera.z_near(), 4.f);

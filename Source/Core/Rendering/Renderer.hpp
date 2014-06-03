@@ -58,7 +58,7 @@ public:
 
 	baking::Light_baker* light_baker();
 
-	void render(Application& app, float speed);
+	void render(Application& app, float interpolation_delta);
 
 	bool render_analytical_lighting() const;
 	void set_render_analytical_lighting(bool enable);
