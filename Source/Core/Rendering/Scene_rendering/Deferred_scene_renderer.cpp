@@ -252,7 +252,10 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, float interpolat
 		surrounding_renderer_.clear(color3::black, context);
 	}
 
-	particle_renderer_.render(scene.particle_scene(), interpolation_delta, context);
+	if (options.is_set(Rendering_context::Options::Render_particles))
+	{
+		particle_renderer_.render(scene.particle_scene(), interpolation_delta, context);
+	}
 }
 
 void Deferred_scene_renderer::render_deferred_effects(const scene::Scene& scene, const Rendering_context& context)

@@ -10,6 +10,16 @@ const float pi_div_2 = pi * 0.5f;
 const float pi_div_180 = pi / 180.f;
 const float _180_div_pi = 180.f / pi;
 
+float3 random_disk()
+{
+	float z = random(-1.f, 1.f);
+	float a = random(0.f, math::pi_mul_2);
+	float r = sqrt(1.f - z * z);
+	float x = r * cos(a);
+
+	return float3(x, 0.f, z);
+}
+
 float3 random_sphere()
 {
 	float z = random(-1.f, 1.f);

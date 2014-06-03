@@ -8,6 +8,11 @@ namespace scene
 Particle_scene::Particle_scene()
 {}
 
+void Particle_scene::clear()
+{
+	particle_effects_.clear();
+}
+
 Particle_effect* Particle_scene::create_particle_effect(const std::string& type)
 {
 	auto factory = factories_.find(type);

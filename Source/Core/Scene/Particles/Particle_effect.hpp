@@ -17,14 +17,14 @@ public:
 	Particle_effect();
 	~Particle_effect();
 
+	void clear();
+
 	void reserve(uint32_t num_systems);
 
 	uint32_t num_systems() const;
 	const Particle_system* system(uint32_t index) const;
 
 	void set_system(uint32_t index, Particle_system* system);
-
-	void clear();
 
 	void set_materials(uint32_t num_materials, const Handle<Material> materials[]);
 

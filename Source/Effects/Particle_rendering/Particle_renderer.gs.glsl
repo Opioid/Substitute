@@ -10,19 +10,19 @@ void main()
 	corners[3] = vec4(corners[1].x,                      corners[2].y,    					geometry_in[0].position.z, 1.f);
 
 	gl_Position  = g_projection * corners[0];
-	geometry_out.tex_coord = vec2(0.f, 0.f);
+	geometry_out.tex_coord_and_factor = vec3(0.f, 0.f, geometry_in[0].properties.z);
 	EmitVertex();
 
 	gl_Position  = g_projection * corners[1];
-	geometry_out.tex_coord = vec2(1.f, 0.f);
+	geometry_out.tex_coord_and_factor = vec3(1.f, 0.f, geometry_in[0].properties.z);
 	EmitVertex();
 
 	gl_Position  = g_projection * corners[2];
-	geometry_out.tex_coord = vec2(0.f, 1.f);
+	geometry_out.tex_coord_and_factor = vec3(0.f, 1.f, geometry_in[0].properties.z);
 	EmitVertex();
 
 	gl_Position  = g_projection * corners[3];
-	geometry_out.tex_coord = vec2(1.f, 1.f);
+	geometry_out.tex_coord_and_factor = vec3(1.f, 1.f, geometry_in[0].properties.z);
 	EmitVertex();
 
 	EndPrimitive();

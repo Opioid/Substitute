@@ -88,6 +88,7 @@ void Irradiance_volume_baker::bake(scene::Scene& scene, Environment_map_renderer
 
 	Rendering_context::Rendering_options options;
 	options.set(Rendering_context::Options::Render_actors, false);
+	options.set(Rendering_context::Options::Render_particles, false);
 	options.set(Rendering_context::Options::Render_static_geometry, true);
 	options.set(Rendering_context::Options::Render_surrounding, true);
 	options.set(Rendering_context::Options::Render_analytical_lighting, true);

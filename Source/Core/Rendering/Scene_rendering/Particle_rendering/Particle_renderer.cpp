@@ -6,14 +6,16 @@
 #include "Rendering/Effect/Effect_provider.hpp"
 #include "Rendering/Constant_buffer_cache.hpp"
 #include "Resources/Resource_manager.hpp"
+#include "Scene/Material.hpp"
 #include "Scene/Particles/Particle_scene.hpp"
 #include "Scene/Particles/Particle_effect.hpp"
 #include "Scene/Particles/Particle_system.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {
 
-Particle_renderer::Particle_renderer(Rendering_tool& rendering_tool) : Rendering_object(rendering_tool), num_vertices_(1024)
+Particle_renderer::Particle_renderer(Rendering_tool& rendering_tool) : Rendering_object(rendering_tool), previous_material_(nullptr), num_vertices_(1024)
 {}
 
 bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache)
@@ -88,7 +90,7 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 
 	device.set_rasterizer_state(rasterizer_state_);
 	device.set_depth_stencil_state(ds_state_);
-	device.set_blend_state(blend_state_);
+	device.set_blend_state(alpha_blend_state_);
 
 	device.set_primitive_topology(Primitive_topology::Point_list);
 
@@ -102,11 +104,17 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 	change_per_frame_data.time.x = interpolation_delta;
 	change_per_frame_.update(device);
 
+	previous_material_ = nullptr;
+
 	for (auto particle_effect : scene.particle_effects())
 	{
 		for (uint32_t i = 0; i < particle_effect->num_systems(); ++i)
 		{
 			const auto system = particle_effect->system(i);
+
+			const scene::Material* material = system->material();
+
+			prepare_material(material);
 
 			techniques_.particle->use();
 
@@ -116,6 +124,27 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 			device.draw(system->num_particles());
 		}
 	}
+}
+
+void Particle_renderer::prepare_material(const scene::Material* material)
+{
+	if (previous_material_ == material)
+	{
+		return;
+	}
+
+	auto& device = rendering_tool_.device();
+
+	device.set_shader_resources(1, material->textures());
+/*
+	uint32_t technique = static_cast<uint32_t>(material->technique());
+	if (previous_technique_ != technique)
+	{
+		effect_->technique(technique)->use();
+		previous_technique_ = technique;
+	}
+*/
+	previous_material_ = material;
 }
 
 bool Particle_renderer::create_buffers()
@@ -145,7 +174,7 @@ bool Particle_renderer::create_render_states()
 	auto& cache = rendering_tool_.render_state_cache();
 
 	Rasterizer_state::Description rasterizer_description;
-	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::None;
+	rasterizer_description.cull_mode = Rasterizer_state::Description::Cull_mode::Back;
 	rasterizer_state_ = cache.rasterizer_state(rasterizer_description);
 	if (!rasterizer_state_)
 	{
@@ -185,6 +214,22 @@ bool Particle_renderer::create_render_states()
 
 	blend_state_ = cache.blend_state(blend_description);
 	if (!blend_state_)
+	{
+		return false;
+	}
+
+	blend_description.independent_blend_enable = false;
+	blend_description.render_targets[0].blend_enable            = true;
+	blend_description.render_targets[0].source_blend            = Blend_state::Description::Blend::Source_alpha;
+	blend_description.render_targets[0].destination_blend       = Blend_state::Description::Blend::Inverse_source_alpha;
+	blend_description.render_targets[0].blend_op                = Blend_state::Description::Blend_op::Add;
+	blend_description.render_targets[0].destination_blend_alpha = Blend_state::Description::Blend::Zero;
+	blend_description.render_targets[0].source_blend_alpha      = Blend_state::Description::Blend::Zero;
+	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
+	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::All;
+
+	alpha_blend_state_ = cache.blend_state(blend_description);
+	if (!alpha_blend_state_)
 	{
 		return false;
 	}

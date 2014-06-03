@@ -1,4 +1,6 @@
 void main()
 {
-	pixel_out.color = vec4(1.f, 0.f, 0.f, 1.f);
+	vec4 color = texture(g_color_map, pixel_in.tex_coord_and_factor.xy);
+
+	pixel_out.color = pixel_in.tex_coord_and_factor.z * color;
 }

@@ -42,6 +42,7 @@ inline float random(float min, float max)
 	return min + (max - min) * ::rand() / float(RAND_MAX);
 }
 	
+float3 random_disk();
 float3 random_sphere();
 
 template <typename T>

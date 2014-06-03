@@ -1,5 +1,6 @@
 #include "Particle_system.hpp"
 #include "Scene/Material.hpp"
+#include "Math/Vector.inl"
 #include <algorithm>
 
 namespace scene
@@ -15,6 +16,11 @@ Particle_system::~Particle_system()
 {
 	delete [] current_vertices_;
 	delete [] previous_vertices_;
+}
+
+const Handle<Material>& Particle_system::material() const
+{
+	return material_;
 }
 
 void Particle_system::set_material(const Handle<Material>& material)

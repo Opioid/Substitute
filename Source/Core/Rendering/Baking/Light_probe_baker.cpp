@@ -217,6 +217,7 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 	Rendering_context::Rendering_options options;
 
 	options.set(Rendering_context::Options::Render_actors, false);
+	options.set(Rendering_context::Options::Render_particles, false);
 	options.set(Rendering_context::Options::Render_surrounding, true);
 	options.set(Rendering_context::Options::Face_culling, true);
 
@@ -224,7 +225,6 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 
 	if (scene.surrounding_light_probe() && 0 == pass)
 	{
-
 		options.set(Rendering_context::Options::Render_static_geometry, false);
 		options.set(Rendering_context::Options::Render_analytical_lighting, false);
 		options.set(Rendering_context::Options::Render_image_based_lighting, false);

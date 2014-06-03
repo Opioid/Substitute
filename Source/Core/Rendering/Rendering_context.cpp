@@ -9,6 +9,7 @@ Rendering_context::Rendering_context() : camera_(nullptr)
 {
 	options_.set(Options::Render_actors, true);
 	options_.set(Options::Render_static_geometry, true);
+	options_.set(Options::Render_particles, true);
 	options_.set(Options::Render_surrounding, true);
 	options_.set(Options::Render_analytical_lighting, true);
 	options_.set(Options::Render_image_based_lighting, true);

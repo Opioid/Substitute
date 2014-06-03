@@ -10,6 +10,7 @@ namespace scene
 {
 
 class Particle_scene;
+class Material;
 
 }
 
@@ -31,12 +32,16 @@ public:
 
 private:
 
+	void prepare_material(const scene::Material* material);
+
 	bool create_buffers();
 	bool create_render_states();
 
 	Handle<Effect> effect_;
 
 	Handle<Input_layout> input_layout_;
+
+	const scene::Material* previous_material_;
 
 	struct
 	{
@@ -62,6 +67,7 @@ private:
 	Handle<Depth_stencil_state> ds_state_;
 
 	Handle<Blend_state> blend_state_;
+	Handle<Blend_state> alpha_blend_state_;
 };
 
 }

@@ -9,6 +9,15 @@
 		}
 	],
 	
+	"samplers":
+	[
+		{
+			"type": "2D",
+			"name": "g_color_map",
+			"filtering": "Trilinear"
+		}
+	],
+
 	"data_layouts":
 	[
 		{
@@ -33,7 +42,7 @@
 			"name": "Geometry_output",
 			"data":
 			[
-				{ "type": "float2", "name": "tex_coord" }
+				{ "type": "float3", "name": "tex_coord_and_factor" }
 			]
 		},
 		{

@@ -17,6 +17,8 @@ public:
 
 	Particle_scene();
 
+	void clear();
+
 	Particle_effect* create_particle_effect(const std::string& type);
 
 	void register_factory(Particle_effect_factory* factory, const std::string& type);

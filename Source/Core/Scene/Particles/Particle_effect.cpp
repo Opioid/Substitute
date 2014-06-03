@@ -15,6 +15,17 @@ Particle_effect::~Particle_effect()
 	delete [] systems_;
 }
 
+void Particle_effect::clear()
+{
+	for (uint32_t i = 0; i < capacity_; ++i)
+	{
+		delete systems_[i];
+		systems_[i] = nullptr;
+	}
+
+	num_systems_ = 0;
+}
+
 void Particle_effect::reserve(uint32_t num_systems)
 {
 	clear();
@@ -44,17 +55,6 @@ const Particle_system* Particle_effect::system(uint32_t index) const
 void Particle_effect::set_system(uint32_t index, Particle_system* system)
 {
 	systems_[index] = system;
-}
-
-void Particle_effect::clear()
-{
-	for (uint32_t i = 0; i < capacity_; ++i)
-	{
-		delete systems_[i];
-		systems_[i] = nullptr;
-	}
-
-	num_systems_ = 0;
 }
 
 void Particle_effect::set_materials(uint32_t num_materials, const Handle<Material> materials[])

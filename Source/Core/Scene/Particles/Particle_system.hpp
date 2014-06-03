@@ -23,6 +23,7 @@ public:
 	Particle_system(uint32_t num_particles);
 	virtual ~Particle_system();
 
+	const Handle<Material>& material() const;
 	void set_material(const Handle<Material>& material);
 
 	uint32_t num_particles() const;

@@ -38,6 +38,8 @@ void Scene::clear()
 
 	lights_.clear();
 
+	particle_scene_.clear();
+
 	entities_.clear();
 
 	named_entities_.clear();

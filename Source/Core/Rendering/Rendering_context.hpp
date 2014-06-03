@@ -25,11 +25,12 @@ public:
 	{
 		Render_actors				= 1 << 0,
 		Render_static_geometry 	    = 1 << 1,
-		Render_surrounding			= 1 << 2,
-		Render_analytical_lighting  = 1 << 3,
-		Render_image_based_lighting = 1 << 4,
-		Render_emissive_lighting    = 1 << 5,
-		Face_culling                = 1 << 6
+		Render_particles            = 1 << 2,
+		Render_surrounding			= 1 << 3,
+		Render_analytical_lighting  = 1 << 4,
+		Render_image_based_lighting = 1 << 5,
+		Render_emissive_lighting    = 1 << 6,
+		Face_culling                = 1 << 7
 	};
 
 	typedef Flags<Options, uint8_t> Rendering_options;
