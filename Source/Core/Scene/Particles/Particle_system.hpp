@@ -23,6 +23,9 @@ public:
 	Particle_system(uint32_t num_particles);
 	virtual ~Particle_system();
 
+	const Particle_effect* parent() const;
+	void set_parent(const Particle_effect* parent);
+
 	const Handle<Material>& material() const;
 	void set_material(const Handle<Material>& material);
 
@@ -33,11 +36,13 @@ public:
 	const Vertex* current_vertices() const;
 	Vertex* current_vertices();
 
-	void on_tick(const Particle_effect& effect, float time_slice);
+	void on_tick(float time_slice);
 
 private:
 
-	virtual void private_on_tick(const Particle_effect& effect, float time_slice) = 0;
+	virtual void private_on_tick(float time_slice) = 0;
+
+	const Particle_effect* parent_;
 
 	Handle<Material> material_;
 
