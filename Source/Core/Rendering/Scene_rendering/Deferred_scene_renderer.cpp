@@ -152,6 +152,8 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 											 color_target_->shader_resource_view(),
 											 surface_target_->shader_resource_view());
 
+	particle_renderer_.set_depth_texture(depth_stencil->shader_resource_view());
+
 	return true;
 }
 

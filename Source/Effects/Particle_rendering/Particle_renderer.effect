@@ -13,6 +13,11 @@
 	[
 		{
 			"type": "2D",
+			"name": "g_depth_map",
+			"filtering": "Bilinear"
+		},
+		{
+			"type": "2D",
 			"name": "g_color_map",
 			"filtering": "Trilinear"
 		}
@@ -46,6 +51,14 @@
 			]
 		},
 		{
+			"name": "Geometry_output_soft",
+			"data":
+			[
+				{ "type": "float3", "name": "tex_coord_and_factor" },
+				{ "type": "float",  "name": "depth" }
+			]
+		},
+		{
 			"name": "Pixel_output",
 			"data":
 			[
@@ -57,7 +70,7 @@
 	"techniques":
 	[
 		{
-			"name": "Particle",
+			"name": "Color_map",
 			"input": "Vertex_input",
 			"shaders": 
 			[
@@ -77,6 +90,34 @@
 				{
 					"type": "pixel",
 					"sources": [ "Particle_renderer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Color_map_soft",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Particle_renderer.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "geometry",
+					"defines": [ "SOFT" ],
+					"sources": [ "Particle_renderer.gs.glsl" ],
+					"output": "Geometry_output_soft",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"defines": [ "SOFT" ],
+					"sources": [ "Effects/Deferred/Deferred_helper.glsl", 
+								 "Particle_renderer.ps.glsl" ],
 					"output": "Pixel_output"
 				}
 			]

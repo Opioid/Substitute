@@ -624,7 +624,7 @@ void Scene_loader::load_abt(const rapidjson::Value& abt)
 		}
 	}
 
-	if (abt_name.empty() || !materials.size())
+	if (abt_name.empty() || materials.empty())
 	{
 		return;
 	}

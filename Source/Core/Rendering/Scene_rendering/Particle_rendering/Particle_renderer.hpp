@@ -30,6 +30,8 @@ public:
 
 	bool init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache);
 
+	void set_depth_texture(const Handle<Shader_resource_view>& depth);
+
 	void render(const scene::Particle_scene& scene, float interpolation_delta, const Rendering_context& context);
 
 private:
@@ -39,17 +41,21 @@ private:
 	bool create_buffers();
 	bool create_render_states();
 
+	Handle<Shader_resource_view> depth_texture_;
+
 	Handle<Effect> effect_;
 
 	Handle<Input_layout> input_layout_;
 
 	const scene::Material* previous_material_;
-
+	const Effect_technique* previous_technique_;
 	const Blend_state* previous_blend_state_;
 
 	struct
 	{
-		Effect_technique* particle;
+		Effect_technique* color_map;
+
+		Effect_technique* color_map_soft;
 	}
 	techniques_;
 
@@ -74,6 +80,8 @@ private:
 	Handle<Blend_state> alpha_blend_state_;
 
 	Particle_collector particle_collector_;
+
+	uint32_t color_texture_offset_;
 };
 
 }

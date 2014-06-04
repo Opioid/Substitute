@@ -22,4 +22,9 @@ vec3 get_position_vs(vec3 view_ray_vs, float depth, vec2 linear_depth_projection
 	return linear_depth * view_ray_vs;
 }
 
+float calculate_linear_depth(float depth, vec2 linear_depth_projection)
+{
+	return linear_depth_projection.y / (depth - linear_depth_projection.x);
+}
+
 #endif

@@ -135,6 +135,10 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 		{
 			material->set_two_sided(node_value.GetBool());
 		}
+		else if ("soft_particle" == node_name)
+		{
+			material->set_soft_particle(node_value.GetBool());
+		}
 	}
 
 	material->determine_technique(has_height, has_emissive);

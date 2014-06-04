@@ -58,6 +58,16 @@ void Material::set_two_sided(bool two_sided)
 	properties_.set(Property::Two_sided, two_sided);
 }
 
+bool Material::is_soft_particle() const
+{
+	return properties_.is_set(Property::Soft_particle);
+}
+
+void Material::set_soft_particle(bool soft_particle)
+{
+	properties_.set(Property::Soft_particle, soft_particle);
+}
+
 const rendering::Color4& Material::color_and_emissive_factor() const
 {
 	return color_and_emissive_factor_;

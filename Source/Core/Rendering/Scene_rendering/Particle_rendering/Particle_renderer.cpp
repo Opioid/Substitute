@@ -5,6 +5,7 @@
 #include "Rendering/Rendering_context.hpp"
 #include "Rendering/Effect/Effect_provider.hpp"
 #include "Rendering/Constant_buffer_cache.hpp"
+#include "Rendering/Resource_view.hpp"
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Material.hpp"
 #include "Scene/Camera.hpp"
@@ -19,6 +20,7 @@ namespace rendering
 Particle_renderer::Particle_renderer(Rendering_tool& rendering_tool) :
 	Rendering_object(rendering_tool),
 	previous_material_(nullptr),
+	previous_technique_(nullptr),
 	previous_blend_state_(nullptr),
 	num_vertices_(1024)
 {}
@@ -34,7 +36,8 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 		return false;
 	}
 
-	techniques_.particle = effect_->technique("Particle");
+	techniques_.color_map      = effect_->technique("Color_map");
+	techniques_.color_map_soft = effect_->technique("Color_map_soft");
 
 	Vertex_layout_description::Element elements[] =
 	{
@@ -46,11 +49,13 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 
 	static const Vertex_layout_description description(4, elements);
 
-	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(description, techniques_.particle->program()->signature());
+	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(description, techniques_.color_map->program()->signature());
 	if (!input_layout_)
 	{
 		return false;
 	}
+
+	color_texture_offset_ = effect_->sampler_offset("g_color_map");
 
 	auto& device = rendering_tool_.device();
 
@@ -86,6 +91,11 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 	return create_render_states();
 }
 
+void Particle_renderer::set_depth_texture(const Handle<Shader_resource_view>& depth)
+{
+	depth_texture_ = depth;
+}
+
 void Particle_renderer::render(const scene::Particle_scene& scene, float interpolation_delta, const Rendering_context& context)
 {
 	particle_collector_.collect(scene, context.camera().world_position());
@@ -105,13 +115,16 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 
 	device.set_vertex_buffers(2, vertex_buffers_, strides_);
 
+	device.set_shader_resources(1, &depth_texture_);
+
 	effect_->use(device);
 
 	auto& change_per_frame_data = change_per_frame_.data();
 	change_per_frame_data.time.x = interpolation_delta;
 	change_per_frame_.update(device);
 
-	previous_material_ = nullptr;
+	previous_material_    = nullptr;
+	previous_technique_   = nullptr;
 	previous_blend_state_ = nullptr;
 
 	for (auto s : particle_collector_.systems())
@@ -121,8 +134,6 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 		const scene::Material* material = system->material();
 
 		prepare_material(material);
-
-		techniques_.particle->use();
 
 		device.update_buffer(*vertex_buffers_[0], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->previous_vertices(), true);
 		device.update_buffer(*vertex_buffers_[1], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->current_vertices(), true);
@@ -149,15 +160,16 @@ void Particle_renderer::prepare_material(const scene::Material* material)
 		previous_blend_state_ = blend_state;
 	}
 
-	device.set_shader_resources(1, material->textures());
-/*
-	uint32_t technique = static_cast<uint32_t>(material->technique());
+	device.set_shader_resources(1, material->textures(), color_texture_offset_);
+
+	const Effect_technique* technique = material->is_soft_particle() ? techniques_.color_map_soft : techniques_.color_map;
+
 	if (previous_technique_ != technique)
 	{
-		effect_->technique(technique)->use();
+		technique->use();
 		previous_technique_ = technique;
 	}
-*/
+
 	previous_material_ = material;
 }
 
