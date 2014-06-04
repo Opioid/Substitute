@@ -333,9 +333,9 @@ Entity* Scene_loader::load_actor(const rapidjson::Value& entity)
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				const rapidjson::Value& material_value = node_value[i];
+				const rapidjson::Value& material_name = node_value[i];
 
-				Handle<Material> material = resource_manager_.load<Material>(material_value.GetString());
+				const Handle<Material>& material = resource_manager_.load<Material>(material_name.GetString());
 
 				if (material)
 				{
@@ -385,9 +385,9 @@ Entity* Scene_loader::load_particle_effect(const rapidjson::Value& entity)
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				const rapidjson::Value& material_value = node_value[i];
+				const rapidjson::Value& material_name = node_value[i];
 
-				Handle<Material> material = resource_manager_.load<Material>(material_value.GetString());
+				const Handle<Material>& material = resource_manager_.load<Material>(material_name.GetString());
 
 				if (material)
 				{
@@ -553,9 +553,14 @@ void Scene_loader::load_static_prop(const rapidjson::Value& static_prop)
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				const rapidjson::Value& material = node_value[i];
+				const rapidjson::Value& material_name = node_value[i];
 
-				materials.push_back(resource_manager_.load<Material>(material.GetString()));
+				const Handle<Material>& material = resource_manager_.load<Material>(material_name.GetString());
+
+				if (material)
+				{
+					materials.push_back(material);
+				}
 			}
 		}
 		else if (node_name == "position")
@@ -572,7 +577,7 @@ void Scene_loader::load_static_prop(const rapidjson::Value& static_prop)
 		}
 	}
 
-	if (!model || materials.empty() || !materials[0])
+	if (!model || materials.empty())
 	{
 		return;
 	}
@@ -607,14 +612,19 @@ void Scene_loader::load_abt(const rapidjson::Value& abt)
 
 			for (rapidjson::SizeType i = 0; i < node_value.Size(); ++i)
 			{
-				const rapidjson::Value& material = node_value[i];
+				const rapidjson::Value& material_name = node_value[i];
 
-				materials.push_back(resource_manager_.load<Material>(material.GetString()));
+				const Handle<Material>& material = resource_manager_.load<Material>(material_name.GetString());
+
+				if (material)
+				{
+					materials.push_back(material);
+				}
 			}
 		}
 	}
 
-	if (abt_name.empty() || !materials.size() || !materials[0]) 
+	if (abt_name.empty() || !materials.size())
 	{
 		return;
 	}

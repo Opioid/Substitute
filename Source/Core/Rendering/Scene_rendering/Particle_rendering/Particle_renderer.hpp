@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Rendering/Rendering_object.hpp"
+#include "Particle_collector.hpp"
 #include "Rendering/Effect/Constant_buffer_updater.hpp"
 #include "Math/Vector.hpp"
 
@@ -10,6 +11,7 @@ namespace scene
 {
 
 class Particle_scene;
+class Particle_system;
 class Material;
 
 }
@@ -43,6 +45,8 @@ private:
 
 	const scene::Material* previous_material_;
 
+	const Blend_state* previous_blend_state_;
+
 	struct
 	{
 		Effect_technique* particle;
@@ -66,8 +70,10 @@ private:
 
 	Handle<Depth_stencil_state> ds_state_;
 
-	Handle<Blend_state> blend_state_;
+	Handle<Blend_state> one_blend_state_;
 	Handle<Blend_state> alpha_blend_state_;
+
+	Particle_collector particle_collector_;
 };
 
 }

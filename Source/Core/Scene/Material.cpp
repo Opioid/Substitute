@@ -8,11 +8,13 @@ namespace scene
 
 Material::Material(const std::string& name) :
 	Manageable(name), technique_(Technique::Color),
+	shading_(Shading::Default),
 	color_and_emissive_factor_(0.5f, 0.5f, 0.5f, 0.f),
 	metallic_and_roughness_(0.f, 0.7f),
 	height_scale_(0.02f, -0.02f)
 {
-	for (size_t i = 0; i < static_cast<size_t>(Sampler::Enum_count); ++i)
+	uint32_t count = static_cast<uint32_t>(Sampler::Enum_count);
+	for (uint32_t i = 0; i < count; ++i)
 	{
 		textures_[i] = nullptr;
 	}
@@ -26,9 +28,14 @@ Material::Technique Material::technique() const
 	return technique_;
 }
 
-uint32_t Material::get_property_mask() const
+uint32_t Material::property_mask() const
 {
 	return static_cast<uint32_t>(properties_);
+}
+
+Material::Shading Material::shading() const
+{
+	return shading_;
 }
 
 bool Material::has_alpha_transparency() const

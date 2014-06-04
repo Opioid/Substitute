@@ -64,7 +64,7 @@ const float4* Spot_shadow_renderer_EVSM_MS::filter_kernel() const
 
 void Spot_shadow_renderer_EVSM_MS::render_shadow_map(const View_data& view_data)
 {
-	generate_shadow(view_data.shadow_view_projection, surface_collector_.get_surfaces(), viewport_, rendering_tool_.device());
+	generate_shadow(view_data.shadow_view_projection, surface_collector_.surfaces(), viewport_, rendering_tool_.device());
 
 	resolve_shadow_not_linear(resolve_shadow_.framebuffer, depth_->shader_resource_view(), view_data.linear_depth_projection, viewport_, rendering_tool_);
 }

@@ -7,6 +7,7 @@
 #include "Rendering/Constant_buffer_cache.hpp"
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Material.hpp"
+#include "Scene/Camera.hpp"
 #include "Scene/Particles/Particle_scene.hpp"
 #include "Scene/Particles/Particle_effect.hpp"
 #include "Scene/Particles/Particle_system.hpp"
@@ -15,7 +16,11 @@
 namespace rendering
 {
 
-Particle_renderer::Particle_renderer(Rendering_tool& rendering_tool) : Rendering_object(rendering_tool), previous_material_(nullptr), num_vertices_(1024)
+Particle_renderer::Particle_renderer(Rendering_tool& rendering_tool) :
+	Rendering_object(rendering_tool),
+	previous_material_(nullptr),
+	previous_blend_state_(nullptr),
+	num_vertices_(1024)
 {}
 
 bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer_cache& constant_buffer_cache)
@@ -83,6 +88,8 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 
 void Particle_renderer::render(const scene::Particle_scene& scene, float interpolation_delta, const Rendering_context& context)
 {
+	particle_collector_.collect(scene, context.camera().world_position());
+
 	Rendering_device& device = rendering_tool_.device();
 
 	device.set_viewports(1, &context.viewport());
@@ -105,24 +112,22 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 	change_per_frame_.update(device);
 
 	previous_material_ = nullptr;
+	previous_blend_state_ = nullptr;
 
-	for (auto particle_effect : scene.particle_effects())
+	for (auto s : particle_collector_.systems())
 	{
-		for (uint32_t i = 0; i < particle_effect->num_systems(); ++i)
-		{
-			const auto system = particle_effect->system(i);
+		const auto system = s.system;
 
-			const scene::Material* material = system->material();
+		const scene::Material* material = system->material();
 
-			prepare_material(material);
+		prepare_material(material);
 
-			techniques_.particle->use();
+		techniques_.particle->use();
 
-			device.update_buffer(*vertex_buffers_[0], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->previous_vertices(), true);
-			device.update_buffer(*vertex_buffers_[1], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->current_vertices(), true);
+		device.update_buffer(*vertex_buffers_[0], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->previous_vertices(), true);
+		device.update_buffer(*vertex_buffers_[1], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->current_vertices(), true);
 
-			device.draw(system->num_particles());
-		}
+		device.draw(system->num_particles());
 	}
 }
 
@@ -134,6 +139,15 @@ void Particle_renderer::prepare_material(const scene::Material* material)
 	}
 
 	auto& device = rendering_tool_.device();
+
+	const Handle<Blend_state>& blend_state = scene::Material::Shading::Custom == material->shading() ? one_blend_state_ : alpha_blend_state_;
+
+	if (previous_blend_state_ != blend_state)
+	{
+		device.set_blend_state(blend_state);
+
+		previous_blend_state_ = blend_state;
+	}
 
 	device.set_shader_resources(1, material->textures());
 /*
@@ -202,8 +216,8 @@ bool Particle_renderer::create_render_states()
 	}
 
 	Blend_state::Description blend_description;
-	blend_description.independent_blend_enable = true;
-	blend_description.render_targets[0].blend_enable            = false;
+	blend_description.independent_blend_enable = false;
+	blend_description.render_targets[0].blend_enable            = true;
 	blend_description.render_targets[0].source_blend            = Blend_state::Description::Blend::One;
 	blend_description.render_targets[0].destination_blend       = Blend_state::Description::Blend::One;
 	blend_description.render_targets[0].blend_op                = Blend_state::Description::Blend_op::Add;
@@ -212,8 +226,8 @@ bool Particle_renderer::create_render_states()
 	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
 	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::All;
 
-	blend_state_ = cache.blend_state(blend_description);
-	if (!blend_state_)
+	one_blend_state_ = cache.blend_state(blend_description);
+	if (!one_blend_state_)
 	{
 		return false;
 	}

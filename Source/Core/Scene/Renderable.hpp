@@ -22,10 +22,10 @@ public:
 
 	const Material* get_material(uint32_t id) const;
 
-	const Surface& get_unified_surface() const;
+	const Surface& unified_surface() const;
 
-	uint32_t       get_num_surfaces() const;
-	const Surface* get_surfaces() const;
+	uint32_t       num_surfaces() const;
+	const Surface* surfaces() const;
 
 	bool has_mixed_render_states() const;
 

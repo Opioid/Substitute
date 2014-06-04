@@ -49,6 +49,13 @@ public:
 		Two_sided		   = 1 << 2
 	};
 
+	enum class Shading
+	{
+		Default,
+		Transparent,
+		Custom
+	};
+
 	typedef Flags<Property, uint32_t> Material_properties;
 
 	Material(const std::string& name);
@@ -56,7 +63,9 @@ public:
 
 	Technique technique() const;
 
-	uint32_t get_property_mask() const;
+	uint32_t property_mask() const;
+
+	Shading shading() const;
 
 	bool has_alpha_transparency() const;
 	void set_alpha_transparency(bool alpha_transparency);
@@ -94,13 +103,15 @@ private:
 
 	Technique technique_;
 
+	Material_properties properties_;
+
+	Shading shading_;
+
 	rendering::Color4 color_and_emissive_factor_;
 	float2            metallic_and_roughness_;
 	float2            height_scale_;
 
 	Handle<rendering::Shader_resource_view> textures_[static_cast<size_t>(Sampler::Enum_count)];
-
-	Material_properties properties_;
 
 	friend class Material_provider;
 };

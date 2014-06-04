@@ -43,16 +43,24 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 		const std::string node_name = n->name.GetString();
 		const rapidjson::Value& node_value = n->value;
 
-	/*	if (n.key() == "technique")
+		if ("shading" == node_name)
 		{
-			std::string const technique_name = node.asString();
+			const std::string shading = node_value.GetString();
 
-			if (technique_name == "water")
+			if ("Default" == shading)
 			{
-				technique = Material::Technique::Water;
+				material->shading_ = Material::Shading::Default;
 			}
-	*	}
-		else*/ if (node_name == "textures")
+			else if ("Transparent" == shading)
+			{
+				material->shading_ = Material::Shading::Transparent;
+			}
+			else if ("Custom" == shading)
+			{
+				material->shading_ = Material::Shading::Custom;
+			}
+		}
+		else if ("textures" == node_name)
 		{
 			if (!node_value.IsArray())
 			{
@@ -103,27 +111,27 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 				material->textures_[static_cast<size_t>(sampler)] = resource_manager.load<rendering::Shader_resource_view>(file_name, flags.data());
 			}
 		}
-		else if (node_name == "color")
+		else if ("color" == node_name)
 		{
 			material->set_color(read_color(node_value));
 		}
-		else if (node_name == "metallic")
+		else if ("metallic" == node_name)
 		{
 			material->set_metallic(static_cast<float>(node_value.GetDouble()));
 		}
-		else if (node_name == "roughness")
+		else if ("roughness" == node_name)
 		{
 			material->set_roughness(static_cast<float>(node_value.GetDouble()));
 		}
-		else if (node_name == "translucency")
+		else if ("translucency" == node_name)
 		{
 		//	node >> material->m_translucency;
 		}
-		else if (node_name == "emissive_factor")
+		else if ("emissive_factor" == node_name)
 		{
 			material->set_emissive_factor(static_cast<float>(node_value.GetDouble()));
 		}
-		else if (node_name == "two_sided")
+		else if ("two_sided" == node_name)
 		{
 			material->set_two_sided(node_value.GetBool());
 		}
@@ -150,19 +158,19 @@ Material::Sampler Material_provider::read_sampler(const rapidjson::Value& value)
 
 	const std::string u = usage->value.GetString();
 
-	if (u == "color")
+	if ("Color" == u)
 	{
 		return Material::Sampler::Color;
 	}
-	else if (u == "normals") 
+	else if ("Normals" == u)
 	{
 		return Material::Sampler::Normals;
 	}
-	else if (u == "surface0")
+	else if ("Surface0" == u)
 	{
 		return Material::Sampler::Surface0;
 	}
-	else if (u == "surface1")
+	else if ("Surface1" == u)
 	{
 		return Material::Sampler::Surface1;
 	}

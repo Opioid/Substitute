@@ -195,7 +195,7 @@ void Directional_shadow_renderer_EVSM::generate_shadow(const Cascade_data& casca
 	const Index_buffer* previous_ib = nullptr;
 	const float4x4* previous_world_transformation = nullptr;
 
-	const std::vector<Render_surface>& surfaces = surface_collector_.get_surfaces();
+	const std::vector<Render_surface>& surfaces = surface_collector_.surfaces();
 
 	for (const auto& s : surfaces)
 	{

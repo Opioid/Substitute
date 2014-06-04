@@ -27,17 +27,17 @@ const Material* Renderable::get_material(uint32_t id) const
 	return surfaces_[id].material;
 }
 
-const Surface& Renderable::get_unified_surface() const
+const Surface& Renderable::unified_surface() const
 {
 	return unified_surface_;
 }
 
-uint32_t Renderable::get_num_surfaces() const
+uint32_t Renderable::num_surfaces() const
 {
 	return num_surfaces_;
 }
 
-const Surface* Renderable::get_surfaces() const
+const Surface* Renderable::surfaces() const
 {
 	return surfaces_;
 }

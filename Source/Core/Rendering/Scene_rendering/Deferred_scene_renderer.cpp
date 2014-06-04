@@ -213,7 +213,7 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, float interpolat
 			options.is_set(Rendering_context::Options::Render_actors),
 			options.is_set(Rendering_context::Options::Render_static_geometry));
 
-		const std::vector<Render_surface>& surfaces = surface_collector_.get_surfaces();
+		const std::vector<Render_surface>& surfaces = surface_collector_.surfaces();
 
 		for (const auto& s : surfaces)
 		{

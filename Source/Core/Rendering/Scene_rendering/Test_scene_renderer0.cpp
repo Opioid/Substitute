@@ -81,7 +81,7 @@ void Test_scene_renderer0::render(const scene::Scene& scene, const Rendering_con
 			context.options().is_set(Rendering_context::Options::Render_actors),
 			context.options().is_set(Rendering_context::Options::Render_static_geometry));
 
-		const std::vector<Render_surface>& surfaces = surface_collector_.get_surfaces();
+		const std::vector<Render_surface>& surfaces = surface_collector_.surfaces();
 
 		bool first_call = true;
 

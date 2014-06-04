@@ -25,7 +25,6 @@ namespace rendering
 
 struct Render_surface
 {
-
 	Render_surface(const scene::Surface* surface, uint32_t model_id, uint32_t group_id, float distance);
 
 	bool operator<(const Render_surface& surface) const;
@@ -42,7 +41,7 @@ public:
 	void collect        (const scene::Scene& scene, const float3& eye_position, const Frustum& frustum, bool collect_actors = true, bool collect_static_geometry = true);
 	void collect_unified(const scene::Scene& scene, const float3& eye_position, const Frustum& frustum, bool collect_actors = true, bool collect_static_geometry = true);
 
-	const std::vector<Render_surface>& get_surfaces() const;
+	const std::vector<Render_surface>& surfaces() const;
 
 private:
 
@@ -56,7 +55,6 @@ private:
 	void add_unified(const scene::Prop* prop, const float3& eye_position);
 
 	std::vector<Render_surface> surfaces_;
-
 };
 
 }

@@ -126,7 +126,7 @@ Handle<Shader_resource_view>& Directional_shadow_renderer_EVSM_MS::white_buffer(
 
 void Directional_shadow_renderer_EVSM_MS::render_cascade(const Rendering_context& context, const Cascade_data& cascade_data)
 {
-    generate_shadow(cascade_data.shadow_view_projection, surface_collector_.get_surfaces(), viewport_, rendering_tool_.device());
+    generate_shadow(cascade_data.shadow_view_projection, surface_collector_.surfaces(), viewport_, rendering_tool_.device());
 
 	resolve_shadow_linear(resolve_shadow_.framebuffer, depth_->shader_resource_view(), cascade_data.depth_clamp, viewport_, rendering_tool_);
 
