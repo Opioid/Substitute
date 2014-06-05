@@ -25,9 +25,8 @@ bool save_SUI(const std::string& file_name, const Texture_data_adapter& adapter)
 	const Texture_description& description = adapter.description();
 	stream.write((char*)&description, sizeof(Texture_description));
 
-	const uint32_t num_images = adapter.num_images();
-
-	for (uint32_t i = 0; i < num_images; ++i)
+	const uint32_t count = adapter.num_blocks();
+	for (uint32_t i = 0; i < count; ++i)
 	{
 		Texture_description::Data data;
 		adapter.get_level(data, i);

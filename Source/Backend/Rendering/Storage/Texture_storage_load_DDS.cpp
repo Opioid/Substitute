@@ -1,6 +1,8 @@
 #include "Texture_storage_load_DDS.hpp"
 #include "GLI_texture_data_adapter.hpp"
 
+#include <iostream>
+
 namespace rendering
 {
 
@@ -16,6 +18,8 @@ std::shared_ptr<Texture_data_adapter> load_DDS_texture(file::Input_stream& strea
 		error_message = "File not found :(";
 		return nullptr;
 	}
+
+	std::cout << stream.name() << ": " << storage.faces() << std::endl;
 
 	Texture_description description;
 	description.format = GLI_texture_data_adapter::map(storage.format());

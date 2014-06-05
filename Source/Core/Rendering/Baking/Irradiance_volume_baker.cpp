@@ -55,7 +55,7 @@ bool Irradiance_volume_baker::load_cached_data(scene::Scene& scene, Resource_man
 
 			uint64_t cache_last_modified = file_system.file_last_modified(cache_load_name);
 
-			if (scene_last_modified > cache_last_modified)
+		//	if (scene_last_modified > cache_last_modified)
 			{
 				return false;
 			}
