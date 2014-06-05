@@ -61,7 +61,7 @@ bool save_DDS(const std::string& file_name, const Texture_data_adapter& adapter)
 			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 			{
 				Texture_description::Data data;
-				adapter.get_level(data, f, i);
+				adapter.get_image(data, f, i);
 				std::copy(data.buffer, data.buffer + data.num_bytes, face[i].data<unsigned char>());
 			}
 		}

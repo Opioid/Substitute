@@ -302,7 +302,7 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 		for (uint32_t r = 0; r < num_roughness_levels_; ++r)
 		{
 			Texture_description::Data data;
-			probe_texture_adapter_->get_level(data, i, r);
+			probe_texture_adapter_->get_image(data, r, i);
 
 			viewport.size = float2(data.dimensions.xy);
 			device.set_viewports(1, &viewport);

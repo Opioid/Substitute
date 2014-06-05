@@ -38,7 +38,7 @@ bool GLI_texture_data_adapter::get_level(Texture_description::Data& data, uint32
 	return true;
 }
 
-bool GLI_texture_data_adapter::get_level(Texture_description::Data& data, uint32_t layer, uint32_t level) const
+bool GLI_texture_data_adapter::get_image(Texture_description::Data& data, uint32_t level, uint32_t layer) const
 {
 	if (Texture_description::Type::Texture_2D == description_.type)
 	{

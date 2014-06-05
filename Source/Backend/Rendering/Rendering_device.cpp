@@ -387,8 +387,7 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 		{
 			for (uint32_t f = 0; f < description.num_layers; ++f)
 			{
-
-				texture_data.get_level(data, f, i);
+				texture_data.get_image(data, i, f);
 
 				glCompressedTextureSubImage2DEXT(id, GL_TEXTURE_CUBE_MAP_POSITIVE_X + GLenum(f), i, 0, 0, data.dimensions.x, data.dimensions.y, mapping.internal_format, data.num_bytes, static_cast<void*>(data.buffer));
 			}
@@ -402,7 +401,7 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 		{
 			for (uint32_t f = 0; f < description.num_layers; ++f)
 			{
-				texture_data.get_level(data, f, i);
+				texture_data.get_image(data, i, f);
 
 				bool changed_pixel_store = false;
 
