@@ -383,10 +383,11 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 
 	if (Data_format::is_compressed(description.format))
 	{
-		for (uint32_t f = 0; f < description.num_layers; ++f)
+		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
-			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+			for (uint32_t f = 0; f < description.num_layers; ++f)
 			{
+
 				texture_data.get_level(data, f, i);
 
 				glCompressedTextureSubImage2DEXT(id, GL_TEXTURE_CUBE_MAP_POSITIVE_X + GLenum(f), i, 0, 0, data.dimensions.x, data.dimensions.y, mapping.internal_format, data.num_bytes, static_cast<void*>(data.buffer));
@@ -397,9 +398,9 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 	{
 		uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
 
-		for (uint32_t f = 0; f < description.num_layers; ++f)
+		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
-			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+			for (uint32_t f = 0; f < description.num_layers; ++f)
 			{
 				texture_data.get_level(data, f, i);
 
