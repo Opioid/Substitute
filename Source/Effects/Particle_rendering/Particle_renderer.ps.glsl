@@ -14,7 +14,7 @@ float soft_fade(float scene_depth, float particle_depth)
 */
 void main()
 {
-	vec4 color = texture(g_color_map, pixel_in.tex_coord_and_factor.xy);
+	vec4 color = texture(g_color_map, pixel_in.tex_coord_and_alpha.xy);
 
 #ifdef SOFT
 	ivec2 pixel_coord = ivec2(gl_FragCoord.x, gl_FragCoord.y);
@@ -28,5 +28,7 @@ void main()
 	color.a *= fade;
 #endif // SOFT
 
-	pixel_out.color = pixel_in.tex_coord_and_factor.z * color;
+	color.a *= pixel_in.tex_coord_and_alpha.z;
+
+	pixel_out.color = color;
 }

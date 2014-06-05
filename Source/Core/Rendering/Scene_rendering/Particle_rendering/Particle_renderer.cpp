@@ -21,7 +21,7 @@ Particle_renderer::Particle_renderer(Rendering_tool& rendering_tool) :
 	Rendering_object(rendering_tool),
 	previous_material_(nullptr),
 	previous_technique_(nullptr),
-	previous_blend_state_(nullptr),
+	previous_blend_state_(0xFFFFFFFF),
 	num_vertices_(1024)
 {}
 
@@ -107,7 +107,6 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 
 	device.set_rasterizer_state(rasterizer_state_);
 	device.set_depth_stencil_state(ds_state_);
-	device.set_blend_state(alpha_blend_state_);
 
 	device.set_primitive_topology(Primitive_topology::Point_list);
 
@@ -125,7 +124,7 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 
 	previous_material_    = nullptr;
 	previous_technique_   = nullptr;
-	previous_blend_state_ = nullptr;
+	previous_blend_state_ = 0xFFFFFFFF;
 
 	for (auto s : particle_collector_.systems())
 	{
@@ -151,11 +150,11 @@ void Particle_renderer::prepare_material(const scene::Material* material)
 
 	auto& device = rendering_tool_.device();
 
-	const Handle<Blend_state>& blend_state = scene::Material::Shading::Custom == material->shading() ? one_blend_state_ : alpha_blend_state_;
+	uint32_t blend_state = static_cast<uint32_t>(material->blending());
 
 	if (previous_blend_state_ != blend_state)
 	{
-		device.set_blend_state(blend_state);
+		device.set_blend_state(blend_states_[blend_state]);
 
 		previous_blend_state_ = blend_state;
 	}
@@ -229,7 +228,7 @@ bool Particle_renderer::create_render_states()
 
 	Blend_state::Description blend_description;
 	blend_description.independent_blend_enable = false;
-	blend_description.render_targets[0].blend_enable            = true;
+	blend_description.render_targets[0].blend_enable            = false;
 	blend_description.render_targets[0].source_blend            = Blend_state::Description::Blend::One;
 	blend_description.render_targets[0].destination_blend       = Blend_state::Description::Blend::One;
 	blend_description.render_targets[0].blend_op                = Blend_state::Description::Blend_op::Add;
@@ -238,8 +237,8 @@ bool Particle_renderer::create_render_states()
 	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
 	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::All;
 
-	one_blend_state_ = cache.blend_state(blend_description);
-	if (!one_blend_state_)
+	blend_states_[0] = cache.blend_state(blend_description);
+	if (!blend_states_[0])
 	{
 		return false;
 	}
@@ -254,8 +253,24 @@ bool Particle_renderer::create_render_states()
 	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
 	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::All;
 
-	alpha_blend_state_ = cache.blend_state(blend_description);
-	if (!alpha_blend_state_)
+	blend_states_[1] = cache.blend_state(blend_description);
+	if (!blend_states_[1])
+	{
+		return false;
+	}
+
+	blend_description.independent_blend_enable = false;
+	blend_description.render_targets[0].blend_enable            = true;
+	blend_description.render_targets[0].source_blend            = Blend_state::Description::Blend::One;
+	blend_description.render_targets[0].destination_blend       = Blend_state::Description::Blend::One;
+	blend_description.render_targets[0].blend_op                = Blend_state::Description::Blend_op::Add;
+	blend_description.render_targets[0].source_blend_alpha      = Blend_state::Description::Blend::Zero;
+	blend_description.render_targets[0].destination_blend_alpha = Blend_state::Description::Blend::Zero;
+	blend_description.render_targets[0].blend_op_alpha          = Blend_state::Description::Blend_op::Add;
+	blend_description.render_targets[0].color_write_mask        = Blend_state::Description::Color_write_mask::All;
+
+	blend_states_[2] = cache.blend_state(blend_description);
+	if (!blend_states_[2])
 	{
 		return false;
 	}

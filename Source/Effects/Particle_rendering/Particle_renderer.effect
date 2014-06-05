@@ -47,14 +47,14 @@
 			"name": "Geometry_output",
 			"data":
 			[
-				{ "type": "float3", "name": "tex_coord_and_factor" }
+				{ "type": "float3", "name": "tex_coord_and_alpha" }
 			]
 		},
 		{
 			"name": "Geometry_output_soft",
 			"data":
 			[
-				{ "type": "float3", "name": "tex_coord_and_factor" },
+				{ "type": "float3", "name": "tex_coord_and_alpha" },
 				{ "type": "float",  "name": "depth" }
 			]
 		},

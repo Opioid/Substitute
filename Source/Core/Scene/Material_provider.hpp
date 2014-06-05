@@ -21,8 +21,12 @@ public:
 
 private:
 
+	static void fill_particle_properties(Material* material, const rapidjson::Value& particle_value);
+
 	static Material::Sampler read_sampler(const rapidjson::Value& value);
-	static rendering::Color3 read_color(const rapidjson::Value& color_vaye);
+
+	static rendering::Color3 read_color(const rapidjson::Value& color_value);
+
 	static std::string read_file_name(const rapidjson::Value& value);
 };
 

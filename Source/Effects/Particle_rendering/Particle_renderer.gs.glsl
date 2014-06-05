@@ -19,28 +19,28 @@ void main()
 	corners[3] = vec4(postions_vs.xy + rotation * g_offsets[3], postions_vs.z, 1.f);
 
 	gl_Position = g_projection * corners[0];
-	geometry_out.tex_coord_and_factor = vec3(0.f, 0.f, geometry_in[0].properties.z);
+	geometry_out.tex_coord_and_alpha = vec3(0.f, 0.f, geometry_in[0].properties.z);
 #ifdef SOFT
 	geometry_out.depth = postions_vs.z;
 #endif // SOFT
 	EmitVertex();
 
 	gl_Position = g_projection * corners[1];
-	geometry_out.tex_coord_and_factor = vec3(1.f, 0.f, geometry_in[0].properties.z);
+	geometry_out.tex_coord_and_alpha = vec3(1.f, 0.f, geometry_in[0].properties.z);
 #ifdef SOFT
 	geometry_out.depth = postions_vs.z;
 #endif // SOFT
 	EmitVertex();
 
 	gl_Position = g_projection * corners[2];
-	geometry_out.tex_coord_and_factor = vec3(0.f, 1.f, geometry_in[0].properties.z);
+	geometry_out.tex_coord_and_alpha = vec3(0.f, 1.f, geometry_in[0].properties.z);
 #ifdef SOFT
 	geometry_out.depth = postions_vs.z;
 #endif // SOFT
 	EmitVertex();
 
 	gl_Position = g_projection * corners[3];
-	geometry_out.tex_coord_and_factor = vec3(1.f, 1.f, geometry_in[0].properties.z);
+	geometry_out.tex_coord_and_alpha = vec3(1.f, 1.f, geometry_in[0].properties.z);
 #ifdef SOFT
 	geometry_out.depth = postions_vs.z;
 #endif // SOFT

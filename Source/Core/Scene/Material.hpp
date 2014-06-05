@@ -46,8 +46,13 @@ public:
 	{
 		Nothing		 	   = 1 << 0,
 		Alpha_transparency = 1 << 1,
-		Two_sided		   = 1 << 2,
-		Soft_particle      = 1 << 3
+		Two_sided		   = 1 << 2
+	};
+
+	enum class Particle_property
+	{
+		Nothing	= 1 << 0,
+		Soft    = 1 << 1
 	};
 
 	enum class Shading
@@ -57,7 +62,15 @@ public:
 		Custom
 	};
 
+	enum class Blending
+	{
+		None,
+		Alpha,
+		One
+	};
+
 	typedef Flags<Property, uint32_t> Material_properties;
+	typedef Flags<Particle_property, uint32_t> Particle_properties;
 
 	Material(const std::string& name);
 	~Material();
@@ -67,6 +80,7 @@ public:
 	uint32_t property_mask() const;
 
 	Shading shading() const;
+	Blending blending() const;
 
 	bool has_alpha_transparency() const;
 	void set_alpha_transparency(bool alpha_transparency);
@@ -108,8 +122,10 @@ private:
 	Technique technique_;
 
 	Material_properties properties_;
+	Particle_properties particle_properties_;
 
-	Shading shading_;
+	Shading  shading_;
+	Blending blending_;
 
 	rendering::Color4 color_and_emissive_factor_;
 	float2            metallic_and_roughness_;

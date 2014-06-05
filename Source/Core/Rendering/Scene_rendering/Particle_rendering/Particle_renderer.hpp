@@ -49,7 +49,7 @@ private:
 
 	const scene::Material* previous_material_;
 	const Effect_technique* previous_technique_;
-	const Blend_state* previous_blend_state_;
+	uint32_t previous_blend_state_;
 
 	struct
 	{
@@ -76,8 +76,7 @@ private:
 
 	Handle<Depth_stencil_state> ds_state_;
 
-	Handle<Blend_state> one_blend_state_;
-	Handle<Blend_state> alpha_blend_state_;
+	Handle<Blend_state> blend_states_[3];
 
 	Particle_collector particle_collector_;
 

@@ -60,6 +60,23 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 				material->shading_ = Material::Shading::Custom;
 			}
 		}
+		else if ("blending" == node_name)
+		{
+			const std::string blending = node_value.GetString();
+
+			if ("None" == blending)
+			{
+				material->blending_ = Material::Blending::None;
+			}
+			else if ("Alpha" == blending)
+			{
+				material->blending_ = Material::Blending::Alpha;
+			}
+			else if ("One" == blending)
+			{
+				material->blending_ = Material::Blending::One;
+			}
+		}
 		else if ("textures" == node_name)
 		{
 			if (!node_value.IsArray())
@@ -135,9 +152,9 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 		{
 			material->set_two_sided(node_value.GetBool());
 		}
-		else if ("soft_particle" == node_name)
+		if ("particle" == node_name)
 		{
-			material->set_soft_particle(node_value.GetBool());
+			fill_particle_properties(material, node_value);
 		}
 	}
 
@@ -149,6 +166,20 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 Handle<Material> Material_provider::clone(const Handle<Material>& material, Resource_manager& /*resource_manager*/) const
 {
 	return Handle<Material>(new Material(*material));
+}
+
+void Material_provider::fill_particle_properties(Material* material, const rapidjson::Value& particle_value)
+{
+	for (auto n = particle_value.MemberBegin(); n != particle_value.MemberEnd(); ++n)
+	{
+		const std::string node_name = n->name.GetString();
+		const rapidjson::Value& node_value = n->value;
+
+		if ("soft" == node_name)
+		{
+			material->set_soft_particle(node_value.GetBool());
+		}
+	}
 }
 
 Material::Sampler Material_provider::read_sampler(const rapidjson::Value& value)
@@ -201,11 +232,11 @@ rendering::Color3 Material_provider::read_color(const rapidjson::Value& color_va
 			const std::string node_name = n->name.GetString();
 			const rapidjson::Value& node_value = n->value;
 
-			if (node_name == "value")
+			if ("value" == node_name)
 			{
 				color = json::read_float3(node_value);
 			}
-			else if (node_name == "space")
+			else if ("space" == node_name)
 			{
 				color_space = node_value.GetString();
 			}

@@ -7,8 +7,10 @@ namespace scene
 {
 
 Material::Material(const std::string& name) :
-	Manageable(name), technique_(Technique::Color),
+	Manageable(name),
+	technique_(Technique::Color),
 	shading_(Shading::Default),
+	blending_(Blending::None),
 	color_and_emissive_factor_(0.5f, 0.5f, 0.5f, 0.f),
 	metallic_and_roughness_(0.f, 0.7f),
 	height_scale_(0.02f, -0.02f)
@@ -30,12 +32,17 @@ Material::Technique Material::technique() const
 
 uint32_t Material::property_mask() const
 {
-	return static_cast<uint32_t>(properties_);
+	return properties_.data();
 }
 
 Material::Shading Material::shading() const
 {
 	return shading_;
+}
+
+Material::Blending Material::blending() const
+{
+	return blending_;
 }
 
 bool Material::has_alpha_transparency() const
@@ -60,12 +67,12 @@ void Material::set_two_sided(bool two_sided)
 
 bool Material::is_soft_particle() const
 {
-	return properties_.is_set(Property::Soft_particle);
+	return particle_properties_.is_set(Particle_property::Soft);
 }
 
 void Material::set_soft_particle(bool soft_particle)
 {
-	properties_.set(Property::Soft_particle, soft_particle);
+	particle_properties_.set(Particle_property::Soft, soft_particle);
 }
 
 const rendering::Color4& Material::color_and_emissive_factor() const
