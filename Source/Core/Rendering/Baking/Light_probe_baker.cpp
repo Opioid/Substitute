@@ -73,7 +73,6 @@ bool Light_probe_baker::init(Resource_manager& resource_manager, const uint2& di
 	description.type = Texture_description::Type::Texture_cube;
 	description.format = Data_format::R16G16B16A16_Float;
 	description.dimensions.xy = dimensions_;
-	description.num_faces = 6;
 	description.num_mip_levels = Texture_description::calculate_num_mip_levels(description.dimensions) - 1;
 	probe_texture_adapter_ = new Generic_texture_data_adapter(description);
 

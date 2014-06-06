@@ -17,7 +17,7 @@ const Texture_description& Texture_data_adapter::description() const
 
 uint32_t Texture_data_adapter::num_images() const
 {
-	return description_.num_layers * description_.num_faces * description_.num_mip_levels;
+	return description_.num_layers * description_.num_faces() * description_.num_mip_levels;
 }
 
 Generic_texture_data_adapter::Generic_texture_data_adapter(const Texture_description& description) :
@@ -27,7 +27,8 @@ Generic_texture_data_adapter::Generic_texture_data_adapter(const Texture_descrip
 
 	for (uint32_t l = 0; l < description_.num_layers; ++l)
 	{
-		for (uint32_t f = 0; f < description_.num_faces; ++f)
+		uint32_t num_faces = description.num_faces();
+		for (uint32_t f = 0; f < num_faces; ++f)
 		{
 			uint3 dimensions = description.dimensions;
 
@@ -75,7 +76,7 @@ bool Generic_texture_data_adapter::query_image(Texture_description::Data& data, 
 
 uint32_t Generic_texture_data_adapter::image_index(uint32_t layer, uint32_t face, uint32_t level) const
 {
-	return layer * description_.num_faces * description_.num_mip_levels + face * description_.num_mip_levels + level;
+	return layer * description_.num_faces() * description_.num_mip_levels + face * description_.num_mip_levels + level;
 }
 
 }

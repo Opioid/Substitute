@@ -40,7 +40,8 @@ std::shared_ptr<Texture_data_adapter> load_SUI_texture(file::Input_stream& strea
 
 	for (uint32_t l = 0; l < description.num_layers; ++l)
 	{
-		for (uint32_t f = 0; f < description.num_faces; ++f)
+		uint32_t num_faces = description.num_faces();
+		for (uint32_t f = 0; f < num_faces; ++f)
 		{
 			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 			{

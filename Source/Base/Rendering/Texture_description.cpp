@@ -7,16 +7,20 @@ namespace rendering
 
 Texture_description::Texture_description() :
 	type(Type::Texture_2D), format(Data_format::Unknown),
-	dimensions(uint3(1, 1, 1)), num_layers(1), num_faces(1), num_mip_levels(1), num_samples(0),
+	dimensions(uint3(1, 1, 1)), num_layers(1), num_mip_levels(1), num_samples(0),
 	shader_resource(true)
 {}
+
+uint32_t Texture_description::num_faces() const
+{
+	return Type::Texture_cube == type ? 6 : 1;
+}
 
 bool Texture_description::operator==(const Texture_description& other) const
 {
 	return type 	       == other.type
 		&& format 	       == other.format
 		&& dimensions      == other.dimensions
-		&& num_faces       == other.num_faces
 		&& num_layers      == other.num_layers
 		&& num_mip_levels  == other.num_mip_levels
 		&& num_samples     == other.num_samples

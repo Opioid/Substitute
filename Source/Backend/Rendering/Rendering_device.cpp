@@ -368,7 +368,8 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 
 	if (Data_format::is_compressed(description.format))
 	{
-		for (uint32_t f = 0; f < description.num_faces; ++f)
+		uint32_t num_faces = description.num_faces();
+		for (uint32_t f = 0; f < num_faces; ++f)
 		{
 			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 			{
@@ -382,7 +383,8 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 	{
 		uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
 
-		for (uint32_t f = 0; f < description.num_faces; ++f)
+		uint32_t num_faces = description.num_faces();
+		for (uint32_t f = 0; f < num_faces; ++f)
 		{
 			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 			{
@@ -433,7 +435,7 @@ Handle<Shader_resource_view> Rendering_device::create_shader_resource_view(const
 	const Texture_description& description = texture->description_;
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
-	const uint32_t num_layers = Texture_description::Type::Texture_cube == description.type ? description.num_faces : description.num_layers;
+	const uint32_t num_layers = Texture_description::Type::Texture_cube == description.type ? description.num_faces() : description.num_layers;
 
 	glTextureView(id, texture->internal_type_, texture->id_, mapping.internal_format, 0, description.num_mip_levels, 0, num_layers);
 
@@ -465,7 +467,6 @@ Handle<Render_target_view> Rendering_device::create_render_target_view(const Han
 	Texture_description new_description = description;
 	new_description.type = Texture_description::Type::Texture_2D;
 	new_description.num_layers = 1;
-	new_description.num_faces = 1;
 	new_description.num_mip_levels = 1;
 
 	return Handle<Render_target_view>(new Render_target_view(id, new_description, texture));

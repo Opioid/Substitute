@@ -18,13 +18,14 @@ struct Texture_description
 
 	Texture_description();
 
+	uint32_t num_faces() const;
+
 	bool operator==(const Texture_description& other) const;
 
 	Type     	       type;
 	Data_format::Value format;
 	uint3	           dimensions;
 	uint32_t	       num_layers;
-	uint32_t           num_faces;
 	uint32_t	       num_mip_levels;
 	uint32_t		   num_samples;
 	bool               shader_resource;

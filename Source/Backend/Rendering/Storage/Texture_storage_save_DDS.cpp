@@ -55,7 +55,8 @@ bool save_DDS(const std::string& file_name, const Texture_data_adapter& adapter)
 	{
 		gli::textureCube texture(6, description.num_mip_levels, format, gli::textureCube::dimensions_type(description.dimensions.x, description.dimensions.y));
 
-		for (uint32_t f = 0; f < description.num_faces; ++f)
+		uint32_t num_faces = description.num_faces();
+		for (uint32_t f = 0; f < num_faces; ++f)
 		{
 			gli::texture2D face = texture[f];
 

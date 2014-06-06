@@ -27,7 +27,8 @@ bool save_SUI(const std::string& file_name, const Texture_data_adapter& adapter)
 
 	for (uint32_t l = 0; l < description.num_layers; ++l)
 	{
-		for (uint32_t f = 0; f < description.num_faces; ++f)
+		uint32_t num_faces = description.num_faces();
+		for (uint32_t f = 0; f < num_faces; ++f)
 		{
 			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 			{

@@ -57,7 +57,6 @@ std::shared_ptr<Texture_data_adapter> load_DDS_texture(file::Input_stream& strea
 		description.dimensions.z = dimensions.z;
 
 	//	description.num_layers = static_cast<uint32_t>(storage.layers());
-		description.num_faces = static_cast<uint32_t>(storage.faces());
 		description.num_mip_levels = static_cast<uint32_t>(storage.levels());
 	}
 	else
@@ -68,7 +67,6 @@ std::shared_ptr<Texture_data_adapter> load_DDS_texture(file::Input_stream& strea
 		description.dimensions.z = dimensions.z;
 
 //		description.num_layers = static_cast<uint32_t>(storage.layers());
-		description.num_faces = static_cast<uint32_t>(storage.faces());
 		description.num_mip_levels = static_cast<uint32_t>(storage.levels());
 
 	}
