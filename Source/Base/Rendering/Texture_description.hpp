@@ -14,7 +14,6 @@ struct Texture_description
 		Texture_2D,
 		Texture_3D,
 		Texture_cube,
-		Texture_2D_multisample
 	};
 
 	Texture_description();
@@ -25,6 +24,7 @@ struct Texture_description
 	Data_format::Value format;
 	uint3	           dimensions;
 	uint32_t	       num_layers;
+	uint32_t           num_faces;
 	uint32_t	       num_mip_levels;
 	uint32_t		   num_samples;
 	bool               shader_resource;

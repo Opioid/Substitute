@@ -51,6 +51,7 @@ bool Environment_map_renderer::allocate_targets(const uint2& dimensions)
 	texture_description.type = Texture_description::Type::Texture_cube;
 	texture_description.format = Data_format::R16G16B16A16_Float;
 	texture_description.dimensions = uint3(target_dimensions_, 0);
+	texture_description.num_faces = 6;
 
 	color_target_ = device.create_cube_render_target_shader_resource_view(texture_description);
 

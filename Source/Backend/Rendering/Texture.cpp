@@ -2,14 +2,13 @@
 #include <algorithm>
 #include <GL/glew.h>
 
-
 namespace rendering
 {
 
 Texture::Texture(uint32_t id, const Texture_description& description) :
 	OpenGL_object(id),
 	description_(description),
-	internal_type_(gl_type(description.type))
+	internal_type_(gl_type(description))
 {
 	description_.dimensions.z = std::max(description.dimensions.z, uint32_t(1));
 }
@@ -31,20 +30,18 @@ const Texture_description& Texture::description() const
 	return description_;
 }
 
-uint32_t Texture::gl_type(Texture_description::Type type)
+uint32_t Texture::gl_type(const Texture_description& description)
 {
-	switch (type)
+	switch (description.type)
 	{
 	case Texture_description::Type::Texture_1D:
 		return GL_TEXTURE_1D;
 	case Texture_description::Type::Texture_2D:
-		return GL_TEXTURE_2D;
+		return description.num_samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 	case Texture_description::Type::Texture_3D:
 		return GL_TEXTURE_3D;
 	case Texture_description::Type::Texture_cube:
 		return GL_TEXTURE_CUBE_MAP;
-	case Texture_description::Type::Texture_2D_multisample:
-		return GL_TEXTURE_2D_MULTISAMPLE;
 	default:
 		return 0;
 	}
@@ -57,11 +54,6 @@ Texture_3D::Texture_3D(uint32_t id, const Texture_description& description) : Te
 {}
 
 Texture_cube::Texture_cube(uint32_t id, const Texture_description& description) : Texture(id, description)
-{
-	description_.num_layers = 6;
-}
-
-Texture_2D_multisample::Texture_2D_multisample(uint32_t id, const Texture_description& description) : Texture(id, description)
 {}
 
 }

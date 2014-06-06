@@ -15,65 +15,67 @@ const Texture_description& Texture_data_adapter::description() const
 	return description_;
 }
 
-uint32_t Texture_data_adapter::num_blocks() const
+uint32_t Texture_data_adapter::num_images() const
 {
-	return description_.num_mip_levels * description_.num_layers;
+	return description_.num_layers * description_.num_faces * description_.num_mip_levels;
 }
 
-Generic_texture_data_adapter::Generic_texture_data_adapter(const Texture_description& description) : Texture_data_adapter(description), owns_memory_(true)
+Generic_texture_data_adapter::Generic_texture_data_adapter(const Texture_description& description) :
+	Texture_data_adapter(description), owns_memory_(true)
 {
-	blocks_ = new Texture_description::Data[num_blocks()];
+	images_ = new Texture_description::Data[num_images()];
 
-	for (uint32_t i = 0; i < description_.num_layers; ++i)
+	for (uint32_t l = 0; l < description_.num_layers; ++l)
 	{
-		uint3 dimensions = description.dimensions;
-
-		for (uint32_t j = 0; j < description_.num_mip_levels; ++j)
+		for (uint32_t f = 0; f < description_.num_faces; ++f)
 		{
-			auto& block = blocks_[i * description_.num_mip_levels + j];
+			uint3 dimensions = description.dimensions;
 
-			block.dimensions = dimensions;
-			uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
-			block.num_bytes = block.dimensions.x * block.dimensions.y * std::max(block.dimensions.z, uint32_t(1)) * bytes_per_pixel;
-			block.buffer = new unsigned char[block.num_bytes];
+			for (uint32_t i = 0; i < description_.num_mip_levels; ++i)
+			{
+				auto& image = images_[image_index(l, f, i)];
 
-			dimensions.x = std::max(dimensions.x / 2, uint32_t(1));
-			dimensions.y = std::max(dimensions.y / 2, uint32_t(1));
-			dimensions.z = std::max(dimensions.z / 2, uint32_t(1));
+				image.dimensions = dimensions;
+				uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
+				image.num_bytes = image.dimensions.x * image.dimensions.y * std::max(image.dimensions.z, uint32_t(1)) * bytes_per_pixel;
+				image.buffer = new unsigned char[image.num_bytes];
+
+				dimensions.x = std::max(dimensions.x / 2, uint32_t(1));
+				dimensions.y = std::max(dimensions.y / 2, uint32_t(1));
+				dimensions.z = std::max(dimensions.z / 2, uint32_t(1));
+			}
 		}
 	}
 }
 
-Generic_texture_data_adapter::Generic_texture_data_adapter(const Texture_description& description, Texture_description::Data* blocks, bool owns_memory) :
-	Texture_data_adapter(description), blocks_(blocks), owns_memory_(owns_memory)
+Generic_texture_data_adapter::Generic_texture_data_adapter(const Texture_description& description, Texture_description::Data* images) :
+	Texture_data_adapter(description), images_(images), owns_memory_(false)
 {}
 
 Generic_texture_data_adapter::~Generic_texture_data_adapter()
 {
 	if (owns_memory_)
 	{
-		const uint32_t count = num_blocks();
+		const uint32_t count = num_images();
 		for (uint32_t i = 0; i < count; ++i)
 		{
-			delete [] blocks_[i].buffer;
+			delete [] images_[i].buffer;
 		}
 
-		delete [] blocks_;
+		delete [] images_;
 	}
 }
 
-bool Generic_texture_data_adapter::get_level(Texture_description::Data& data, uint32_t level) const
+bool Generic_texture_data_adapter::query_image(Texture_description::Data& data, uint32_t layer, uint32_t face, uint32_t level) const
 {
-	data = blocks_[level];
+	data = images_[image_index(layer, face, level)];
 
 	return true;
 }
 
-bool Generic_texture_data_adapter::get_image(Texture_description::Data& data, uint32_t level, uint32_t layer) const
+uint32_t Generic_texture_data_adapter::image_index(uint32_t layer, uint32_t face, uint32_t level) const
 {
-	data = blocks_[layer * description_.num_mip_levels + level];
-
-	return true;
+	return layer * description_.num_faces * description_.num_mip_levels + face * description_.num_mip_levels + level;
 }
 
 }

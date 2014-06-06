@@ -18,7 +18,7 @@ public:
 
 	const Texture_description& description() const;
 
-	static uint32_t gl_type(Texture_description::Type type);
+	static uint32_t gl_type(const Texture_description& description);
 
 protected:
 
@@ -51,14 +51,6 @@ class Texture_cube : public Texture
 public:
 
 	Texture_cube(uint32_t id, const Texture_description& description);
-};
-
-class Texture_2D_multisample : public Texture
-{
-
-public:
-
-	Texture_2D_multisample(uint32_t id, const Texture_description& description);
 };
 
 }

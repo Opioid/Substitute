@@ -38,13 +38,18 @@ std::shared_ptr<Texture_data_adapter> load_SUI_texture(file::Input_stream& strea
 
 	std::shared_ptr<Texture_data_adapter> adapter = std::make_shared<Generic_texture_data_adapter>(description);
 
-	const uint32_t count = adapter->num_blocks();
-	for (uint32_t i = 0; i < count; ++i)
+	for (uint32_t l = 0; l < description.num_layers; ++l)
 	{
-		Texture_description::Data data;
-		adapter->get_level(data, i);
+		for (uint32_t f = 0; f < description.num_faces; ++f)
+		{
+			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+			{
+				Texture_description::Data data;
+				adapter->query_image(data, l, f, i);
 
-		stream.read((char*)data.buffer, data.num_bytes);
+				stream.read((char*)data.buffer, data.num_bytes);
+			}
+		}
 	}
 
 	return adapter;

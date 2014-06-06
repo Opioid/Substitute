@@ -29,7 +29,7 @@ bool save(const std::string& file_name, const Texture_data_adapter& adapter, fil
 	BYTE* bytes = FreeImage_GetBits(image);
 
 	Texture_description::Data data;
-	adapter.get_level(data, 0);
+	adapter.query_image(data, 0, 0, 0);
 
 	memcpy(bytes, data.buffer, data.num_bytes);
 

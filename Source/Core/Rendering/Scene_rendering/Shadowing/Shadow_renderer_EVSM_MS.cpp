@@ -18,7 +18,7 @@ bool Shadow_renderer_EVSM_MS::init(const uint2& dimensions, Rendering_tool& rend
 	auto& render_target_cache = rendering_tool.render_target_cache();
 
 	Texture_description texture_description;
-	texture_description.type = Texture_description::Type::Texture_2D_multisample;
+	texture_description.type = Texture_description::Type::Texture_2D;
 	texture_description.format = Data_format::D32_Float;
 	texture_description.dimensions.xy = dimensions;
 	texture_description.num_samples = 4;

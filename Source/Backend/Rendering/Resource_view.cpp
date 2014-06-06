@@ -8,7 +8,7 @@ namespace rendering
 Texture_view::Texture_view(uint32_t id, const Texture_description& description, const Handle<Texture>& texture) :
 	OpenGL_object(id),
 	description_(description),
-	internal_type_(Texture::gl_type(description.type)),
+	internal_type_(Texture::gl_type(description)),
 	texture_(texture)
 {}
 
@@ -44,11 +44,11 @@ size_t Shader_resource_view::num_bytes() const
 
 	uint3 dimensions = description_.dimensions;
 
-	uint32_t num_blocks = 0;
+	uint32_t num_images = 0;
 
 	while (num_mip_levels > 0)
 	{
-		num_blocks += (dimensions.x * dimensions.y) / elements_per_block * dimensions.z;
+		num_images += (dimensions.x * dimensions.y) / elements_per_block * dimensions.z;
 
 		dimensions.x = std::max(dimensions.x / 2, uint32_t(1));
 		dimensions.y = std::max(dimensions.y / 2, uint32_t(1));
@@ -57,7 +57,7 @@ size_t Shader_resource_view::num_bytes() const
 		--num_mip_levels;
 	}
 
-	return static_cast<size_t>(description_.num_layers * num_blocks * Data_format::num_bytes_per_block(description_.format));
+	return static_cast<size_t>(description_.num_layers * num_images * Data_format::num_bytes_per_block(description_.format));
 }
 
 Render_target_view::Render_target_view(uint32_t id, const Texture_description& description, const Handle<Texture>& texture) :

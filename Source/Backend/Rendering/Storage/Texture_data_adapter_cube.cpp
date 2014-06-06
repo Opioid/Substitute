@@ -20,14 +20,9 @@ Texture_data_adapter_cube::Texture_data_adapter_cube(const Texture_description& 
 Texture_data_adapter_cube::~Texture_data_adapter_cube()
 {}
 
-bool Texture_data_adapter_cube::get_level(Texture_description::Data& data, uint32_t level) const
+bool Texture_data_adapter_cube::query_image(Texture_description::Data& data, uint32_t /*layer*/, uint32_t face, uint32_t level) const
 {
-	return texture_data_[0]->get_level(data, level);
-}
-
-bool Texture_data_adapter_cube::get_image(Texture_description::Data& data, uint32_t level, uint32_t layer) const
-{
-	return texture_data_[layer]->get_level(data, level);
+	return texture_data_[face]->query_image(data, 0, 0, level);
 }
 
 }

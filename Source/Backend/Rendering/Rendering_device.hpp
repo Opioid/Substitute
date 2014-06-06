@@ -67,7 +67,7 @@ public:
 	Handle<Texture_transfer> create_texture_transfer(const Texture_description& description) const;
 
 	Handle<Shader_resource_view> create_shader_resource_view(const Handle<Texture>& texture, const std::string& name) const;
-	Handle<Render_target_view> create_render_target_view(const Handle<Texture>& texture, uint32_t min_layer = 0, uint32_t num_layers = 1) const;
+	Handle<Render_target_view> create_render_target_view(const Handle<Texture>& texture, uint32_t layer = 0) const;
 	Handle<Render_target_shader_resource_view> create_render_target_shader_resource_view(const Texture_description& description) const;
 	Handle<Cube_render_target_shader_resource_view> create_cube_render_target_shader_resource_view(const Texture_description& description) const;
 	Handle<Depth_stencil_view> create_depth_stencil_view(const Texture_description& description) const;

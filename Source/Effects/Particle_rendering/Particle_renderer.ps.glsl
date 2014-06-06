@@ -1,6 +1,6 @@
 float soft_fade(float scene_depth, float particle_depth)
 {
-	return saturate((scene_depth - particle_depth) * 0.9f);
+	return saturate((scene_depth - particle_depth) * 1.5f);
 }
 
 /*

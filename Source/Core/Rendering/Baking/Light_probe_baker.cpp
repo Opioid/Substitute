@@ -72,8 +72,8 @@ bool Light_probe_baker::init(Resource_manager& resource_manager, const uint2& di
 	Texture_description description;
 	description.type = Texture_description::Type::Texture_cube;
 	description.format = Data_format::R16G16B16A16_Float;
-	description.dimensions = uint3(dimensions_, 1);
-	description.num_layers = 6;
+	description.dimensions.xy = dimensions_;
+	description.num_faces = 6;
 	description.num_mip_levels = Texture_description::calculate_num_mip_levels(description.dimensions) - 1;
 	probe_texture_adapter_ = new Generic_texture_data_adapter(description);
 
@@ -126,7 +126,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 
 		uint64_t cache_last_modified = file_system.file_last_modified(cache_load_name);
 
-	//	if (scene_last_modified > cache_last_modified)
+		if (scene_last_modified > cache_last_modified)
 		{
 			return false;
 		}
@@ -149,7 +149,7 @@ bool Light_probe_baker::load_cached_data(scene::Scene& scene, Resource_manager& 
 
 		uint64_t cache_last_modified = file_system.file_last_modified(cache_load_name);
 
-	//	if (scene_last_modified > cache_last_modified)
+		if (scene_last_modified > cache_last_modified)
 		{
 			return false;
 		}
@@ -183,8 +183,7 @@ bool Light_probe_baker::allocate_targets()
 	Texture_description texture_description;
 	texture_description.type = rendering::Texture_description::Type::Texture_2D;
 	texture_description.format = rendering::Data_format::R16G16B16A16_Float;
-	texture_description.dimensions = uint3(dimensions_, 0);
-	texture_description.num_mip_levels = 1;
+	texture_description.dimensions.xy = dimensions_;
 
 	filter_target_ = device.create_render_target_shader_resource_view(texture_description);
 
@@ -216,7 +215,6 @@ void Light_probe_baker::bake(scene::Scene& scene, Environment_map_renderer& envi
 	Handle<Shader_resource_view>& color_shader_resource = environment_map_renderer.color_target()->shader_resource_view();
 
 	Rendering_context::Rendering_options options;
-
 	options.set(Rendering_context::Options::Render_actors, false);
 	options.set(Rendering_context::Options::Render_particles, false);
 	options.set(Rendering_context::Options::Render_surrounding, true);
@@ -260,8 +258,7 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 	Texture_description texture_description;
 	texture_description.type = rendering::Texture_description::Type::Texture_2D;
 	texture_description.format = rendering::Data_format::R16G16B16A16_Float;
-	texture_description.dimensions = uint3(dimensions_, 1);
-	texture_description.num_mip_levels = 1;
+	texture_description.dimensions.xy = dimensions_;
 
 	Handle<Texture_transfer> texture_transfer = device.create_texture_transfer(texture_description);
 
@@ -287,9 +284,9 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 
 	Viewport viewport;
 
-	for (uint32_t i = 0; i < 6; ++i)
+	for (uint32_t f = 0; f < 6; ++f)
 	{
-		set_look_at_negative_x(view, position, position + s_dirs[i], s_ups[i]);
+		set_look_at_negative_x(view, position, position + s_dirs[f], s_ups[f]);
 		camera.set_view(view);
 		camera.update_frustum();
 
@@ -303,7 +300,7 @@ Handle<Shader_resource_view> Light_probe_baker::filter_environment_map(const Han
 		for (uint32_t r = 0; r < num_roughness_levels_; ++r)
 		{
 			Texture_description::Data data;
-			probe_texture_adapter_->get_image(data, r, i);
+			probe_texture_adapter_->query_image(data, 0, f, r);
 
 			viewport.size = float2(data.dimensions.xy);
 			device.set_viewports(1, &viewport);

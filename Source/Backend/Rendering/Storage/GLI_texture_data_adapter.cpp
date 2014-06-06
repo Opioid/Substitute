@@ -10,60 +10,40 @@ GLI_texture_data_adapter::GLI_texture_data_adapter(const Texture_description& de
 GLI_texture_data_adapter::~GLI_texture_data_adapter()
 {}
 
-bool GLI_texture_data_adapter::get_level(Texture_description::Data& data, uint32_t level) const
+bool GLI_texture_data_adapter::query_image(Texture_description::Data& data, uint32_t layer, uint32_t face, uint32_t level) const
 {
+	gli::image image;
+
 	if (Texture_description::Type::Texture_2D == description_.type)
 	{
-		gli::texture2D texture(storage_);
-		gli::image image = texture[level];
-
-		data.dimensions.x = image.dimensions().x;
-		data.dimensions.y = image.dimensions().y;
-		data.num_bytes = static_cast<uint32_t>(image.size());
-		data.buffer = static_cast<unsigned char*>(image.data());
+/*		if (description_.num_layers > 1)
+		{
+			gli::texture2DArray texture_2D_array(storage_);
+			gli::texture2D texture_2D(texture_2D_array[layer]);
+			image = texture_2D[level];
+		}
+		else*/
+		{
+			gli::texture2D texture_2D(storage_);
+			image = texture_2D[level];
+		}
 	}
 	else if (Texture_description::Type::Texture_cube == description_.type)
 	{
-		gli::textureCube texture(storage_);
-		gli::texture2D face = texture[0];
-		gli::image image = face[level];
-
-		data.dimensions.x = image.dimensions().x;
-		data.dimensions.y = image.dimensions().y;
-		data.dimensions.z = 0;
-		data.num_bytes = static_cast<uint32_t>(image.size());
-		data.buffer = static_cast<unsigned char*>(image.data());
+		gli::textureCube texture_cube(storage_);
+		gli::texture2D texture_2D(texture_cube[face]);
+		image = texture_2D[level];
 	}
 
-	return true;
-}
+	data.dimensions.x = image.dimensions().x;
+	data.dimensions.y = image.dimensions().y;
+	data.dimensions.z = image.dimensions().z;
+	data.num_bytes = static_cast<uint32_t>(image.size());
+	data.buffer = static_cast<unsigned char*>(image.data());
 
-bool GLI_texture_data_adapter::get_image(Texture_description::Data& data, uint32_t level, uint32_t layer) const
-{
-	if (Texture_description::Type::Texture_2D == description_.type)
+	if (description_.num_layers > 1)
 	{
-		gli::texture2D texture(storage_);
-		gli::image image = texture[level];
-
-		data.dimensions.x = image.dimensions().x;
-		data.dimensions.y = image.dimensions().y;
-		data.dimensions.z = 0;
-		data.num_bytes = static_cast<uint32_t>(image.size());
-		data.buffer = static_cast<unsigned char*>(image.data());
-
-		return layer == 0;
-	}
-	else if (Texture_description::Type::Texture_cube == description_.type)
-	{
-		gli::textureCube texture(storage_);
-		gli::texture2D face = texture[layer];
-		gli::image image = face[level];
-
-		data.dimensions.x = image.dimensions().x;
-		data.dimensions.y = image.dimensions().y;
-		data.dimensions.z = 0;
-		data.num_bytes = static_cast<uint32_t>(image.size());
-		data.buffer = static_cast<unsigned char*>(image.data());
+		return false;
 	}
 
 	return true;

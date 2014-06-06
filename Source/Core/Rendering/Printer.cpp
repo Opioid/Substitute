@@ -185,7 +185,8 @@ bool Printer::set_font(const std::string& name, uint32_t width, uint32_t height)
 			return false;
 		}
 
-		font->instances.push_back(m_current_font_instance = new Font::Instance(font, width, height));
+		m_current_font_instance = new Font::Instance(font, width, height);
+		font->instances.push_back(m_current_font_instance);
 
 		const float _1_div_width  = 1.f / float(desc.width);
 		const float _1_div_height = 1.f / float(desc.height);
@@ -219,7 +220,7 @@ bool Printer::set_font(const std::string& name, uint32_t width, uint32_t height)
 		data.buffer = desc.face_data;
 		data.num_bytes = data.dimensions.x * data.dimensions.y * sizeof(unsigned char);
 
-		Generic_texture_data_adapter adapter(description, &data, false);
+		Generic_texture_data_adapter adapter(description, &data);
 
 		Handle<Texture> texture = rendering_tool_.device().create_texture_2D(adapter);
 

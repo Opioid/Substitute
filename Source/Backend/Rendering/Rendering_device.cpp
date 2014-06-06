@@ -178,15 +178,7 @@ Handle<Texture> Rendering_device::create_texture_2D(const Texture_description& d
 {
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
-	bool multisample = description.num_samples > 1;
-
-	if (multisample && Texture_description::Type::Texture_2D_multisample != description.type)
-	{
-#ifdef _DEBUG
-		std::cout << "Rendering_device::create_texture_2D: num_samples and texture type don't match" << std::endl;
-#endif
-		return nullptr;
-	}
+	const bool multisample = description.num_samples > 1;
 
 	uint32_t id;
 
@@ -227,14 +219,7 @@ Handle<Texture> Rendering_device::create_texture_2D(const Texture_description& d
 		}
 	}
 
-	if (multisample)
-	{
-		return Handle<Texture>(new Texture_2D_multisample(id, description));
-	}
-	else
-	{
-		return Handle<Texture>(new Texture_2D(id, description));
-	}
+	return Handle<Texture>(new Texture_2D(id, description));
 }
 
 Handle<Texture> Rendering_device::create_texture_2D(const Texture_data_adapter& texture_data) const
@@ -258,7 +243,7 @@ Handle<Texture> Rendering_device::create_texture_2D(const Texture_data_adapter& 
 	{
 		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
-			texture_data.get_level(data, i);
+			texture_data.query_image(data, 0, 0, i);
 
 			glCompressedTextureSubImage2DEXT(id, GL_TEXTURE_2D, i, 0, 0, data.dimensions.x, data.dimensions.y, mapping.internal_format, data.num_bytes, static_cast<void*>(data.buffer));
 		}
@@ -269,7 +254,7 @@ Handle<Texture> Rendering_device::create_texture_2D(const Texture_data_adapter& 
 
 		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
-			texture_data.get_level(data, i);
+			texture_data.query_image(data, 0, 0, i);
 
 			bool changed_pixel_store = false;
 
@@ -313,7 +298,7 @@ Handle<Texture> Rendering_device::create_texture_3D(const Texture_data_adapter& 
 	{
 		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
-			texture_data.get_level(data, i);
+			texture_data.query_image(data, 0, 0, i);
 
 			glCompressedTextureSubImage3DEXT(id, GL_TEXTURE_3D, i, 0, 0, 0, data.dimensions.x, data.dimensions.y, data.dimensions.z, mapping.internal_format, data.num_bytes, static_cast<void*>(data.buffer));
 		}
@@ -324,7 +309,7 @@ Handle<Texture> Rendering_device::create_texture_3D(const Texture_data_adapter& 
 
 		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 		{
-			texture_data.get_level(data, i);
+			texture_data.query_image(data, 0, 0, i);
 
 			bool changed_pixel_store = false;
 
@@ -383,11 +368,11 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 
 	if (Data_format::is_compressed(description.format))
 	{
-		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+		for (uint32_t f = 0; f < description.num_faces; ++f)
 		{
-			for (uint32_t f = 0; f < description.num_layers; ++f)
+			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 			{
-				texture_data.get_image(data, i, f);
+				texture_data.query_image(data, 0, f, i);
 
 				glCompressedTextureSubImage2DEXT(id, GL_TEXTURE_CUBE_MAP_POSITIVE_X + GLenum(f), i, 0, 0, data.dimensions.x, data.dimensions.y, mapping.internal_format, data.num_bytes, static_cast<void*>(data.buffer));
 			}
@@ -397,11 +382,11 @@ Handle<Texture> Rendering_device::create_texture_cube(const Texture_data_adapter
 	{
 		uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
 
-		for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+		for (uint32_t f = 0; f < description.num_faces; ++f)
 		{
-			for (uint32_t f = 0; f < description.num_layers; ++f)
+			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
 			{
-				texture_data.get_image(data, i, f);
+				texture_data.query_image(data, 0, f, i);
 
 				bool changed_pixel_store = false;
 
@@ -448,12 +433,14 @@ Handle<Shader_resource_view> Rendering_device::create_shader_resource_view(const
 	const Texture_description& description = texture->description_;
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
-	glTextureView(id, texture->internal_type_, texture->id_, mapping.internal_format, 0, description.num_mip_levels, 0, description.num_layers);
+	const uint32_t num_layers = Texture_description::Type::Texture_cube == description.type ? description.num_faces : description.num_layers;
+
+	glTextureView(id, texture->internal_type_, texture->id_, mapping.internal_format, 0, description.num_mip_levels, 0, num_layers);
 
 	return Handle<Shader_resource_view>(new Shader_resource_view(id, description, texture, name));
 }
 
-Handle<Render_target_view> Rendering_device::create_render_target_view(const Handle<Texture>& texture, uint32_t min_layer, uint32_t num_layers) const
+Handle<Render_target_view> Rendering_device::create_render_target_view(const Handle<Texture>& texture, uint32_t layer) const
 {
 	if (!texture)
 	{
@@ -473,12 +460,14 @@ Handle<Render_target_view> Rendering_device::create_render_target_view(const Han
 	bool multisample = description.num_samples > 1;
 
 	GLenum type = multisample ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
-	glTextureView(id, type, texture->id_, mapping.internal_format, 0, 1, min_layer, num_layers);
+	glTextureView(id, type, texture->id_, mapping.internal_format, 0, 1, layer, 1);
 
 	Texture_description new_description = description;
-	new_description.type = multisample ? Texture_description::Type::Texture_2D_multisample : Texture_description::Type::Texture_2D;
-	new_description.num_layers = num_layers;
+	new_description.type = Texture_description::Type::Texture_2D;
+	new_description.num_layers = 1;
+	new_description.num_faces = 1;
 	new_description.num_mip_levels = 1;
+
 	return Handle<Render_target_view>(new Render_target_view(id, new_description, texture));
 }
 
@@ -1017,6 +1006,8 @@ void error_callback(GLenum /*source*/, GLenum type, GLuint /*id*/, GLenum /*seve
 		break;
 	case GL_DEBUG_TYPE_OTHER:
 		std::cout << "other: ";
+		break;
+	default:
 		break;
 	}
 

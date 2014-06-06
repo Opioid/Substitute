@@ -25,13 +25,18 @@ bool save_SUI(const std::string& file_name, const Texture_data_adapter& adapter)
 	const Texture_description& description = adapter.description();
 	stream.write((char*)&description, sizeof(Texture_description));
 
-	const uint32_t count = adapter.num_blocks();
-	for (uint32_t i = 0; i < count; ++i)
+	for (uint32_t l = 0; l < description.num_layers; ++l)
 	{
-		Texture_description::Data data;
-		adapter.get_level(data, i);
+		for (uint32_t f = 0; f < description.num_faces; ++f)
+		{
+			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+			{
+				Texture_description::Data data;
+				adapter.query_image(data, l, f, i);
 
-		stream.write((char*)data.buffer, data.num_bytes);
+				stream.write((char*)data.buffer, data.num_bytes);
+			}
+		}
 	}
 
 	return true;

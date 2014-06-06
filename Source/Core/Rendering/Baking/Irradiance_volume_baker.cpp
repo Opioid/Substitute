@@ -55,7 +55,7 @@ bool Irradiance_volume_baker::load_cached_data(scene::Scene& scene, Resource_man
 
 			uint64_t cache_last_modified = file_system.file_last_modified(cache_load_name);
 
-		//	if (scene_last_modified > cache_last_modified)
+			if (scene_last_modified > cache_last_modified)
 			{
 				return false;
 			}
@@ -189,7 +189,7 @@ void Irradiance_volume_baker::create_volume_textures(scene::Irradiance_volume& v
 	Generic_texture_data_adapter volume_texture_adapter(texture_description);
 
 	Texture_description::Data volume_data;
-	volume_texture_adapter.get_level(volume_data, 0);
+	volume_texture_adapter.query_image(volume_data, 0, 0, 0);
 
 	Color4c* colors = reinterpret_cast<Color4c*>(volume_data.buffer);
 
