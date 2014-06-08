@@ -125,7 +125,14 @@ Handle<Material> Material_provider::load(file::Input_stream& stream, Resource_ma
 					has_emissive = json::read_bool(texture_value, "emissive", false);
 				}
 
-				material->textures_[static_cast<size_t>(sampler)] = resource_manager.load<rendering::Shader_resource_view>(file_name, flags.data());
+				Handle<rendering::Shader_resource_view> texture = resource_manager.load<rendering::Shader_resource_view>(file_name, flags.data());
+
+				if (texture->description().is_array())
+				{
+					material->properties_.set(Material::Property::Array, true);
+				}
+
+				material->textures_[static_cast<size_t>(sampler)] = texture;
 			}
 		}
 		else if ("color" == node_name)

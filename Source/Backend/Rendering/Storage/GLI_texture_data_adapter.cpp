@@ -16,13 +16,13 @@ bool GLI_texture_data_adapter::query_image(Texture_description::Data& data, uint
 
 	if (Texture_description::Type::Texture_2D == description_.type)
 	{
-/*		if (description_.num_layers > 1)
+		if (description_.is_array())
 		{
 			gli::texture2DArray texture_2D_array(storage_);
 			gli::texture2D texture_2D(texture_2D_array[layer]);
 			image = texture_2D[level];
 		}
-		else*/
+		else
 		{
 			gli::texture2D texture_2D(storage_);
 			image = texture_2D[level];
@@ -40,11 +40,6 @@ bool GLI_texture_data_adapter::query_image(Texture_description::Data& data, uint
 	data.dimensions.z = image.dimensions().z;
 	data.num_bytes = static_cast<uint32_t>(image.size());
 	data.buffer = static_cast<unsigned char*>(image.data());
-
-	if (description_.num_layers > 1)
-	{
-		return false;
-	}
 
 	return true;
 }

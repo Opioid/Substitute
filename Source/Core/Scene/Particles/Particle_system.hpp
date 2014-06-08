@@ -17,7 +17,10 @@ public:
 	struct Vertex
 	{
 		float3 position;
-		float4 properties;
+		float  angle;
+		float2 scale;
+		float  index;
+		float  alpha;
 	};
 
 	Particle_system(uint32_t num_particles);
@@ -42,9 +45,13 @@ private:
 
 	virtual void private_on_tick(float time_slice) = 0;
 
+protected:
+
 	const Particle_effect* parent_;
 
 	Handle<Material> material_;
+
+private:
 
 	uint32_t num_particles_;
 

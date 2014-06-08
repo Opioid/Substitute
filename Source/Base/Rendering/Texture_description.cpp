@@ -16,6 +16,11 @@ uint32_t Texture_description::num_faces() const
 	return Type::Texture_cube == type ? 6 : 1;
 }
 
+bool Texture_description::is_array() const
+{
+	return num_layers > 1;
+}
+
 bool Texture_description::operator==(const Texture_description& other) const
 {
 	return type 	       == other.type

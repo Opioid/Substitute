@@ -39,11 +39,14 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 	techniques_.color_map      = effect_->technique("Color_map");
 	techniques_.color_map_soft = effect_->technique("Color_map_soft");
 
+	techniques_.array_color_map      = effect_->technique("Array_color_map");
+	techniques_.array_color_map_soft = effect_->technique("Array_color_map_soft");
+
 	Vertex_layout_description::Element elements[] =
 	{
-		Vertex_layout_description::Element("Previous_position",   0, Data_format::R32G32B32_Float, 0),
+		Vertex_layout_description::Element("Previous_position",   0, Data_format::R32G32B32A32_Float, 0),
 		Vertex_layout_description::Element("Previous_properties", 0, Data_format::R32G32B32A32_Float, 0),
-		Vertex_layout_description::Element("Current_position",    0, Data_format::R32G32B32_Float, 1),
+		Vertex_layout_description::Element("Current_position",    0, Data_format::R32G32B32A32_Float, 1),
 		Vertex_layout_description::Element("Current_properties",  0, Data_format::R32G32B32A32_Float, 1)
 	};
 
@@ -55,7 +58,8 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 		return false;
 	}
 
-	color_texture_offset_ = effect_->sampler_offset("g_color_map");
+	color_texture_offset_		= effect_->sampler_offset("g_color_map");
+	color_texture_array_offset_ = effect_->sampler_offset("g_color_map_array");
 
 	auto& device = rendering_tool_.device();
 
@@ -159,9 +163,20 @@ void Particle_renderer::prepare_material(const scene::Material* material)
 		previous_blend_state_ = blend_state;
 	}
 
-	device.set_shader_resources(1, material->textures(), color_texture_offset_);
+	const Effect_technique* technique;
 
-	const Effect_technique* technique = material->is_soft_particle() ? techniques_.color_map_soft : techniques_.color_map;
+	if (material->is_array())
+	{
+		device.set_shader_resources(1, material->textures(), color_texture_array_offset_);
+
+		technique = material->is_soft_particle() ? techniques_.array_color_map_soft : techniques_.array_color_map;
+	}
+	else
+	{
+		device.set_shader_resources(1, material->textures(), color_texture_offset_);
+
+		technique = material->is_soft_particle() ? techniques_.color_map_soft : techniques_.color_map;
+	}
 
 	if (previous_technique_ != technique)
 	{

@@ -34,9 +34,10 @@ std::string Effect_sampler::Description::glsl_mapping(const std::string& type)
 	if (mapping.empty())
 	{
 		mapping["2D"]             = "sampler2D";
+		mapping["2D_multisample"] = "sampler2DMS";
+		mapping["2D_array"]       = "sampler2DArray";
 		mapping["3D"]             = "sampler3D";
 		mapping["Cube"]           = "samplerCube";
-		mapping["2D_multisample"] = "sampler2DMS";
 	}
 
 	auto t = mapping.find(type);

@@ -20,6 +20,8 @@ struct Texture_description
 
 	uint32_t num_faces() const;
 
+	bool is_array() const;
+
 	bool operator==(const Texture_description& other) const;
 
 	Type     	       type;

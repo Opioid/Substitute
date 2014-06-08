@@ -65,6 +65,11 @@ void Material::set_two_sided(bool two_sided)
 	properties_.set(Property::Two_sided, two_sided);
 }
 
+bool Material::is_array() const
+{
+	return properties_.is_set(Property::Array);
+}
+
 bool Material::is_soft_particle() const
 {
 	return particle_properties_.is_set(Particle_property::Soft);

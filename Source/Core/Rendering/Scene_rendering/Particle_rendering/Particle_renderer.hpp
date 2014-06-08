@@ -54,8 +54,10 @@ private:
 	struct
 	{
 		Effect_technique* color_map;
-
 		Effect_technique* color_map_soft;
+
+		Effect_technique* array_color_map;
+		Effect_technique* array_color_map_soft;
 	}
 	techniques_;
 
@@ -81,6 +83,7 @@ private:
 	Particle_collector particle_collector_;
 
 	uint32_t color_texture_offset_;
+	uint32_t color_texture_array_offset_;
 };
 
 }

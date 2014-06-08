@@ -233,6 +233,12 @@ Handle<Texture> Rendering_device::create_texture_2D(const Texture_data_adapter& 
 	}
 
 	const Texture_description& description = texture_data.description();
+
+	if (description.is_array())
+	{
+		return create_texture_2D_array(id, texture_data);
+	}
+
 	Data_format_mapping mapping = Data_format_mapping::map(description.format);
 
 	glTextureStorage2DEXT(id, GL_TEXTURE_2D, description.num_mip_levels, mapping.internal_format, description.dimensions.x, description.dimensions.y);
@@ -913,6 +919,59 @@ void Rendering_device::draw(uint32_t num_vertices, uint32_t start_vertex) const
 void Rendering_device::draw_indexed(uint32_t num_indices, uint32_t start_index) const
 {
 	glDrawElements(ogl_primitive_topology_, num_indices, current_index_buffer_->format_, reinterpret_cast<void*>(start_index * current_index_buffer_->index_size_));
+}
+
+Handle<Texture> Rendering_device::create_texture_2D_array(uint32_t id, const Texture_data_adapter& texture_data) const
+{
+	const Texture_description& description = texture_data.description();
+	Data_format_mapping mapping = Data_format_mapping::map(description.format);
+
+	glTextureStorage3DEXT(id, GL_TEXTURE_2D_ARRAY, description.num_mip_levels, mapping.internal_format, description.dimensions.x, description.dimensions.y, description.num_layers);
+
+	Texture_description::Data data;
+
+	if (Data_format::is_compressed(description.format))
+	{
+		for (uint32_t l = 0; l < description.num_layers; ++l)
+		{
+			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+			{
+				texture_data.query_image(data, l, 0, i);
+
+				glCompressedTextureSubImage3DEXT(id, GL_TEXTURE_2D_ARRAY, i, 0, 0, l, data.dimensions.x, data.dimensions.y, 1, mapping.internal_format, data.num_bytes, static_cast<void*>(data.buffer));
+			}
+		}
+	}
+	else
+	{
+		uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
+
+		for (uint32_t l = 0; l < description.num_layers; ++l)
+		{
+			for (uint32_t i = 0; i < description.num_mip_levels; ++i)
+			{
+				texture_data.query_image(data, 0, 0, i);
+
+				bool changed_pixel_store = false;
+
+				if (bytes_per_pixel < 4 && data.dimensions.x % 4 != 0)
+				{
+					glPixelStorei(GL_UNPACK_ALIGNMENT, bytes_per_pixel);
+
+					changed_pixel_store = true;
+				}
+
+				glTextureSubImage3DEXT(id, GL_TEXTURE_2D_ARRAY, i, 0, 0, l, data.dimensions.x, data.dimensions.y, 1, mapping.format, mapping.type, static_cast<void*>(data.buffer));
+
+				if (changed_pixel_store)
+				{
+					glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+				}
+			}
+		}
+	}
+
+	return Handle<Texture>(new Texture_2D(id, description));
 }
 
 void Rendering_device::restore_current_input_layout() const

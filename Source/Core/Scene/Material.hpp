@@ -46,7 +46,8 @@ public:
 	{
 		Nothing		 	   = 1 << 0,
 		Alpha_transparency = 1 << 1,
-		Two_sided		   = 1 << 2
+		Two_sided		   = 1 << 2,
+		Array			   = 1 << 3,
 	};
 
 	enum class Particle_property
@@ -87,6 +88,8 @@ public:
 
 	bool is_two_sided() const;
 	void set_two_sided(bool two_sided);
+
+	bool is_array() const;
 
 	bool is_soft_particle() const;
 	void set_soft_particle(bool soft_particle);

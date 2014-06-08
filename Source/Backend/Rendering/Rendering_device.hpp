@@ -120,6 +120,8 @@ public:
 
 private:
 
+	Handle<Texture> create_texture_2D_array(uint32_t id, const Texture_data_adapter& texture_data) const;
+
 	void restore_current_input_layout() const;
 
 	const platform::Client* client_;

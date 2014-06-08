@@ -37,7 +37,14 @@ uint32_t Texture::gl_type(const Texture_description& description)
 	case Texture_description::Type::Texture_1D:
 		return GL_TEXTURE_1D;
 	case Texture_description::Type::Texture_2D:
-		return description.num_samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+		if (description.is_array())
+		{
+			return description.num_samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE_ARRAY : GL_TEXTURE_2D_ARRAY;
+		}
+		else
+		{
+			return description.num_samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+		}
 	case Texture_description::Type::Texture_3D:
 		return GL_TEXTURE_3D;
 	case Texture_description::Type::Texture_cube:

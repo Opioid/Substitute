@@ -20,6 +20,13 @@
 			"type": "2D",
 			"name": "g_color_map",
 			"filtering": "Trilinear"
+		},
+
+
+		{
+			"type": "2D_array",
+			"name": "g_color_map_array",
+			"filtering": "Trilinear"
 		}
 	],
 
@@ -29,9 +36,9 @@
 			"name": "Vertex_input",
 			"data":
 			[
-				{ "type": "float3", "name": "previous_position",   "semantic": "Previous_position" },
+				{ "type": "float4", "name": "previous_position",   "semantic": "Previous_position" },
 				{ "type": "float4", "name": "previous_properties", "semantic": "Previous_properties" },
-				{ "type": "float3", "name": "current_position",    "semantic": "Current_position" },
+				{ "type": "float4", "name": "current_position",    "semantic": "Current_position" },
 				{ "type": "float4", "name": "current_properties",  "semantic": "Current_properties" }
 			]
 		},
@@ -39,7 +46,7 @@
 			"name": "Vertex_output",
 			"data":
 			[
-				{ "type": "float3", "name": "position" },
+				{ "type": "float4", "name": "position" },
 				{ "type": "float4", "name": "properties" }
 			]
 		},
@@ -55,6 +62,21 @@
 			"data":
 			[
 				{ "type": "float3", "name": "tex_coord_and_alpha" },
+				{ "type": "float",  "name": "depth" }
+			]
+		},
+		{
+			"name": "Geometry_output_array",
+			"data":
+			[
+				{ "type": "float4", "name": "tex_coord_and_index_and_alpha" }
+			]
+		},
+		{
+			"name": "Geometry_output_array_soft",
+			"data":
+			[
+				{ "type": "float4", "name": "tex_coord_and_index_and_alpha" },
 				{ "type": "float",  "name": "depth" }
 			]
 		},
@@ -116,6 +138,61 @@
 				{
 					"type": "pixel",
 					"defines": [ "SOFT" ],
+					"sources": [ "Effects/Deferred/Deferred_helper.glsl", 
+								 "Particle_renderer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Array_color_map",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Particle_renderer.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "geometry",
+					"defines": [ "ARRAY" ],
+					"sources": [ "Particle_renderer.gs.glsl" ],
+					"output": "Geometry_output_array",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"defines": [ "ARRAY" ],
+					"sources": [ "Particle_renderer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Array_color_map_soft",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Particle_renderer.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "geometry",
+					"defines": [ "ARRAY", "SOFT" ],
+					"sources": [ "Particle_renderer.gs.glsl" ],
+					"output": "Geometry_output_array_soft",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"defines": [ "ARRAY", "SOFT" ],
 					"sources": [ "Effects/Deferred/Deferred_helper.glsl", 
 								 "Particle_renderer.ps.glsl" ],
 					"output": "Pixel_output"
