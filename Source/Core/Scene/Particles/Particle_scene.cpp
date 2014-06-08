@@ -47,6 +47,14 @@ void Particle_scene::on_tick(float time_slice)
 	}
 }
 
+void Particle_scene::on_update(float frame_time, float speed)
+{
+	for (auto particle_effect : particle_effects_)
+	{
+		particle_effect->on_update(frame_time, speed);
+	}
+}
+
 const Heap_cache<Particle_effect>& Particle_scene::particle_effects() const
 {
 	return particle_effects_;

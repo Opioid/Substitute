@@ -34,16 +34,12 @@ public:
 
 	uint32_t num_particles() const;
 
-	const Vertex* previous_vertices() const;
+	const Vertex* vertices() const;
+	Vertex* vertices();
 
-	const Vertex* current_vertices() const;
-	Vertex* current_vertices();
+	virtual void on_tick(float time_slice);
 
-	void on_tick(float time_slice);
-
-private:
-
-	virtual void private_on_tick(float time_slice) = 0;
+	virtual void on_update(float frame_time, float speed);
 
 protected:
 
@@ -55,8 +51,7 @@ private:
 
 	uint32_t num_particles_;
 
-	Vertex* previous_vertices_;
-	Vertex* current_vertices_;
+	Vertex* vertices_;
 };
 
 }

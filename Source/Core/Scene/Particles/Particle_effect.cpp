@@ -76,4 +76,12 @@ void Particle_effect::on_tick(float time_slice)
 	}
 }
 
+void Particle_effect::on_update(float frame_time, float speed)
+{
+	for (uint32_t i = 0; i < num_systems_; ++i)
+	{
+		systems_[i]->on_update(frame_time, speed);
+	}
+}
+
 }

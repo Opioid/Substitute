@@ -38,7 +38,7 @@ public:
 	void set_name(const std::string& name);
 
 	void on_tick(float time_slice);
-	void update(float delta);
+	void on_update(float interpolation_delta, float frame_time, float speed);
 
 	const Camera& camera() const;
 	Camera& camera();

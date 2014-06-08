@@ -44,13 +44,11 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 
 	Vertex_layout_description::Element elements[] =
 	{
-		Vertex_layout_description::Element("Previous_position",   0, Data_format::R32G32B32A32_Float, 0),
-		Vertex_layout_description::Element("Previous_properties", 0, Data_format::R32G32B32A32_Float, 0),
-		Vertex_layout_description::Element("Current_position",    0, Data_format::R32G32B32A32_Float, 1),
-		Vertex_layout_description::Element("Current_properties",  0, Data_format::R32G32B32A32_Float, 1)
+		Vertex_layout_description::Element("Position",   0, Data_format::R32G32B32A32_Float),
+		Vertex_layout_description::Element("Properties", 0, Data_format::R32G32B32A32_Float)
 	};
 
-	static const Vertex_layout_description description(4, elements);
+	static const Vertex_layout_description description(2, elements);
 
 	input_layout_ = rendering_tool_.vertex_layout_cache().input_layout(description, techniques_.color_map->program()->signature());
 	if (!input_layout_)
@@ -116,7 +114,7 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 
 	device.set_input_layout(input_layout_);
 
-	device.set_vertex_buffers(2, vertex_buffers_, strides_);
+	device.set_vertex_buffers(1, &vertex_buffer_, &stride_);
 
 	device.set_shader_resources(1, &depth_texture_);
 
@@ -138,8 +136,7 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 
 		prepare_material(material);
 
-		device.update_buffer(*vertex_buffers_[0], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->previous_vertices(), true);
-		device.update_buffer(*vertex_buffers_[1], 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->current_vertices(), true);
+		device.update_buffer(*vertex_buffer_, 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->vertices(), true);
 
 		device.draw(system->num_particles());
 	}
@@ -189,19 +186,12 @@ void Particle_renderer::prepare_material(const scene::Material* material)
 
 bool Particle_renderer::create_buffers()
 {
-	strides_[0] = static_cast<uint32_t>(sizeof(scene::Particle_system::Vertex));
-	strides_[1] = strides_[0];
+	stride_ = static_cast<uint32_t>(sizeof(scene::Particle_system::Vertex));
 
-	uint32_t stream_size = strides_[0] * num_vertices_;
+	uint32_t stream_size = stride_ * num_vertices_;
 
-	vertex_buffers_[0] = rendering_tool_.device().create_vertex_buffer(stream_size);
-	if (!vertex_buffers_[0])
-	{
-		return false;
-	}
-
-	vertex_buffers_[1] = rendering_tool_.device().create_vertex_buffer(stream_size);
-	if (!vertex_buffers_[1])
+	vertex_buffer_ = rendering_tool_.device().create_vertex_buffer(stream_size);
+	if (!vertex_buffer_)
 	{
 		return false;
 	}

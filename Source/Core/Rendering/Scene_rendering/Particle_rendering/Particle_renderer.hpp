@@ -63,9 +63,9 @@ private:
 
 	uint32_t num_vertices_;
 
-	Handle<Vertex_buffer> vertex_buffers_[2];
+	Handle<Vertex_buffer> vertex_buffer_;
 
-	uint32_t strides_[2];
+	uint32_t stride_;
 
 	struct Change_per_frame
 	{

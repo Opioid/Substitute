@@ -30,6 +30,8 @@ public:
 
 	void on_tick(float time_slice);
 
+	void on_update(float frame_time, float speed);
+
 private:
 
 	uint32_t num_systems_;

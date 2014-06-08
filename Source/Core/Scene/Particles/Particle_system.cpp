@@ -1,21 +1,18 @@
 #include "Particle_system.hpp"
 #include "Scene/Material.hpp"
 #include "Math/Vector.inl"
-#include <algorithm>
 
 namespace scene
 {
 
 Particle_system::Particle_system(uint32_t num_particles) : parent_(nullptr), num_particles_(num_particles)
 {
-	previous_vertices_ = new Vertex[num_particles_];
-	current_vertices_  = new Vertex[num_particles_];
+	vertices_ = new Vertex[num_particles_];
 }
 
 Particle_system::~Particle_system()
 {
-	delete [] current_vertices_;
-	delete [] previous_vertices_;
+	delete [] vertices_;
 }
 
 const Particle_effect* Particle_system::parent() const
@@ -43,26 +40,20 @@ uint32_t Particle_system::num_particles() const
 	return num_particles_;
 }
 
-const Particle_system::Vertex* Particle_system::previous_vertices() const
+const Particle_system::Vertex* Particle_system::vertices() const
 {
-	return previous_vertices_;
+	return vertices_;
 }
 
-const Particle_system::Vertex* Particle_system::current_vertices() const
+Particle_system::Vertex* Particle_system::vertices()
 {
-	return current_vertices_;
+	return vertices_;
 }
 
-Particle_system::Vertex* Particle_system::current_vertices()
-{
-	return current_vertices_;
-}
+void Particle_system::on_tick(float /*time_slice*/)
+{}
 
-void Particle_system::on_tick(float time_slice)
-{
-	std::copy(current_vertices_, current_vertices_ + num_particles_, previous_vertices_);
-
-	private_on_tick(time_slice);
-}
+void Particle_system::on_update(float /*frame_time*/, float /*speed*/)
+{}
 
 }

@@ -52,7 +52,8 @@ bool Application::run(const std::string& name, const uint2& dimensions, bool win
 		{
 			update();
 
-			accumulator += fps_counter_.frame_time();
+			double frame_time = fps_counter_.frame_time();
+			accumulator += frame_time;
 
 			while (accumulator >= simulation_frequency_)
 			{
@@ -73,7 +74,11 @@ bool Application::run(const std::string& name, const uint2& dimensions, bool win
 
 			float interpolation_delta = static_cast<float>(accumulator / simulation_frequency_);
 
-			scene_.update(interpolation_delta);
+			float frame_time_float = static_cast<float>(frame_time);
+
+			float speed = frame_time_float * (time_slice_ / static_cast<float>(simulation_frequency_));
+
+			scene_.on_update(interpolation_delta, frame_time_float, speed);
 
 			on_render(interpolation_delta);
 
@@ -188,7 +193,7 @@ bool Application::load_scene(const std::string& name)
 
     scene_.compile();
 
-    scene_.update(0.f);
+	scene_.on_update(0.f, 0.f, 0.f);
 
     if (result)
     {

@@ -25,6 +25,8 @@ public:
 
 	void on_tick(float time_slice);
 
+	void on_update(float frame_time, float speed);
+
 	const Heap_cache<Particle_effect>& particle_effects() const;
 
 private:

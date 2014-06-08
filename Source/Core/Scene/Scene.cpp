@@ -165,11 +165,11 @@ void Scene::on_tick(float time_slice)
 	particle_scene_.on_tick(time_slice);
 }
 
-void Scene::update(float delta)
+void Scene::on_update(float interpolation_delta, float frame_time, float speed)
 {
 	for (auto& i : interpolators_)
 	{
-		i.interpolate(delta);
+		i.interpolate(interpolation_delta);
 	}
 
 	for (auto e : entities_)
@@ -181,6 +181,8 @@ void Scene::update(float delta)
 	{
 		a->on_finalized_world_transformation();
 	}
+
+	particle_scene_.on_update(frame_time, speed);
 
 	camera_.update_view();
 }
