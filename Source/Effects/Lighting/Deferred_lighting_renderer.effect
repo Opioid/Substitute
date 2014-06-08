@@ -16,7 +16,7 @@
 			"data":
 			[
 				{ "type": "float4x4", "name": "g_world" },
-				{ "type": "float4x4", "name": "g_light_data" },
+				{ "type": "float4x4", "name": "g_light_transformation" },
 				{ "type": "float4", "name": "g_light_energy_and_range" },
 				{ "type": "float3", "name": "g_light_position_vs" },
 				{ "type": "float3", "name": "g_light_direction_vs" },

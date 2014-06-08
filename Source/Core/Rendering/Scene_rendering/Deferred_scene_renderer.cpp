@@ -256,7 +256,7 @@ void Deferred_scene_renderer::render(const scene::Scene& scene, float interpolat
 
 	if (options.is_set(Rendering_context::Options::Render_particles))
 	{
-		particle_renderer_.render(scene.particle_scene(), interpolation_delta, context);
+		particle_renderer_.render(scene, context);
 	}
 }
 

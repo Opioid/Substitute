@@ -30,7 +30,7 @@ void Irradiance_volume::adjust(const float3& position, const float3& scale)
 
 void Irradiance_volume::clear()
 {
-	for (uint32_t i = 0; i < get_num_textures(); ++i)
+	for (uint32_t i = 0; i < num_textures(); ++i)
 	{
 		textures_[i] = nullptr;
 	}
@@ -61,7 +61,7 @@ const float4x4& Irradiance_volume::world_transformation() const
 	return world_transformation_;
 }
 
-float3 Irradiance_volume::get_probe_position(uint32_t index) const
+float3 Irradiance_volume::probe_position(uint32_t index) const
 {
 	uint3 coordinates;
 
@@ -95,7 +95,7 @@ void Irradiance_volume::set_texture(const Handle<rendering::Shader_resource_view
 	textures_[index] = texture;
 }
 
-uint32_t Irradiance_volume::get_num_textures()
+uint32_t Irradiance_volume::num_textures()
 {
 	return 5;
 }

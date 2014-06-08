@@ -2,9 +2,6 @@
 	"buffers":
 	[
 		{
-			"name": "Change_per_frame"
-		},
-		{
 			"name": "Change_per_camera"
 		}
 	],
@@ -22,11 +19,47 @@
 			"filtering": "Trilinear"
 		},
 
-
 		{
 			"type": "2D_array",
 			"name": "g_color_map_array",
 			"filtering": "Trilinear"
+		},
+
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map0",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map1",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map2",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map3",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map4",
+			"filtering": "Bilinear",
+			"address": "Clamp"
+		},
+		{
+			"type": "3D",
+			"name": "g_irradiance_volume_map5",
+			"filtering": "Bilinear",
+			"address": "Clamp"
 		}
 	],
 
@@ -136,6 +169,34 @@
 				{
 					"type": "pixel",
 					"defines": [ "SOFT" ],
+					"sources": [ "Effects/Deferred/Deferred_helper.glsl", 
+								 "Particle_renderer.ps.glsl" ],
+					"output": "Pixel_output"
+				}
+			]
+		},
+		{
+			"name": "Lighting_color_map_soft",
+			"input": "Vertex_input",
+			"shaders": 
+			[
+				{
+					"type": "vertex",
+					"sources": [ "Particle_renderer.vs.glsl" ],
+					"output": "Vertex_output"
+				},
+				{
+					"type": "geometry",
+					"defines": [ "SOFT", "LIGHTING" ],
+					"sources": [ "Particle_renderer.gs.glsl" ],
+					"output": "Geometry_output_soft",
+					"input_primitive_topology": "Point_list",
+					"output_primitive_topology": "Triangle_strip",
+					"max_vertex_count": 4
+				},
+				{
+					"type": "pixel",
+					"defines": [ "SOFT", "LIGHTING" ],
 					"sources": [ "Effects/Deferred/Deferred_helper.glsl", 
 								 "Particle_renderer.ps.glsl" ],
 					"output": "Pixel_output"

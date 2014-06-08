@@ -12,7 +12,7 @@
 			"name": "Change_per_light",
 			"data":
 			[
-				{ "type": "float4x4", "name": "g_light_data" }
+				{ "type": "float4x4", "name": "g_light_transformation" }
 			]
 		},
 		{

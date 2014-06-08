@@ -1,6 +1,6 @@
 vec3 evaluate_ambient_cube(vec3 position_vs, vec3 normal_ws) 
 { 
-	vec3 transformed_position = ((g_light_data * vec4(position_vs, 1.f)).xyz + 1.f) * 0.5f;
+	vec3 transformed_position = ((g_light_transformation * vec4(position_vs, 1.f)).xyz + 1.f) * 0.5f;
 
 /*
 	vec3 ambient_cube[6] = { texture(g_irradiance_volume_map0, transformed_position).rgb,

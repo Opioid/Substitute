@@ -36,7 +36,7 @@ void main()
 
 	#ifdef SPOT
 
-		vec4 position_ls = g_light_data * vec4(position_vs, 1.f);
+		vec4 position_ls = g_light_transformation * vec4(position_vs, 1.f);
 
 		vec3 light_projection = position_ls.xyz / position_ls.w;
 

@@ -253,10 +253,10 @@ void Deferred_lighting_renderer::render_irradiance_volume(const scene::Irradianc
 
 	auto& change_per_light_data = change_per_light_.data();
 	change_per_light_data.world = world;
-	change_per_light_data.light_data = invert(world * camera.view());
+	change_per_light_data.light_transformation = invert(world * camera.view());
 	change_per_light_.update(device);
 
-	device.set_shader_resources(scene::Irradiance_volume::get_num_textures(), volume.textures(), irradiance_volume_texture_offset_);
+	device.set_shader_resources(scene::Irradiance_volume::num_textures(), volume.textures(), irradiance_volume_texture_offset_);
 
 	techniques_.irradiance_volume->use();
 
@@ -339,7 +339,7 @@ void Deferred_lighting_renderer::render_light_probe(const scene::Light_probe& li
 
 	auto& change_per_light_data = change_per_light_.data();
 	change_per_light_data.world = world;
-	change_per_light_data.light_data = invert(world * camera.view());
+	change_per_light_data.light_transformation = invert(world * camera.view());
 	change_per_light_data.position_vs = light_probe.world_position() * camera.view();
 	change_per_light_.update(device);
 
@@ -497,12 +497,12 @@ void Deferred_lighting_renderer::render_spot_light(const scene::Light& light, co
 
 		device.set_shader_resources(1, &spot_shadow_renderer_.shadow_map(), light_2D_texture_offset1_);
 
-		change_per_light_data.light_data = invert(camera.view()) * spot_shadow_renderer_.view_projection() * scene::Light::texture_transform();
+		change_per_light_data.light_transformation = invert(camera.view()) * spot_shadow_renderer_.view_projection() * scene::Light::texture_transform();
 		change_per_light_data.shadow_linear_depth_projection = spot_shadow_renderer_.linear_depth_projection();
 	}
 	else
 	{
-		change_per_light_data.light_data = invert(camera.view()) * view_projection * scene::Light::texture_transform();
+		change_per_light_data.light_transformation = invert(camera.view()) * view_projection * scene::Light::texture_transform();
 	}
 
 	device.set_framebuffer(context.framebuffer());

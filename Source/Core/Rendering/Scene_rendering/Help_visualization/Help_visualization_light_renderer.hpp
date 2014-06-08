@@ -62,7 +62,7 @@ private:
 
 	struct Change_per_light
 	{
-		float4x4 light_data;
+		float4x4 light_transformation;
 	};
 
 	Constant_buffer_updater<Change_per_light> change_per_light_;

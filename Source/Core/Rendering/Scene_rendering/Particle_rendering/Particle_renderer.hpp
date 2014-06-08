@@ -10,7 +10,7 @@ class Resource_manager;
 namespace scene
 {
 
-class Particle_scene;
+class Scene;
 class Particle_system;
 class Material;
 
@@ -32,7 +32,7 @@ public:
 
 	void set_depth_texture(const Handle<Shader_resource_view>& depth);
 
-	void render(const scene::Particle_scene& scene, float interpolation_delta, const Rendering_context& context);
+	void render(const scene::Scene& scene, const Rendering_context& context);
 
 private:
 
@@ -84,6 +84,7 @@ private:
 
 	uint32_t color_texture_offset_;
 	uint32_t color_texture_array_offset_;
+	uint32_t irradiance_volume_texture_offset_;
 };
 
 }

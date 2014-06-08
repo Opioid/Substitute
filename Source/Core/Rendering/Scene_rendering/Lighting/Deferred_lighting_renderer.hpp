@@ -123,7 +123,7 @@ private:
 	struct Change_per_light
 	{
 		float4x4 world;
-		float4x4 light_data;
+		float4x4 light_transformation;
 		float4   energy_and_range;
 		float3   position_vs; float padding0;
 		float3   direction_vs; float padding1;

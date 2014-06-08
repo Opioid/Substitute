@@ -7,8 +7,8 @@
 #include "Rendering/Constant_buffer_cache.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Resources/Resource_manager.hpp"
+#include "Scene/Scene.hpp"
 #include "Scene/Material.hpp"
-#include "Scene/Camera.hpp"
 #include "Scene/Particles/Particle_scene.hpp"
 #include "Scene/Particles/Particle_effect.hpp"
 #include "Scene/Particles/Particle_system.hpp"
@@ -56,21 +56,11 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 		return false;
 	}
 
-	color_texture_offset_		= effect_->sampler_offset("g_color_map");
-	color_texture_array_offset_ = effect_->sampler_offset("g_color_map_array");
+	color_texture_offset_			  = effect_->sampler_offset("g_color_map");
+	color_texture_array_offset_		  = effect_->sampler_offset("g_color_map_array");
+	irradiance_volume_texture_offset_ = effect_->sampler_offset("g_irradiance_volume_map0");
 
 	auto& device = rendering_tool_.device();
-
-	if (!change_per_frame_.init(effect_, "Change_per_frame"))
-	{
-		return false;
-	}
-
-	Constant_buffer_adapter* change_per_frame_adapter = change_per_frame_.adapter();
-	Handle<Constant_buffer> change_per_frame_buffer = device.create_constant_buffer(change_per_frame_adapter->num_bytes());
-	change_per_frame_adapter->set_constant_buffer(change_per_frame_buffer);
-
-	constant_buffer_cache.set_constant_buffer("Change_per_frame", change_per_frame_buffer);
 
 	Constant_buffer_adapter* change_per_camera_adapter = effect_->constant_buffer_adapter("Change_per_camera");
 	if (!change_per_camera_adapter)
@@ -98,9 +88,9 @@ void Particle_renderer::set_depth_texture(const Handle<Shader_resource_view>& de
 	depth_texture_ = depth;
 }
 
-void Particle_renderer::render(const scene::Particle_scene& scene, float interpolation_delta, const Rendering_context& context)
+void Particle_renderer::render(const scene::Scene& scene, const Rendering_context& context)
 {
-	particle_collector_.collect(scene, context.camera().world_position());
+	particle_collector_.collect(scene.particle_scene(), context.camera().world_position());
 
 	Rendering_device& device = rendering_tool_.device();
 
@@ -119,10 +109,6 @@ void Particle_renderer::render(const scene::Particle_scene& scene, float interpo
 	device.set_shader_resources(1, &depth_texture_);
 
 	effect_->use(device);
-
-	auto& change_per_frame_data = change_per_frame_.data();
-	change_per_frame_data.time.x = interpolation_delta;
-	change_per_frame_.update(device);
 
 	previous_material_    = nullptr;
 	previous_technique_   = nullptr;

@@ -19,8 +19,8 @@ void main()
 
 	vec3 ray_vs = reflect(position_vs, normal);	
 
-	vec3 ray_ls = (g_light_data  * vec4(ray_vs, 0.f)).xyz;
-	vec3 position_ls = (g_light_data * vec4(position_vs, 1.f)).xyz;
+	vec3 ray_ls = (g_light_transformation  * vec4(ray_vs, 0.f)).xyz;
+	vec3 position_ls = (g_light_transformation * vec4(position_vs, 1.f)).xyz;
 	
 	vec3 unitary = vec3(1.f, 1.f, 1.f);
 	vec3 first_plane_intersect  = (unitary - position_ls) / ray_ls;

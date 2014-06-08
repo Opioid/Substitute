@@ -112,15 +112,15 @@ void Help_visualization_light_renderer::render(const scene::Irradiance_volume& v
 
 	const float4x4& world = volume.world_transformation();
 
-	change_per_light_.data().light_data = invert(camera.view()) * invert(world);
+	change_per_light_.data().light_transformation = invert(world * camera.view());
 	change_per_light_.update(device);
 
-	device.set_shader_resources(scene::Irradiance_volume::get_num_textures(), volume.textures());
+	device.set_shader_resources(scene::Irradiance_volume::num_textures(), volume.textures());
 
 	uint32_t num_probes = volume.get_num_probes();
 	for (uint32_t i = 0; i < num_probes; ++i)
 	{
-		render_diffuse_probe(volume.get_probe_position(i), camera.view());
+		render_diffuse_probe(volume.probe_position(i), camera.view());
 	}
 }
 

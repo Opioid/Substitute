@@ -143,7 +143,7 @@ void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene
 			environment_map_renderer.start_batch(options);
 		}
 
-		environment_map_renderer.render(scene, volume.get_probe_position(i), batch_index);
+		environment_map_renderer.render(scene, volume.probe_position(i), batch_index);
 
 		if (++batch_index == batch_size_ || i == volume.get_num_probes() - 1)
 		{
