@@ -53,10 +53,6 @@ bool Deferred_lighting_renderer::init(Resource_manager& resource_manager, Consta
 	}
 
 	Constant_buffer_adapter* change_per_camera_adapter = effect_->constant_buffer_adapter("Change_per_camera");
-	if (!change_per_camera_adapter)
-	{
-		return false;
-	}
 
 	if (!constant_buffer_cache.connect(change_per_camera_adapter, "Change_per_camera"))
 	{
@@ -74,6 +70,12 @@ bool Deferred_lighting_renderer::init(Resource_manager& resource_manager, Consta
 	}
 
 	auto& device = rendering_tool_.device();
+
+	Constant_buffer_adapter* change_per_light_adapter = change_per_light_.adapter();
+	Handle<Constant_buffer> change_per_light_buffer = device.create_constant_buffer(change_per_light_adapter->num_bytes());
+	change_per_light_adapter->set_constant_buffer(change_per_light_buffer);
+
+	constant_buffer_cache.set_constant_buffer("Change_per_light", change_per_light_buffer);
 
 	effect_->create_default_constant_buffers(device);
 

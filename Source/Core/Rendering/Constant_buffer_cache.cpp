@@ -18,6 +18,11 @@ const Handle<Constant_buffer>& Constant_buffer_cache::constant_buffer(const std:
 
 bool Constant_buffer_cache::connect(Constant_buffer_adapter* adapter, const std::string& name) const
 {
+	if (!adapter)
+	{
+		return false;
+	}
+
 	const Handle<Constant_buffer>& buffer = constant_buffer(name);
 
 	if (!buffer)

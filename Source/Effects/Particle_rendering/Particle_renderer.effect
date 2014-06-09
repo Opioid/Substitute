@@ -3,6 +3,9 @@
 	[
 		{
 			"name": "Change_per_camera"
+		},
+		{
+			"name": "Change_per_light"
 		}
 	],
 	
@@ -54,12 +57,6 @@
 			"name": "g_irradiance_volume_map4",
 			"filtering": "Bilinear",
 			"address": "Clamp"
-		},
-		{
-			"type": "3D",
-			"name": "g_irradiance_volume_map5",
-			"filtering": "Bilinear",
-			"address": "Clamp"
 		}
 	],
 
@@ -85,29 +82,44 @@
 			"name": "Geometry_output",
 			"data":
 			[
-				{ "type": "float3", "name": "tex_coord_and_alpha" }
+				{ "type": "float3", "name": "tex_coord" }
 			]
 		},
 		{
 			"name": "Geometry_output_soft",
 			"data":
 			[
-				{ "type": "float3", "name": "tex_coord_and_alpha" },
+				{ "type": "float3", "name": "tex_coord" },
 				{ "type": "float",  "name": "depth" }
 			]
 		},
 		{
+			"name": "Geometry_output_lighting_soft",
+			"data":
+			[
+				{ "type": "float3", "name": "tex_coord" },
+				{ "type": "float",  "name": "depth" },
+				{ "type": "float3", "name": "normal_vs" },
+				{ "type": "float4", "name": "cube_0" },
+				{ "type": "float4", "name": "cube_1" },
+				{ "type": "float4", "name": "cube_2" },
+				{ "type": "float4", "name": "cube_3" },
+				{ "type": "float4", "name": "cube_4" }
+			]
+		},
+
+		{
 			"name": "Geometry_output_array",
 			"data":
 			[
-				{ "type": "float4", "name": "tex_coord_and_index_and_alpha" }
+				{ "type": "float4", "name": "tex_coord" }
 			]
 		},
 		{
 			"name": "Geometry_output_array_soft",
 			"data":
 			[
-				{ "type": "float4", "name": "tex_coord_and_index_and_alpha" },
+				{ "type": "float4", "name": "tex_coord" },
 				{ "type": "float",  "name": "depth" }
 			]
 		},
@@ -189,7 +201,7 @@
 					"type": "geometry",
 					"defines": [ "SOFT", "LIGHTING" ],
 					"sources": [ "Particle_renderer.gs.glsl" ],
-					"output": "Geometry_output_soft",
+					"output": "Geometry_output_lighting_soft",
 					"input_primitive_topology": "Point_list",
 					"output_primitive_topology": "Triangle_strip",
 					"max_vertex_count": 4

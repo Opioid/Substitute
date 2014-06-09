@@ -4,6 +4,7 @@
 #include "Particle_collector.hpp"
 #include "Rendering/Effect/Constant_buffer_updater.hpp"
 #include "Math/Vector.hpp"
+#include "Math/Matrix.hpp"
 
 class Resource_manager;
 
@@ -11,6 +12,7 @@ namespace scene
 {
 
 class Scene;
+class Camera;
 class Particle_system;
 class Material;
 
@@ -35,6 +37,8 @@ public:
 	void render(const scene::Scene& scene, const Rendering_context& context);
 
 private:
+
+	void prepare_lighting(const scene::Scene& scene, const scene::Camera& camera);
 
 	void prepare_material(const scene::Material* material);
 
@@ -61,6 +65,12 @@ private:
 	}
 	techniques_;
 
+	struct
+	{
+		Effect_technique* color_map_soft;
+	}
+	lighting_techniques_;
+
 	uint32_t num_vertices_;
 
 	Handle<Vertex_buffer> vertex_buffer_;
@@ -73,6 +83,18 @@ private:
 	};
 
 	Constant_buffer_updater<Change_per_frame> change_per_frame_;
+
+	struct Change_per_light
+	{
+		float4x4 world;
+		float4x4 light_transformation;
+		float4   energy_and_range;
+		float3   position_vs; float padding0;
+		float3   direction_vs; float padding1;
+		float2   shadow_linear_depth_projection;
+	};
+
+	Constant_buffer_updater<Change_per_light> change_per_light_;
 
 	Handle<Rasterizer_state> rasterizer_state_;
 

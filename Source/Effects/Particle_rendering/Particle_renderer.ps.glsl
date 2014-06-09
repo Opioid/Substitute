@@ -15,14 +15,41 @@ float soft_fade(float scene_depth, float particle_depth)
 void main()
 {
 #ifdef ARRAY
-	vec4 color = texture(g_color_map_array, vec3(pixel_in.tex_coord_and_index_and_alpha.xyz));
+	vec4 color = texture(g_color_map_array, vec3(pixel_in.tex_coord.xyz));
 
-	float alpha = pixel_in.tex_coord_and_index_and_alpha.w;
+	float alpha = pixel_in.tex_coord.w;
 #else
-	vec4 color = texture(g_color_map, pixel_in.tex_coord_and_alpha.xy);
+	vec4 color = texture(g_color_map, pixel_in.tex_coord.xy);
 
-	float alpha = pixel_in.tex_coord_and_alpha.z;
+	float alpha = pixel_in.tex_coord.z;
 #endif // ARRAY	
+
+#ifdef LIGHTING
+
+	vec3 ambient_cube[6] = { pixel_in.cube_0.xyz,
+							 vec3(pixel_in.cube_0.w,  pixel_in.cube_1.xy),
+							 vec3(pixel_in.cube_1.zw, pixel_in.cube_2.x),
+							 pixel_in.cube_2.yzw,
+							 pixel_in.cube_3.xyz,
+							 vec3(pixel_in.cube_3.w, pixel_in.cube_4.xy) };
+
+	vec3 normal_vs = normalize(pixel_in.normal_vs);
+
+	vec3 normal_ws = (vec4(normal_vs, 0.f) * g_view).xyz;						 
+
+	vec3 normal_squared = normal_ws * normal_ws; 
+	
+	int is_negative_x = normal_ws.x < 0.f ? 1 : 0;
+	int is_negative_y = normal_ws.y < 0.f ? 1 : 0;
+	int is_negative_z = normal_ws.z < 0.f ? 1 : 0;
+	
+	vec3 lighting = normal_squared.x * ambient_cube[is_negative_x]     
+		          + normal_squared.y * ambient_cube[is_negative_y + 2] 
+		          + normal_squared.z * ambient_cube[is_negative_z + 4]; 
+
+	color.rgb = lighting * color.rgb;
+
+#endif // LIGHTING
 
 #ifdef SOFT
 	ivec2 pixel_coord = ivec2(gl_FragCoord.x, gl_FragCoord.y);

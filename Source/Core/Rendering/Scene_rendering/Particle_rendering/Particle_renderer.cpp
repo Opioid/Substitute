@@ -9,10 +9,12 @@
 #include "Resources/Resource_manager.hpp"
 #include "Scene/Scene.hpp"
 #include "Scene/Material.hpp"
+#include "Scene/Light/Irradiance_volume.hpp"
 #include "Scene/Particles/Particle_scene.hpp"
 #include "Scene/Particles/Particle_effect.hpp"
 #include "Scene/Particles/Particle_system.hpp"
 #include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 
 namespace rendering
 {
@@ -42,6 +44,8 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 	techniques_.array_color_map      = effect_->technique("Array_color_map");
 	techniques_.array_color_map_soft = effect_->technique("Array_color_map_soft");
 
+	lighting_techniques_.color_map_soft = effect_->technique("Lighting_color_map_soft");
+
 	Vertex_layout_description::Element elements[] =
 	{
 		Vertex_layout_description::Element("Position",   0, Data_format::R32G32B32A32_Float),
@@ -63,12 +67,20 @@ bool Particle_renderer::init(Resource_manager& resource_manager, Constant_buffer
 	auto& device = rendering_tool_.device();
 
 	Constant_buffer_adapter* change_per_camera_adapter = effect_->constant_buffer_adapter("Change_per_camera");
-	if (!change_per_camera_adapter)
+
+	if (!constant_buffer_cache.connect(change_per_camera_adapter, "Change_per_camera"))
 	{
 		return false;
 	}
 
-	if (!constant_buffer_cache.connect(change_per_camera_adapter, "Change_per_camera"))
+	Constant_buffer_adapter* change_per_light_adapter = effect_->constant_buffer_adapter("Change_per_light");
+
+	if (!constant_buffer_cache.connect(change_per_light_adapter, "Change_per_light"))
+	{
+		return false;
+	}
+
+	if (!change_per_light_.init(change_per_light_adapter))
 	{
 		return false;
 	}
@@ -110,6 +122,8 @@ void Particle_renderer::render(const scene::Scene& scene, const Rendering_contex
 
 	effect_->use(device);
 
+	prepare_lighting(scene, context.camera());
+
 	previous_material_    = nullptr;
 	previous_technique_   = nullptr;
 	previous_blend_state_ = 0xFFFFFFFF;
@@ -125,6 +139,24 @@ void Particle_renderer::render(const scene::Scene& scene, const Rendering_contex
 		device.update_buffer(*vertex_buffer_, 0, sizeof(scene::Particle_system::Vertex) * system->num_particles(), system->vertices(), true);
 
 		device.draw(system->num_particles());
+	}
+}
+
+void Particle_renderer::prepare_lighting(const scene::Scene& scene, const scene::Camera& camera)
+{
+	if (!scene.irradiance_volumes().empty())
+	{
+		auto& volume = *scene.irradiance_volumes()[0];
+
+		const float4x4& world = volume.world_transformation();
+
+		Rendering_device& device = rendering_tool_.device();
+
+		auto& change_per_light_data = change_per_light_.data();
+		change_per_light_data.light_transformation = invert(world * camera.view());
+		change_per_light_.update(device);
+
+		device.set_shader_resources(scene::Irradiance_volume::num_textures(), volume.textures(), irradiance_volume_texture_offset_);
 	}
 }
 
@@ -158,7 +190,7 @@ void Particle_renderer::prepare_material(const scene::Material* material)
 	{
 		device.set_shader_resources(1, material->textures(), color_texture_offset_);
 
-		technique = material->is_soft_particle() ? techniques_.color_map_soft : techniques_.color_map;
+		technique = material->is_soft_particle() ? lighting_techniques_.color_map_soft : techniques_.color_map;
 	}
 
 	if (previous_technique_ != technique)
