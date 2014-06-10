@@ -1,7 +1,7 @@
 #include "Irradiance_volume.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Math/Matrix.inl"
-#include "Math/Quaternion.hpp"
+#include "Math/Quaternion.inl"
 
 namespace scene
 {

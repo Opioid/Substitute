@@ -1,5 +1,6 @@
 #include "Static_prop.hpp"
 #include "Model.hpp"
+#include "Math/Matrix.inl"
 
 namespace scene
 {

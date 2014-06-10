@@ -2,6 +2,7 @@
 #include "Model/Model.hpp"
 #include "Rendering/Vertex_format.hpp"
 #include "Math/Normalized_vector.hpp"
+#include "Math/Vector.inl"
 
 bool Vertex_writer_position3x32_tex_coord2x32_normal1010102::write_vertices(std::ostream &stream, const Model& model) const
 {

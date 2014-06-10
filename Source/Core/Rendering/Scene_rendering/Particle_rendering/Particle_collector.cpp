@@ -3,6 +3,7 @@
 #include "Scene/Particles/Particle_scene.hpp"
 #include "Scene/Particles/Particle_effect.hpp"
 #include "Scene/Particles/Particle_system.hpp"
+#include "Math/Vector.inl"
 
 namespace rendering
 {

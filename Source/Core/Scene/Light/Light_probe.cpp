@@ -1,6 +1,7 @@
 #include "Light_probe.hpp"
 #include "Rendering/Resource_view.hpp"
 #include "Math/Matrix.inl"
+#include "Math/Quaternion.inl"
 
 namespace scene
 {

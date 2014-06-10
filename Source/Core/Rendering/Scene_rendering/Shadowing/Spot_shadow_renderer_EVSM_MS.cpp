@@ -4,6 +4,7 @@
 #include "Rendering/Input_layout.hpp"
 #include "Rendering/Scene_rendering/Surface_collector.hpp"
 #include "Math/Vector.inl"
+#include "Math/Matrix.inl"
 
 namespace rendering
 {
