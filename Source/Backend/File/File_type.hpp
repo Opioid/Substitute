@@ -11,7 +11,8 @@ enum class File_type
 	DDS,
 	PNG,
 	SUI,
-	SUM
+	SUM,
+	WEBP
 };
 
 File_type query_file_type(std::istream& stream);

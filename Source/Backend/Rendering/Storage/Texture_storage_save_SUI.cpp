@@ -1,4 +1,4 @@
-#include "Texture_storage_save.hpp"
+#include "Texture_storage_save_SUI.hpp"
 #include "Rendering/Texture_data_adapter.hpp"
 #include <fstream>
 
@@ -23,7 +23,7 @@ bool save_SUI(const std::string& file_name, const Texture_data_adapter& adapter)
 
 	// Description
 	const Texture_description& description = adapter.description();
-	stream.write((char*)&description, sizeof(Texture_description));
+	stream.write(reinterpret_cast<const char*>(&description), sizeof(Texture_description));
 
 	for (uint32_t l = 0; l < description.num_layers; ++l)
 	{
@@ -35,7 +35,7 @@ bool save_SUI(const std::string& file_name, const Texture_data_adapter& adapter)
 				Texture_description::Data data;
 				adapter.query_image(data, l, f, i);
 
-				stream.write((char*)data.buffer, data.num_bytes);
+				stream.write(reinterpret_cast<char*>(data.buffer), data.num_bytes);
 			}
 		}
 	}

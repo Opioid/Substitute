@@ -17,10 +17,6 @@
 #include "Scene/Light/Irradiance_volume.hpp"
 #include "Math/Vector.inl"
 #include "Logging/Logging.hpp"
-#include "String/String.hpp"
-#include "File/File.hpp"
-
-#include <iostream>
 
 namespace rendering
 {
@@ -132,8 +128,6 @@ void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene
 	data.dimensions = texture_description.dimensions;
 	data.num_bytes = texture_description.dimensions.x * texture_description.dimensions.y * Data_format::num_bytes_per_block(texture_description.format);
 
-//	rendering::Generic_texture_data_adapter adapter(texture_description, &data);
-
 	uint32_t batch_index = 0;
 	uint32_t last_offset = 0;
 	for (uint32_t i = 0; i < volume.get_num_probes(); ++i)
@@ -153,13 +147,9 @@ void Irradiance_volume_baker::bake(scene::Irradiance_volume& volume, const scene
 
 			framebuffer->set_render_targets(render_target_view);
 			device.set_framebuffer(framebuffer);
-		//	glReadPixels(0, 0, dimensions.x, dimensions.y, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
 
-			device.copy(texture_transfer, render_target_view/*color_target->Render_target_view()*/);
+			device.copy(texture_transfer, render_target_view);
 			device.map(&data.buffer, texture_transfer);
-
-		//	glGetTextureImageEXT(color_target->Render_target_view(1)->id(), GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.buffer);
-		//	rendering::texture_storage::save("texture" + std::to_string(batch_count) + ".png", adapter, file::File_type::PNG);
 
 			for (uint32_t j = 0; j < batch_index; ++j)
 			{

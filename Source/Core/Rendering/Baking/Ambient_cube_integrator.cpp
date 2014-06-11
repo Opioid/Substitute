@@ -216,12 +216,12 @@ Color3 Ambient_cube_integrator::integrate(uint32_t hemisphere, uint32_t batch_in
 			accumulator += weight * Color3(float(sample.x), float(sample.y), float(sample.z));
 		}
 	}
-/*
-	if (x_positive == hemisphere)
-	{
-		save(uint2(face_dimensions_.x * 6, face_dimensions_.y * 8), 0, data);
-	}
-*/
+
+//	if (x_positive == hemisphere && 0 == batch_index)
+//	{
+//		save(uint2(face_dimensions_.x * 6, face_dimensions_.y * 8), 0, data);
+//	}
+
 	uint32_t face_offset_w = 0;
 
 	if (x_positive == hemisphere)
@@ -749,12 +749,12 @@ void Ambient_cube_integrator::save(const uint2& dimensions, uint32_t offset, con
 	Texture_description texture_description;
 	texture_description.type = rendering::Texture_description::Type::Texture_2D;
 	texture_description.format = rendering::Data_format::R8G8B8A8_UNorm_sRGB;
-	texture_description.dimensions = uint3(dimensions, 0);
-	texture_description.num_mip_levels = 1;
+	texture_description.dimensions.xy = dimensions;
 
 	rendering::Texture_description::Data data;
 	data.dimensions = texture_description.dimensions;
 	data.num_bytes = texture_description.dimensions.x * texture_description.dimensions.y * Data_format::num_bytes_per_block(texture_description.format);
+	data.row_pitch = texture_description.dimensions.x * Data_format::num_bytes_per_block(texture_description.format);
 	data.buffer = new unsigned char[data.num_bytes];
 
 	Color4c* buffer = reinterpret_cast<Color4c*>(data.buffer);
@@ -779,7 +779,7 @@ void Ambient_cube_integrator::save(const uint2& dimensions, uint32_t offset, con
 
 	rendering::Generic_texture_data_adapter adapter(texture_description, &data);
 
-	rendering::texture_storage::save("test.png", adapter, file::File_type::PNG);
+	rendering::texture_storage::save("test.webp", adapter, file::File_type::WEBP);
 
 	delete [] data.buffer;
 }

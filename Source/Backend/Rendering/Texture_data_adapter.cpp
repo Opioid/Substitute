@@ -38,7 +38,8 @@ Generic_texture_data_adapter::Generic_texture_data_adapter(const Texture_descrip
 
 				image.dimensions = dimensions;
 				uint32_t bytes_per_pixel = Data_format::num_bytes_per_block(description.format);
-				image.num_bytes = image.dimensions.x * image.dimensions.y * std::max(image.dimensions.z, uint32_t(1)) * bytes_per_pixel;
+				image.num_bytes = image.dimensions.x * image.dimensions.y * image.dimensions.z * bytes_per_pixel;
+				image.row_pitch = image.dimensions.x * bytes_per_pixel;
 				image.buffer = new unsigned char[image.num_bytes];
 
 				dimensions.x = std::max(dimensions.x / 2, uint32_t(1));

@@ -39,8 +39,6 @@ DEPENDPATH += $$PWD/../Base
 
 win32:INCLUDEPATH += $$PWD/../../../../Libraries/glew-1.10.0/include
 
-win32:INCLUDEPATH += $$PWD/../../../../Libraries/FreeImage-3.16.0/Source
-
 win32:INCLUDEPATH += $$PWD/../../../../Libraries/physfs-2.0.3
 
 win32:INCLUDEPATH += $$PWD/../../../../Libraries/SDL2-2.0.3/include
@@ -59,3 +57,6 @@ win32:INCLUDEPATH += $$PWD/../../../../Libraries/angelscript_2.28.2/angelscript/
 
 INCLUDEPATH += $$PWD/../../../../Libraries/rapidjson/include
 DEPENDPATH += $$PWD/../../../../Libraries/rapidjson/include
+
+INCLUDEPATH += $$PWD/../../../../Libraries/libwebp-0.4.0/include
+DEPENDPATH += $$PWD/../../../../Libraries/libwebp-0.4.0/include

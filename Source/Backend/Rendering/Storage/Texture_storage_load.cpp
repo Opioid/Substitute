@@ -4,7 +4,6 @@
 #include "Rendering/Texture_data_adapter.hpp"
 #include "Texture_data_adapter_cube.hpp"
 #include "File/File_type.hpp"
-#include "FreeImage_helper.hpp"
 #include "String/String.hpp"
 #include "Parsing/Json.hpp"
 
@@ -23,88 +22,8 @@ std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture(file::Input_
 	{
 		return texture_storage::load_SUI_texture(stream, error_message);
 	}
-/*
-	FreeImageIO io;
-	io.read_proc = fi::read; // pointer to function that calls fread
-	io.write_proc = nullptr; // not needed for loading
-	io.seek_proc = fi::seek; // pointer to function that calls fseek
-	io.tell_proc = fi::tell; // pointer to function that calls ftell
 
-	fi_handle fi_stream = reinterpret_cast<fi_handle>(&stream);
-
-	FREE_IMAGE_FORMAT format = FreeImage_GetFileTypeFromHandle(&io, fi_stream);
-
-	if (!FreeImage_FIFSupportsReading(format))
-	{
-		return nullptr;
-	}
-
-	stream.seekg(0, std::ios::beg);
-
-	FIBITMAP* image = FreeImage_LoadFromHandle(format, &io, fi_stream);
-
-	if (!image)
-	{
-		FreeImage_SetOutputMessage(fi::error_handler);
-		error_message = fi::error_message();
-		return nullptr;
-	}
-
-	Texture_description description;
-	description.dimensions.x = FreeImage_GetWidth(image);
-	description.dimensions.y = FreeImage_GetHeight(image);
-	description.dimensions.z = 0;
-	description.num_mip_levels = 1;
-
-	uint32_t bpp = FreeImage_GetBPP(image);
-
-	FIBITMAP* converted_image;
-
-	if (bpp != 32)
-	{
-		converted_image = FreeImage_ConvertTo32Bits(image);
-		FreeImage_Unload(image);
-	}
-	else
-	{
-		converted_image = image;
-	}
-
-	uint32_t new_pitch = FreeImage_GetPitch(converted_image);
-
-	Texture_description::Data* data = new Texture_description::Data[1];
-	data[0].dimensions = description.dimensions;
-	data[0].buffer = new unsigned char[description.dimensions.x * description.dimensions.y * 4];
-
-	FreeImage_ConvertToRawBits(data[0].buffer, converted_image, new_pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, true);
-	FreeImage_Unload(converted_image);
-
-	for (uint32_t y = 0; y < description.dimensions.y; ++y)
-	{
-		for (uint32_t x = 0; x < description.dimensions.x * 4; x += 4)
-		{
-			unsigned char* e0 = &data[0].buffer[y * description.dimensions.x * 4 + x + 0];
-			unsigned char* e2 = &data[0].buffer[y * description.dimensions.x * 4 + x + 2];
-
-			unsigned char r = *e0;
-			unsigned char b = *e2;
-
-			*e0 = b;
-			*e2 = r;
-		}
-	}
-
-	if (treat_as_linear)
-	{
-		description.format = Data_format::Value::R8G8B8A8_UNorm;
-	}
-	else
-	{
-		description.format = Data_format::Value::R8G8B8A8_UNorm_sRGB;
-	}
-
-	return std::make_shared<Generic_texture_data_adapter>(description, data, true);
-	*/
+	return nullptr;
 }
 
 std::shared_ptr<Texture_data_adapter> Texture_storage::load_texture_cube(file::Input_stream& stream, bool treat_as_linear, std::string& error_message)

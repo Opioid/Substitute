@@ -157,7 +157,7 @@ bool Deferred_scene_renderer::on_resize_targets(const uint2& size, const Handle<
 	return true;
 }
 
-void Deferred_scene_renderer::render(const scene::Scene& scene, float interpolation_delta, const Rendering_context& context)
+void Deferred_scene_renderer::render(const scene::Scene& scene, float /*interpolation_delta*/, const Rendering_context& context)
 {
 	auto& device = rendering_tool_.device();
 
