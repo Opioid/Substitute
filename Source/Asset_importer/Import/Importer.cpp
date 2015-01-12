@@ -15,15 +15,16 @@ Model* Importer::read(const std::string& name)
 	aiScene const* scene = importer_.ReadFile(name,
 		  aiProcess_ConvertToLeftHanded
 		| aiProcess_RemoveComponent
-		| aiProcess_Triangulate 
+		| aiProcess_Triangulate
 		| aiProcess_RemoveRedundantMaterials
-		| aiProcess_JoinIdenticalVertices 
-	//	| aiProcess_FixInfacingNormals
+		| aiProcess_JoinIdenticalVertices
+		| aiProcess_FixInfacingNormals
 	//	| aiProcess_GenSmoothNormals
-	//	| aiProcess_CalcTangentSpace
-		| aiProcess_ImproveCacheLocality 
-		| aiProcess_OptimizeMeshes 
-		| aiProcess_OptimizeGraph);
+		| aiProcess_CalcTangentSpace
+		| aiProcess_ImproveCacheLocality
+		| aiProcess_OptimizeMeshes
+		| aiProcess_OptimizeGraph
+	);
 
 	if (!scene)
 	{

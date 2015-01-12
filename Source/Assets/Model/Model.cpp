@@ -93,10 +93,10 @@ void Model::set_origin_center_bottom()
 {
 	AABB aabb = calculate_aabb();
 
+	float3 offset = float3(-aabb.position.x, aabb.halfsize.y - aabb.position.y, -aabb.position.z);
+
 	for (size_t i = 0; i < positions.size(); ++i)
 	{
-		positions[i].y -= aabb.halfsize.y;
-	//	positions[i].x -= aabb.position.x;
-	//	positions[i].z -= aabb.position.z;
+		positions[i] += offset;
 	}
 }
