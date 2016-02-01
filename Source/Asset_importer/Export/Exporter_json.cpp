@@ -19,7 +19,7 @@ bool Exporter_json::write(const std::string& name, const Model& model) const
 	stream << "\t{" << std::endl;
 
 	//Groups
-	stream << "\t\t\"groups\":" << std::endl;
+	stream << "\t\t\"parts\":" << std::endl;
 	stream << "\t\t[" << std::endl;
 
 	for (size_t i = 0; i < model.groups.size(); ++i)
@@ -53,17 +53,20 @@ bool Exporter_json::write(const std::string& name, const Model& model) const
 	//Primitive Topology
 	stream << "\t\t\"primitive_topology\": \"triangle_list\"," << std::endl << std::endl;
 
+	stream << "\t\t\"vertices\": " << std::endl;
+	stream << "\t\t{" << std::endl;
+
 	//Positions
 	if (model.has_positions())
 	{
-		stream << "\t\t\"positions\": " << std::endl;
-		stream << "\t\t[" << std::endl;
+		stream << "\t\t\t\"positions\": " << std::endl;
+		stream << "\t\t\t[" << std::endl;
 
-		stream << "\t\t\t";
+		stream << "\t\t\t\t";
 
 		for (size_t i = 0; i < model.positions.size(); ++i)
 		{
-			stream << "[" << model.positions[i].x << "," << model.positions[i].y << "," << model.positions[i].z << "]";
+			stream << model.positions[i].x << "," << model.positions[i].y << "," << model.positions[i].z;
 
 			if (i < model.positions.size() - 1)
 			{
@@ -72,26 +75,25 @@ bool Exporter_json::write(const std::string& name, const Model& model) const
 
 			if ((i + 1) % 8 == 0)
 			{
-				stream << std::endl << "\t\t\t";
+				stream << std::endl << "\t\t\t\t";
 			}
 		}
 
 		stream << std::endl;
-
-		stream << "\t\t]," << std::endl << std::endl;
+		stream << "\t\t\t]," << std::endl << std::endl;
 	}
 
 	//Texture_2D Coordinates
 	if (model.has_texture_coordinates())
 	{
-		stream << "\t\t\"texture_coordinates_0\": " << std::endl;
-		stream << "\t\t[" << std::endl;
+		stream << "\t\t\t\"texture_coordinates_0\": " << std::endl;
+		stream << "\t\t\t[" << std::endl;
 
-		stream << "\t\t\t";
+		stream << "\t\t\t\t";
 
 		for (size_t i = 0; i < model.texture_coordinates.size(); ++i)
 		{
-			stream << "[" << model.texture_coordinates[i].x << "," << model.texture_coordinates[i].y << "]";
+			stream << model.texture_coordinates[i].x << "," << model.texture_coordinates[i].y;
 
 			if (i < model.texture_coordinates.size() - 1)
 			{
@@ -100,26 +102,25 @@ bool Exporter_json::write(const std::string& name, const Model& model) const
 
 			if ((i + 1) % 8 == 0)
 			{
-				stream << std::endl << "\t\t\t";
+				stream << std::endl << "\t\t\t\t";
 			}
 		}
 
 		stream << std::endl;
-
-		stream << "\t\t]," << std::endl << std::endl;
+		stream << "\t\t\t]," << std::endl << std::endl;
 	}
 
 	//Normals
 	if (model.has_normals())
 	{
-		stream << "\t\t\"normals\": " << std::endl;
-		stream << "\t\t[" << std::endl;
+		stream << "\t\t\t\"normals\": " << std::endl;
+		stream << "\t\t\t[" << std::endl;
 
-		stream << "\t\t\t";
+		stream << "\t\t\t\t";
 
 		for (size_t i = 0; i < model.normals.size(); ++i)
 		{
-			stream << "[" << model.normals[i].x << "," << model.normals[i].y << "," << model.normals[i].z << "]";
+			stream << model.normals[i].x << "," << model.normals[i].y << "," << model.normals[i].z;
 
 			if (i < model.normals.size() - 1)
 			{
@@ -128,30 +129,35 @@ bool Exporter_json::write(const std::string& name, const Model& model) const
 
 			if ((i + 1) % 8 == 0)
 			{
-				stream << std::endl << "\t\t\t";
+				stream << std::endl << "\t\t\t\t";
 			}
 		}
 
 		stream << std::endl;
+		stream << "\t\t\t]";
 
-		stream << "\t\t]," << std::endl << std::endl;
+		if (model.has_tangent_space()) {
+			stream << ",";
+		}
+
+		stream << std::endl << std::endl;
 	}
 
 	//Tangent Space
 	if (model.has_tangent_space())
 	{
 		//Tangents
-		stream << "\t\t\"tangents_and_bitangent_signs\": " << std::endl;
-		stream << "\t\t[" << std::endl;
+		stream << "\t\t\t\"tangents_and_bitangent_signs\": " << std::endl;
+		stream << "\t\t\t[" << std::endl;
 
-		stream << "\t\t\t";
+		stream << "\t\t\t\t";
 
 		for (size_t i = 0; i < model.tangents_and_bitangent_signs.size(); ++i)
 		{
-			stream << "[" << model.tangents_and_bitangent_signs[i].x << ","
-						  << model.tangents_and_bitangent_signs[i].y << ","
-						  << model.tangents_and_bitangent_signs[i].z << ","
-						  << model.tangents_and_bitangent_signs[i].w << "]";
+			stream << model.tangents_and_bitangent_signs[i].x << ","
+				   << model.tangents_and_bitangent_signs[i].y << ","
+				   << model.tangents_and_bitangent_signs[i].z << ","
+				   << model.tangents_and_bitangent_signs[i].w;
 
 			if (i < model.tangents_and_bitangent_signs.size() - 1)
 			{
@@ -160,14 +166,15 @@ bool Exporter_json::write(const std::string& name, const Model& model) const
 
 			if ((i + 1) % 8 == 0)
 			{
-				stream << std::endl << "\t\t\t";
+				stream << std::endl << "\t\t\t\t";
 			}
 		}
 
 		stream << std::endl;
-
-		stream << "\t\t]," << std::endl << std::endl;
+		stream << "\t\t\t]" << std::endl << std::endl;
 	}
+
+	stream << "\t\t}," << std::endl << std::endl;
 
 	//Indices
 	stream << "\t\t\"indices\": " << std::endl;
@@ -191,7 +198,6 @@ bool Exporter_json::write(const std::string& name, const Model& model) const
 	}
 
 	stream << std::endl;
-
 	stream << "\t\t]" << std::endl;
 
 	stream << "\t}" << std::endl;

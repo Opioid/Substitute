@@ -83,9 +83,9 @@ void Model::set_origin_center()
 
 	for (size_t i = 0; i < positions.size(); ++i)
 	{
-		positions[i].y += aabb.halfsize.y;
-	//	positions[i].x -= aabb.position.x;
-	//	positions[i].z -= aabb.position.z;
+		positions[i].x -= aabb.position.x;
+		positions[i].y -= aabb.position.y;
+		positions[i].z -= aabb.position.z;
 	}
 }
 

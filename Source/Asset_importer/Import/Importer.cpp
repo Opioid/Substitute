@@ -10,18 +10,19 @@ float3 float3_from_aiVector3(const aiVector3D& v);
 
 Model* Importer::read(const std::string& name)
 {
-	importer_.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, /*aiComponent_NORMALS |*/ aiComponent_COLORS);
+	importer_.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_COLORS);
 
 	aiScene const* scene = importer_.ReadFile(name,
 		  aiProcess_ConvertToLeftHanded
 		| aiProcess_RemoveComponent
 		| aiProcess_Triangulate
 		| aiProcess_RemoveRedundantMaterials
+		| aiProcess_PreTransformVertices
 		| aiProcess_JoinIdenticalVertices
 		| aiProcess_FixInfacingNormals
-	//	| aiProcess_GenSmoothNormals
+		| aiProcess_GenSmoothNormals
 		| aiProcess_CalcTangentSpace
-		| aiProcess_ImproveCacheLocality
+	//	| aiProcess_ImproveCacheLocality
 		| aiProcess_OptimizeMeshes
 		| aiProcess_OptimizeGraph
 	);
@@ -34,12 +35,10 @@ Model* Importer::read(const std::string& name)
 
 	std::vector<aiMesh*> meshes;
 
-	for (uint32_t i = 0; i < scene->mNumMeshes; ++i)
-	{
-		if (4 == i)
-		{
-			continue;
-		}
+	for (uint32_t i = 0; i < scene->mNumMeshes; ++i) {
+//		if (i > 0) {
+//			continue;
+//		}
 
 		meshes.push_back(scene->mMeshes[i]);
 	}
@@ -58,26 +57,29 @@ Model* Importer::read(const std::string& name)
 
 	for (size_t m = 0; m < meshes.size(); ++m)
 	{
+//		if (m >= 7)
+//		{
+//			break;
+//		}
+
 		const aiMesh& mesh = *meshes[m];
 
 		Model::Group group;
-		group.material_index = mesh.mMaterialIndex;
+		group.material_index = /*m;//*/mesh.mMaterialIndex;
 		group.start_index = num_indices;
 		group.num_indices = mesh.mNumFaces * 3;
-
-		group.material_index = group.material_index < 5 ? group.material_index - 1 : group.material_index - 2;
-
 		model->groups.push_back(group);
-
 		group_vertex_offset.push_back(num_vertices);
+
+
 		num_vertices += mesh.mNumVertices;
-		num_indices += group.num_indices;
+		num_indices  += group.num_indices;
 	}
 
 	const bool has_positions = scene->mMeshes[0]->HasPositions();
 	const bool has_texture_coordinates = scene->mMeshes[0]->HasTextureCoords(0);
 	const bool has_normals = scene->mMeshes[0]->HasNormals();
-	const bool has_tangent_space = false;//has_normals & scene->mMeshes[0]->HasTangentsAndBitangents();
+	const bool has_tangent_space = has_normals & scene->mMeshes[0]->HasTangentsAndBitangents();
 
 	if (has_positions)
 	{
@@ -104,13 +106,18 @@ Model* Importer::read(const std::string& name)
 	uint32_t current_vertex = 0;
 	uint32_t current_index = 0;
 
-	for (size_t m = 0; m < meshes.size(); ++m)
+	for (size_t m = 0; m < model->groups.size(); ++m)
 	{
 		const aiMesh& mesh = *meshes[m];
 
 		//copy per vertex data
 		for (uint32_t v = 0; v < mesh.mNumVertices; ++v, ++current_vertex)
 		{
+//			if (v >= 3609455 && v <= 3609599) {
+//				continue;
+//			}
+
+
 			if (has_positions && mesh.HasPositions())
 			{
 				model->positions[current_vertex] = float3_from_aiVector3(mesh.mVertices[v]);
@@ -135,12 +142,18 @@ Model* Importer::read(const std::string& name)
 		}
 
 		// copy the indices
-		for (size_t f = 0; f < mesh.mNumFaces; ++f)
+		for (size_t f = 0; f < mesh.mNumFaces/* - 139*/; ++f)
 		{
 			// after triangulation this should always by 3
 			for (size_t i = 0; i < mesh.mFaces[f].mNumIndices; ++i, ++current_index)
 			{
-				model->indices[current_index] = group_vertex_offset[m] + mesh.mFaces[f].mIndices[i];
+				size_t index = group_vertex_offset[m] + mesh.mFaces[f].mIndices[i];
+
+//				if (index > 3609599) {
+//					index -= 144;
+//				}
+
+				model->indices[current_index] = index;
 			}
 		}
 	}
@@ -152,29 +165,16 @@ float4 Importer::tangent_and_bitangent_sign(const float3& normal, const float3& 
 {
 	const float3 temp = cross(normal, tangent);
 
-	float d;
-
-	if (abs(bitangent.x) > 0.1f)
-	{
-		d = bitangent.x / temp.x;
-	}
-	else if (abs(bitangent.y) > 0.1f)
-	{
-		d = bitangent.y / temp.y;
-	}
-	else                               
-	{
-		d = bitangent.z / temp.z;
-	}
+	float d = dot(temp, bitangent);
 
 	return float4(tangent, d > 0.f ? 1.f : -1.f);
 }
 
 float3 float3_from_aiVector3(const aiVector3D& v)
 {
-    float x = std::isnan(v.x) ? 1.f : v.x;
-    float y = std::isnan(v.y) ? 1.f : v.y;
-    float z = std::isnan(v.z) ? 1.f : v.z;
+	float x = std::isnan(v.x) || std::isinf(v.x) ? 0.f : v.x;
+	float y = std::isnan(v.y) || std::isinf(v.y) ? 0.f : v.y;
+	float z = std::isnan(v.z) || std::isinf(v.z) ? 0.f : v.z;
 
 	return float3(x, y, z);
 }
