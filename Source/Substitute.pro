@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
 
+CONFIG += ordered
+
 SUBDIRS += \
     Base \
     Backend \
