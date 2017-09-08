@@ -4,13 +4,148 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 
 float3 float3_from_aiVector3(const aiVector3D& v);
 
+void export_materials(const std::map<uint32_t, Model::Material>& materials) {
+	std::ofstream stream("materials.txt");
+
+	if (!stream) {
+		return;
+	}
+
+	/*
+	for (size_t i = 0, len = materials.size(); i < len; ++i) {
+		stream << "\"" << materials[i].diffuse_texture << "\"";
+
+		if (i < len - 1) {
+			stream << ", ";
+		}
+
+		if (0 == (i + 1) % 8) {
+			stream << std::endl;
+		}
+	}*/
+
+
+	stream << "\"materials\": [" << std::endl;
+
+	for (auto mp = materials.begin(); mp != materials.end();) {
+		const auto& m = mp->second;
+
+		if (materials.begin() == mp) {
+			stream << "\t{" << std::endl;
+		} else {
+			stream << "{" << std::endl;
+		}
+
+//		stream << "\"" << materials[i].diffuse_texture << "\"";
+
+
+		stream << "\t\t\"name\": \"" << m.name << "\",\n";
+
+		stream << "\t\t\"rendering\": {\n";
+
+		stream << "\t\t\t\"Substitute\": {\n";
+
+		if (!m.diffuse_texture.empty()) {
+			stream << "\t\t\t\t\"textures\": [\n";
+
+			stream << "\t\t\t\t\t{\n";
+			stream << "\t\t\t\t\t\t\"usage\": \"Color\"," << std::endl;
+			stream << "\t\t\t\t\t\t\"file\": \"" << m.diffuse_texture.substr(9) << "\"\n";
+			stream << "\t\t\t\t\t}";
+
+			if (!m.mask_texture.empty()) {
+				stream << ", {\n";
+				stream << "\t\t\t\t\t\t\"usage\": \"Mask\"," << std::endl;
+				stream << "\t\t\t\t\t\t\"file\": \"" << m.mask_texture.substr(9) << "\"\n";
+				stream << "\t\t\t\t\t}";
+			}
+
+			if (!m.normal_texture.empty()) {
+				stream << ", {\n";
+				stream << "\t\t\t\t\t\t\"usage\": \"Normal\"," << std::endl;
+				stream << "\t\t\t\t\t\t\"file\": \"" << m.normal_texture.substr(9) << "\"\n";
+				stream << "\t\t\t\t\t}";
+			}
+
+			if (!m.spec_texture.empty()) {
+				stream << ", {\n";
+				stream << "\t\t\t\t\t\t\"usage\": \"Specularity\"," << std::endl;
+				stream << "\t\t\t\t\t\t\"file\": \"" << m.spec_texture.substr(9) << "\"\n";
+				stream << "\t\t\t\t\t}";
+			}
+
+			stream << std::endl << "\t\t\t\t],\n";
+		}
+
+		stream << "\t\t\t\t\"roughness\": " << m.roughness;
+
+		if (!m.mask_texture.empty()) {
+			stream << ",\n\t\t\t\t\"two_sided\": true";
+		}
+
+		stream << "\n\t\t\t}\n";
+
+		stream << "\t\t}\n";
+
+		stream << "\t}";
+
+		++mp;
+		if (materials.end() != mp) {
+			stream << ", ";
+		} else {
+			stream << std::endl;
+		}
+	}
+
+	stream << "], \n";
+
+
+	stream << "\"materials\": [" << std::endl;
+/*
+	for (const auto& g : model.groups) {
+		const auto& m = model.materials.at(g.material_index);
+
+		stream << "\"" << m.name << "\"";
+
+	//	if (model.groups.back() != g) {
+			stream << ",";
+	//	}
+
+		stream << std::endl;
+	}
+*/
+	for (auto mp = materials.begin(); mp != materials.end();) {
+		const auto& m = mp->second;
+
+		stream << "\"" << m.name << "\"";
+
+		++mp;
+		if (materials.end() != mp) {
+			stream << ",";
+		}
+
+		stream << std::endl;
+	}
+
+	stream << "]\n";
+
+
+	std::cout << "Exported materials" << std::endl;
+}
+
+
+float shininess_to_roughness(float shininess) {
+	return std::pow(2.f / (shininess + 2.f), 0.25f);
+}
+
 Model* Importer::read(const std::string& name)
 {
-	importer_.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_COLORS);
+	importer_.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, aiComponent_COLORS /*| aiComponent_NORMALS*/);
 
 	aiScene const* scene = importer_.ReadFile(name,
 		  aiProcess_ConvertToLeftHanded
@@ -43,10 +178,22 @@ Model* Importer::read(const std::string& name)
 		meshes.push_back(scene->mMeshes[i]);
 	}
 
-	std::sort(meshes.begin(), meshes.end(), [] (aiMesh* a, aiMesh* b) -> bool
-											{ 
-												return a->mMaterialIndex < b->mMaterialIndex;
-											} );
+//	std::sort(meshes.begin(), meshes.end(), [scene] (aiMesh* a, aiMesh* b) -> bool
+//											{
+//											//	return a->mMaterialIndex < b->mMaterialIndex;
+
+
+//												aiString a_path;
+//												scene->mMaterials[a->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &a_path);
+
+//												aiString b_path;
+//												scene->mMaterials[b->mMaterialIndex]->GetTexture(aiTextureType_DIFFUSE, 0, &b_path);
+
+//												std::string a_string = a_path.data;
+//												std::string b_string = b_path.data;
+
+//												return a_string < b_string;
+//											} );
 
 	Model* model = new Model;
 
@@ -57,15 +204,11 @@ Model* Importer::read(const std::string& name)
 
 	for (size_t m = 0; m < meshes.size(); ++m)
 	{
-//		if (m >= 7)
-//		{
-//			break;
-//		}
-
 		const aiMesh& mesh = *meshes[m];
 
 		Model::Group group;
 		group.material_index = /*m;//*/mesh.mMaterialIndex;
+	//	std::cout << group.material_index << std::endl;
 		group.start_index = num_indices;
 		group.num_indices = mesh.mNumFaces * 3;
 		model->groups.push_back(group);
@@ -74,7 +217,76 @@ Model* Importer::read(const std::string& name)
 
 		num_vertices += mesh.mNumVertices;
 		num_indices  += group.num_indices;
+
+
+
+		const auto& mi = model->materials.find(group.material_index);
+		if (model->materials.end() == mi) {
+			const auto& material = *scene->mMaterials[group.material_index];
+
+			std::string material_name;
+			aiString text;
+			if (aiReturn_SUCCESS == material.Get(AI_MATKEY_NAME, text)) {
+				material_name = text.data;
+			}
+
+			std::string diffuse_texture_name;
+			aiString path;
+			if (aiReturn_SUCCESS == material.GetTexture(aiTextureType_DIFFUSE, 0, &path)) {
+				diffuse_texture_name = path.data;
+				std::replace(diffuse_texture_name.begin(), diffuse_texture_name.end(), '\\', '/');
+			}
+
+			std::string mask_texture_name;
+			if (aiReturn_SUCCESS == material.GetTexture(aiTextureType_OPACITY, 0, &path)) {
+				mask_texture_name = path.data;
+				std::replace(mask_texture_name.begin(), mask_texture_name.end(), '\\', '/');
+			}
+
+			std::string normal_texture_name;
+			if (aiReturn_SUCCESS == material.GetTexture(aiTextureType_NORMALS, 0, &path)) {
+				normal_texture_name = path.data;
+				std::replace(normal_texture_name.begin(), normal_texture_name.end(), '\\', '/');
+			}
+
+			std::string spec_texture_name;
+			if (aiReturn_SUCCESS == material.GetTexture(aiTextureType_SPECULAR, 0, &path)) {
+				spec_texture_name = path.data;
+				std::replace(spec_texture_name.begin(), spec_texture_name.end(), '\\', '/');
+			}
+
+			/*)
+			aiColor3D transparent_color;
+			if (aiReturn_SUCCESS == scene->mMaterials[group.material_index]->Get(AI_MATKEY_COLOR_TRANSPARENT, transparent_color)) {
+			//	material_name = text.data;
+
+				std::cout << "transparent color" << std::endl;
+			}*/
+
+			float shininess = -1.f;
+			material.Get(AI_MATKEY_SHININESS, shininess);
+
+			float roughness = 0.8f;
+			if (shininess > 0.f) {
+				roughness = shininess_to_roughness(shininess);
+			}
+
+			float opacity = 1.f;
+			material.Get(AI_MATKEY_OPACITY, opacity);
+
+			int two_sided = 0;
+			material.Get(AI_MATKEY_TWOSIDED, two_sided);
+
+			model->materials.emplace(group.material_index,
+									 Model::Material{
+										material_name,
+										diffuse_texture_name, mask_texture_name,
+										normal_texture_name, spec_texture_name,
+										roughness, opacity, 0 != two_sided});
+		}
 	}
+
+	export_materials(model->materials);
 
 	const bool has_positions = scene->mMeshes[0]->HasPositions();
 	const bool has_texture_coordinates = scene->mMeshes[0]->HasTextureCoords(0);
@@ -113,11 +325,6 @@ Model* Importer::read(const std::string& name)
 		//copy per vertex data
 		for (uint32_t v = 0; v < mesh.mNumVertices; ++v, ++current_vertex)
 		{
-//			if (v >= 3609455 && v <= 3609599) {
-//				continue;
-//			}
-
-
 			if (has_positions && mesh.HasPositions())
 			{
 				model->positions[current_vertex] = float3_from_aiVector3(mesh.mVertices[v]);
@@ -142,7 +349,7 @@ Model* Importer::read(const std::string& name)
 		}
 
 		// copy the indices
-		for (size_t f = 0; f < mesh.mNumFaces/* - 139*/; ++f)
+		for (size_t f = 0; f < mesh.mNumFaces; ++f)
 		{
 			// after triangulation this should always by 3
 			for (size_t i = 0; i < mesh.mFaces[f].mNumIndices; ++i, ++current_index)

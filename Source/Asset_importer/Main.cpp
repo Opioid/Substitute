@@ -18,21 +18,21 @@ int main()
 
 
 	float3x3 rotation_y;
-	set_rotation_y(rotation_y, math::to_radians(90.f));
+	set_rotation_y(rotation_y, math::to_radians(180.f));
 
 	float3x3 rotation_z;
 	set_rotation_z(rotation_z, math::to_radians(90.f));
 
 	float3x3 rotation = rotation_y;// * rotation_y;
 
-//	for (size_t i = 0; i < 241; ++i)
-	{
-	//	std::ostringstream istream;
-	//	istream << std::setw(5) << std::setfill('0');
-	//	istream << i + 1 << ".obj";
+//	for (size_t i = 0; i < 241; ++i) {
+//		std::ostringstream istream;
+//		istream << std::setw(5) << std::setfill('0');
+//		istream << i + 1 << ".obj";
 
 		Importer importer;
-		Model* model = importer.read("coffee_table.3DS");
+		Model* model = importer.read(/*istream.str()*/ "Bistro_Research_Exterior.fbx");
+	//	Model* model = importer.read(/*istream.str()*/ "bistro_reset.fbx");
 
 		if (!model)
 		{
@@ -40,11 +40,13 @@ int main()
 			return 0;
 		}
 
-		model->scale(0.0025f);
+	//	model->scale(0.01f);
 	//	model->rotate(rotation);
 
-		model->set_origin_center_bottom();
+//		model->set_origin_center_bottom();
 	//	model->set_origin_center();
+
+		model->fix_tangent_frame();
 
 		AABB aabb = model->calculate_aabb();
 
@@ -53,15 +55,15 @@ int main()
 
 		Exporter_json exporter;
 
-		std::ostringstream ostream;
-		ostream << "glass_table";
-	//	ostream << std::setw(3) << std::setfill('0');
-	//	ostream << i;
+//		std::ostringstream ostream;
+//		ostream << "wiggle_";
+//		ostream << std::setw(3) << std::setfill('0');
+//		ostream << i;
 
-		exporter.write(ostream.str(), *model);
+		exporter.write(/*ostream.str()*/"bistro_exterior", *model);
 
 		delete model;
-	}
+//	}
 
 	std::cout << "Done." << std::endl;
 

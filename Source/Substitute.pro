@@ -9,6 +9,6 @@ SUBDIRS += \
     Assets \
     Asset_chef \
     Asset_importer \
-    Gauze \
+#    Gauze \
 
 HEADERS += Substitute.hpp \
