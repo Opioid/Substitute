@@ -16,6 +16,9 @@ int main()
 {
 	print_assimp_version();
 
+	float3x3 rotation_x;
+	set_rotation_x(rotation_x, math::to_radians(-90.f));
+
 
 	float3x3 rotation_y;
 	set_rotation_y(rotation_y, math::to_radians(180.f));
@@ -23,7 +26,7 @@ int main()
 	float3x3 rotation_z;
 	set_rotation_z(rotation_z, math::to_radians(90.f));
 
-	float3x3 rotation = rotation_y;// * rotation_y;
+	float3x3 rotation = rotation_x;// * rotation_y;
 
 //	for (size_t i = 0; i < 241; ++i) {
 //		std::ostringstream istream;
@@ -31,8 +34,9 @@ int main()
 //		istream << i + 1 << ".obj";
 
 		Importer importer;
-		Model* model = importer.read(/*istream.str()*/ "Bistro_Research_Exterior.fbx");
+	//	Model* model = importer.read(/*istream.str()*/ "Bistro_Research_Exterior.fbx");
 	//	Model* model = importer.read(/*istream.str()*/ "bistro_reset.fbx");
+		Model* model = importer.read("shroom_8.fbx");
 
 		if (!model)
 		{
@@ -40,10 +44,10 @@ int main()
 			return 0;
 		}
 
-	//	model->scale(0.01f);
+		model->scale(0.01f);
 	//	model->rotate(rotation);
 
-//		model->set_origin_center_bottom();
+		model->set_origin_center_bottom();
 	//	model->set_origin_center();
 
 		model->fix_tangent_frame();
@@ -60,7 +64,7 @@ int main()
 //		ostream << std::setw(3) << std::setfill('0');
 //		ostream << i;
 
-		exporter.write(/*ostream.str()*/"bistro_exterior", *model);
+		exporter.write(/*ostream.str()*/"shroom_8", *model);
 
 		delete model;
 //	}

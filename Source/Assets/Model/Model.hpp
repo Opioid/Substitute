@@ -55,6 +55,8 @@ struct Model
 		std::string normal_texture;
 		std::string spec_texture;
 
+		float3 diffuse_color;
+
 		float roughness;
 		float opacity;
 

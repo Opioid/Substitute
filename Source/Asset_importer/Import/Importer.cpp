@@ -80,6 +80,9 @@ void export_materials(const std::map<uint32_t, Model::Material>& materials) {
 			}
 
 			stream << std::endl << "\t\t\t\t],\n";
+		} else {
+			const auto& c = m.diffuse_color;
+			stream << "\t\t\t\t\"color\": [" << c.x << ", " << c.y << ", " << c.z << "],\n";
 		}
 
 		stream << "\t\t\t\t\"roughness\": " << m.roughness;
@@ -263,6 +266,15 @@ Model* Importer::read(const std::string& name)
 				std::cout << "transparent color" << std::endl;
 			}*/
 
+			aiColor3D diffuse_color;
+			if (aiReturn_SUCCESS == scene->mMaterials[group.material_index]->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse_color)) {
+			//	material_name = text.data;
+
+				std::cout << "diffuse color" << std::endl;
+
+
+			}
+
 			float shininess = -1.f;
 			material.Get(AI_MATKEY_SHININESS, shininess);
 
@@ -282,6 +294,7 @@ Model* Importer::read(const std::string& name)
 										material_name,
 										diffuse_texture_name, mask_texture_name,
 										normal_texture_name, spec_texture_name,
+										float3(diffuse_color.r, diffuse_color.g, diffuse_color.b),
 										roughness, opacity, 0 != two_sided});
 		}
 	}
